@@ -1,1 +1,113 @@
+## Unity ##
+*.cs                diff=csharp text
+*.cginc             text
+*.shader            text
+*.mat               merge=unityyamlmerge eol=lf
+*.anim              merge=unityyamlmerge eol=lf
+*.unity filter=lfs diff=lfs merge=lfs -text
+*.physicsMaterial2D merge=unityyamlmerge eol=lf
+*.physicsMaterial   merge=unityyamlmerge eol=lf
+*.asset filter=lfs diff=lfs merge=lfs -text
+*.meta              merge=unityyamlmerge eol=lf
+*.controller filter=lfs diff=lfs merge=lfs -text
+## git-lfs ##
+#Image
+*.jpg               filter=lfs diff=lfs merge=lfs -text
+*.jpeg              filter=lfs diff=lfs merge=lfs -text
+*.png               filter=lfs diff=lfs merge=lfs -text
+*.gif               filter=lfs diff=lfs merge=lfs -text
+*.psd               filter=lfs diff=lfs merge=lfs -text
+*.ai                filter=lfs diff=lfs merge=lfs -text
+#Audio
+*.mp3               filter=lfs diff=lfs merge=lfs -text
+*.wav               filter=lfs diff=lfs merge=lfs -text
+*.ogg               filter=lfs diff=lfs merge=lfs -text
+#Video
+*.mp4               filter=lfs diff=lfs merge=lfs -text
+*.mov               filter=lfs diff=lfs merge=lfs -text
+#3D Object
+*.FBX filter=lfs diff=lfs merge=lfs -text
+*.fbx               filter=lfs diff=lfs merge=lfs -text
+*.blend             filter=lfs diff=lfs merge=lfs -text
+*.obj               filter=lfs diff=lfs merge=lfs -text
+#ETC
+*.a                 filter=lfs diff=lfs merge=lfs -text
+*.exr               filter=lfs diff=lfs merge=lfs -text
+*.tga               filter=lfs diff=lfs merge=lfs -text
+*.pdf               filter=lfs diff=lfs merge=lfs -text
+*.zip               filter=lfs diff=lfs merge=lfs -text
+*.dll               filter=lfs diff=lfs merge=lfs -text
+*.unitypackage      filter=lfs diff=lfs merge=lfs -text
+*.aif               filter=lfs diff=lfs merge=lfs -text
+*.ttf               filter=lfs diff=lfs merge=lfs -text
+*.rns               filter=lfs diff=lfs merge=lfs -text
+*.reason            filter=lfs diff=lfs merge=lfs -text
+*.lxo               filter=lfs diff=lfs merge=lfs -text
+*.dgml                      binary
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.wave filter=lfs diff=lfs merge=lfs -text
+*.WAV filter=lfs diff=lfs merge=lfs -text
+*.psk filter=lfs diff=lfs merge=lfs -text
+*.psb filter=lfs diff=lfs merge=lfs -text
+*.JPG filter=lfs diff=lfs merge=lfs -text
+*.PNG filter=lfs diff=lfs merge=lfs -text
+*.JPEG filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
+*.mb filter=lfs diff=lfs merge=lfs -text
+*.data filter=lfs diff=lfs merge=lfs -text
+*.preset filter=lfs diff=lfs merge=lfs -text
+*.physicMaterial filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text
+*.resS filter=lfs diff=lfs merge=lfs -text
+*.gitignore filter=lfs diff=lfs merge=lfs -text
+*.meta filter=lfs diff=lfs merge=lfs -text
+*.anim filter=lfs diff=lfs merge=lfs -text
+*.mixer filter=lfs diff=lfs merge=lfs -text
+*.wlt filter=lfs diff=lfs merge=lfs -text
+*.spp filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.inputactions filter=lfs diff=lfs merge=lfs -text
+*.lighting filter=lfs diff=lfs merge=lfs -text
+*.giparams filter=lfs diff=lfs merge=lfs -text
+*.shadervariants filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.brush filter=lfs diff=lfs merge=lfs -text
+*.terrainlayer filter=lfs diff=lfs merge=lfs -text
+*.html filter=lfs diff=lfs merge=lfs -text
+*.md filter=lfs diff=lfs merge=lfs -text
+*.cs filter=lfs diff=lfs merge=lfs -text
+*.asmdef filter=lfs diff=lfs merge=lfs -text
+*.txt filter=lfs diff=lfs merge=lfs -text
+*.mat filter=lfs diff=lfs merge=lfs -text
+*.shadergraph filter=lfs diff=lfs merge=lfs -text
+*.json filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.shadersubgraph filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.prefab filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.nature filter=lfs diff=lfs merge=lfs -text
+*.shader filter=lfs diff=lfs merge=lfs -text
+*.mesh filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.surfshader filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.hlsl filter=lfs diff=lfs merge=lfs -text
+*.cginc filter=lfs diff=lfs merge=lfs -text
+*.url filter=lfs diff=lfs merge=lfs -text
+*.templatex filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.shaderx filter=lfs diff=lfs merge=lfs -text
+*.jslib filter=lfs diff=lfs merge=lfs -text
+*.jspre filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.mtl filter=lfs diff=lfs merge=lfs -text
+*.guiskin filter=lfs diff=lfs merge=lfs -text
+*.spriteatlasv2 filter=lfs diff=lfs merge=lfs -text
+*.XML filter=lfs diff=lfs merge=lfs -text
+*.bak filter=lfs diff=lfs merge=lfs -text
 *.cs !text !filter !merge !diff
