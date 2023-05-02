@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Realit.Core.Managers;
+using LTX.ChanneledProperties;
 
 namespace Realit.Core.Features
 {
@@ -18,6 +19,7 @@ namespace Realit.Core.Features
 
         private List<GameObject> loadedRessources;
 
+        protected ChannelKey MyChannelKey => FeaturesManager.ChannelKeys[this];
 
         public Feature(FeatureDataAsset asset)
         {

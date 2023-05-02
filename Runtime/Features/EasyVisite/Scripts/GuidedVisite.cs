@@ -61,16 +61,16 @@ namespace Realit.Core.Features.GuidedVisite
             points = new GV_Point[pointsList.Count];
             pointsList.CopyTo(points);
             RealitSceneManager.UI.CreateWindow(_Data.FeatureName, _Data.window);
-            RealitSceneManager.UI.windowPriority.AddChannel(this, PriorityTags.None, Data.FeatureName);
+            RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, Data.FeatureName);
 
-            CursorManager.Instance.cursorLockMode.AddChannel(this, PriorityTags.None, CursorLockMode.Confined);
-            CursorManager.Instance.cursorVisibility.AddChannel(this, PriorityTags.None, true);
+            CursorManager.Instance.cursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
+            CursorManager.Instance.cursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
 
 
             Player.Realit_Player player = RealitSceneManager.Player;
 
             if (player.GetLivingComponent(out PlayerCharacter character))
-                character.Freezed.RemoveChannel(this);
+                character.Freezed.RemoveChannel(MyChannelKey);
 
             if (player.GetLivingComponent(out playerCharacter))
             {
@@ -88,27 +88,27 @@ namespace Realit.Core.Features.GuidedVisite
 
             if (player.GetLivingComponent(out cameraManager))
             {
-                cameraManager.XInput.AddChannel(this, PriorityTags.None);
-                cameraManager.YInput.AddChannel(this, PriorityTags.None);
+                cameraManager.XInput.AddChannel(MyChannelKey, PriorityTags.None);
+                cameraManager.YInput.AddChannel(MyChannelKey, PriorityTags.None);
             }
 
-            player.actionMap.AddChannel(this, PriorityTags.None, "EV");
+            player.actionMap.AddChannel(MyChannelKey, PriorityTags.None, "EV");
         }
 
         protected override void OnUnload()
         {
             points = null;
-            CursorManager.Instance.cursorLockMode.RemoveChannel(this);
-            CursorManager.Instance.cursorVisibility.RemoveChannel(this);
+            CursorManager.Instance.cursorLockMode.RemoveChannel(MyChannelKey);
+            CursorManager.Instance.cursorVisibility.RemoveChannel(MyChannelKey);
 
             
-            RealitSceneManager.UI.windowPriority.RemoveChannel(this);
+            RealitSceneManager.UI.windowPriority.RemoveChannel(MyChannelKey);
             RealitSceneManager.UI.DestroyWindow(Data.FeatureName);
 
             if (playerCharacter != null)
             {
-                playerCharacter.Freezed.RemoveChannel(this);
-                playerCharacter.Manager.actionMap.RemoveChannel(this);
+                playerCharacter.Freezed.RemoveChannel(MyChannelKey);
+                playerCharacter.Manager.actionMap.RemoveChannel(MyChannelKey);
             }
 
             if (playerInputs != null)
@@ -126,8 +126,8 @@ namespace Realit.Core.Features.GuidedVisite
 
             if (cameraManager != null)
             {
-                cameraManager.XInput.RemoveChannel(this);
-                cameraManager.YInput.RemoveChannel(this);
+                cameraManager.XInput.RemoveChannel(MyChannelKey);
+                cameraManager.YInput.RemoveChannel(MyChannelKey);
             }
 
         }
@@ -136,7 +136,7 @@ namespace Realit.Core.Features.GuidedVisite
         { 
             Aokoro.UI.UIManager ui = RealitSceneManager.UI;
 
-            if (!ui.windowPriority.ChangeChannelPriority(this, PriorityTags.High))
+            if (!ui.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.High))
             {
                 EndFeature();
                 return;
@@ -144,8 +144,8 @@ namespace Realit.Core.Features.GuidedVisite
 
             CursorManager cursor = CursorManager.Instance;
 
-            cursor.cursorLockMode.ChangeChannelPriority(this, PriorityTags.High);
-            cursor.cursorVisibility.ChangeChannelPriority(this, PriorityTags.High);
+            cursor.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
+            cursor.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
 
 
             if (cameraManager != null)
@@ -156,14 +156,14 @@ namespace Realit.Core.Features.GuidedVisite
 
             if (playerCharacter != null)
             {
-                playerCharacter.Freezed.ChangeChannelPriority(this, PriorityTags.High);
-                playerCharacter.Manager.actionMap.ChangeChannelPriority(this, PriorityTags.High);
+                playerCharacter.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
+                playerCharacter.Manager.actionMap.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
             }
 
             if(cameraManager != null)
             {
-                cameraManager.XInput.ChangeChannelPriority(this, PriorityTags.High + 1);
-                cameraManager.YInput.ChangeChannelPriority(this, PriorityTags.High + 1);
+                cameraManager.XInput.ChangeChannelPriority(MyChannelKey, PriorityTags.High + 1);
+                cameraManager.YInput.ChangeChannelPriority(MyChannelKey, PriorityTags.High + 1);
             }
 
             
@@ -172,25 +172,25 @@ namespace Realit.Core.Features.GuidedVisite
 
         protected override void OnEnd()
         {
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(this, PriorityTags.None);
+            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 
             CursorManager cursor = CursorManager.Instance;
-            cursor.cursorLockMode.ChangeChannelPriority(this, PriorityTags.None);
-            cursor.cursorVisibility.ChangeChannelPriority(this, PriorityTags.None);
+            cursor.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            cursor.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 
             if (cameraManager != null)
                 cameraManager.SwitchToCameraProfile(lastPlayerProfile);
 
             if (playerCharacter != null)
             {
-                playerCharacter.Freezed.ChangeChannelPriority(this, PriorityTags.None);
-                playerCharacter.Manager.actionMap.ChangeChannelPriority(this, PriorityTags.None);
+                playerCharacter.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+                playerCharacter.Manager.actionMap.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             }
 
             if (cameraManager != null)
             {
-                cameraManager.XInput.ChangeChannelPriority(this, PriorityTags.None);
-                cameraManager.YInput.ChangeChannelPriority(this, PriorityTags.None);
+                cameraManager.XInput.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+                cameraManager.YInput.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             }
         }
 
@@ -209,20 +209,20 @@ namespace Realit.Core.Features.GuidedVisite
                     if (!overUI)
                     {
                         Vector2 input = ctx.ReadValue<Vector2>();
-                        if (cameraManager.XInput.HasChannelOwnBy(this))
-                            cameraManager.XInput.Write(this, input.x);
+                        if (cameraManager.XInput.HasChannel(MyChannelKey))
+                            cameraManager.XInput.Write(MyChannelKey, input.x);
 
-                        if (cameraManager.YInput.HasChannelOwnBy(this))
-                            cameraManager.YInput.Write(this, input.y);
+                        if (cameraManager.YInput.HasChannel(MyChannelKey))
+                            cameraManager.YInput.Write(MyChannelKey, input.y);
                     }
                     break;
                 case InputActionPhase.Canceled:
                     overUI = false;
-                    if (cameraManager.XInput.HasChannelOwnBy(this))
-                        cameraManager.XInput.Write(this, 0);
+                    if (cameraManager.XInput.HasChannel(MyChannelKey))
+                        cameraManager.XInput.Write(MyChannelKey, 0);
 
-                    if (cameraManager.YInput.HasChannelOwnBy(this))
-                        cameraManager.YInput.Write(this, 0);
+                    if (cameraManager.YInput.HasChannel(MyChannelKey))
+                        cameraManager.YInput.Write(MyChannelKey, 0);
                     break;
             }
         }

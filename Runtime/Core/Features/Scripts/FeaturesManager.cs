@@ -19,6 +19,7 @@ namespace Realit.Core.Features
         
 
         private static Dictionary<string, Feature> features;
+        private static Dictionary<Feature, ChannelKey> channelKeys;
         private static Dictionary<Type, List<Action<Feature>>> featuresLoadedCallbacks;
 
         public static bool AreFeaturesLoaded { get; private set; }
@@ -37,6 +38,12 @@ namespace Realit.Core.Features
         {
             get => features ??= new(); 
             set => features = value; 
+        }
+
+        public static Dictionary<Feature, ChannelKey> ChannelKeys
+        {
+            get => channelKeys ??= new();
+            set => channelKeys = value;
         }
 
         protected override void OnExistingInstanceFound(FeaturesManager existingInstance)
@@ -97,6 +104,8 @@ namespace Realit.Core.Features
                 {
                     Feature feature = featureData.GenerateFeature();
                     Features.Add(feature.Data.FeatureName, feature);
+                    ChannelKeys.Add(feature, ChannelKey.GetUniqueChannelKey());
+
                     feature.Load();
 
                     Type featureType = feature.GetType();
@@ -250,9 +259,9 @@ namespace Realit.Core.Features
                 bool isConcurrantFeature = feature.Data.isConcurrantFeature;
 
                 if(isConcurrantFeature)
-                    Instance.canExecuteFeature.AddChannel(feature, PriorityTags.Default, true);
+                    Instance.canExecuteFeature.AddChannel(ChannelKeys[feature], PriorityTags.Default, true);
                 else
-                    Instance.canExecuteFeature.AddChannel(feature, PriorityTags.High, false);
+                    Instance.canExecuteFeature.AddChannel(ChannelKeys[feature], PriorityTags.High, false);
             }
         }
         public static void EndFeature(string featureName)
@@ -260,7 +269,7 @@ namespace Realit.Core.Features
             if (Features.TryGetValue(featureName, out Feature feature))
             {
                 feature.InternalEndFeature();
-                Instance.canExecuteFeature.RemoveChannel(feature);
+                Instance.canExecuteFeature.RemoveChannel(ChannelKeys[feature]);
             }
         }
 

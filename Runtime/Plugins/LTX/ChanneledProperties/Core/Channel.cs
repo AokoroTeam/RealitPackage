@@ -6,20 +6,8 @@ using UnityEngine;
 namespace LTX.ChanneledProperties
 {
     [System.Serializable]
-    public class Channel<T>
+    public struct Channel<T>
     {
-        public object Owner 
-        { 
-            get => _owner;
-            private set
-            {
-                _owner = value;
-#if UNITY_EDITOR
-                ownerRef = value as UnityEngine.Object;
-#endif
-            }
-        }
-        
         public int Priority { 
             get => _priority;
             set => _priority = value;
@@ -35,26 +23,12 @@ namespace LTX.ChanneledProperties
         [SerializeField]
         private T _value;
 
-        private object _owner;
-
-#if UNITY_EDITOR
-        [SerializeField]
-        private UnityEngine.Object ownerRef;
-#endif
-        public Channel(int Priority, object owner, T Value)
+        public Channel(int Priority, T Value)
         {
             this._priority = Priority;
-            this._owner = owner;
             this._value = Value;
-#if UNITY_EDITOR
-            this.ownerRef = owner as UnityEngine.Object;
-#endif
         }
-        public Channel(PriorityTags Priority, object owner, T Value) : this((int)Priority, owner, Value) { }
 
-        public void Set(T Value) => this.Value = Value;
-
-        public void ChangePriority(int priority) => this.Priority = priority;
-        public void ChangePriority(PriorityTags priority) => this.Priority = (int)priority;
+        public Channel(PriorityTags Priority, T Value) : this((int)Priority, Value) { }
     }
 }

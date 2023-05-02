@@ -59,8 +59,7 @@ namespace Realit.Core.Player.Movement
         
         public event System.Action OnAgentStartsMoving;
         public event System.Action OnAgentStopsMoving;
-        public event System.Action<CameraControllerProfile> OnCameraTypeChanges;
-
+        
         //Entity
         public PlayerManager Manager { get; set; }
         string IEntityComponent.ComponentName => "PlayerCharacter";

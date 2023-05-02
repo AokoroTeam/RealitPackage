@@ -145,18 +145,18 @@ namespace Realit.Core.Player.CameraManagement
                 XYaxis = map.FindAction("Look");
                 ZAxis = map.FindAction("Zoom");
 
-                if (!XInput.OwnsChannel(this))
+                if (!XInput.HasChannel(this))
                     XInput.AddChannel(this, PriorityTags.Smallest);
-                if (!YInput.OwnsChannel(this))
+                if (!YInput.HasChannel(this))
                     YInput.AddChannel(this, PriorityTags.Smallest);
-                if (!ZInput.OwnsChannel(this))
+                if (!ZInput.HasChannel(this))
                     ZInput.AddChannel(this, PriorityTags.Smallest);
 
-                if (!XActive.OwnsChannel(this))
+                if (!XActive.HasChannel(this))
                     XActive.AddChannel(this, PriorityTags.Smallest, true);
-                if (!YActive.OwnsChannel(this))
+                if (!YActive.HasChannel(this))
                     YActive.AddChannel(this, PriorityTags.Smallest, true);
-                if (!ZActive.OwnsChannel(this))
+                if (!ZActive.HasChannel(this))
                     ZActive.AddChannel(this, PriorityTags.Smallest, true);
             }
         }

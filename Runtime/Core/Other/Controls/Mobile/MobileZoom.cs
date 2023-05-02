@@ -1,15 +1,11 @@
-using Realit.Core.Managers;
-using Realit.Core.Player.Movement;
+using LTX.ChanneledProperties;
 using Realit.Core.Player;
-using System.Collections;
-using System.Collections.Generic;
+using Realit.Core.Player.CameraManagement;
+
 using UnityEngine;
 
-using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
-using Realit.Core.Player.CameraManagement;
-using LTX.ChanneledProperties;
 
 namespace Realit.Core.Controls
 {
@@ -44,7 +40,7 @@ namespace Realit.Core.Controls
 
         void MobileControls.IMobileControl.Perform()
         {
-            if (cameraManager == null || !cameraManager.ZInput.OwnsChannel(this))
+            if (cameraManager == null || !cameraManager.ZInput.HasChannel(this))
                 return;
 
             var touches = Touch.activeTouches;

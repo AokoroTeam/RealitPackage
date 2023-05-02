@@ -33,21 +33,21 @@ namespace Realit.Core.Features.CameraSwitch
             if (Realit_Player.LocalPlayer.GetLivingComponent(out CameraManager manager))
                 currentProfile = manager.CurrentProfile;
 
-            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(this, PriorityTags.Highest);
-            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(this, PriorityTags.Highest);
+            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
 
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(this, PriorityTags.Highest);
-            GameNotifications.Instance.canUpdate.ChangeChannelPriority(this, PriorityTags.Highest);
+            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
         }
 
         protected override void OnEnd()
         {
 
-            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(this, PriorityTags.None);
-            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(this, PriorityTags.None);
+            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(this, PriorityTags.None);
-            GameNotifications.Instance.canUpdate.ChangeChannelPriority(this, PriorityTags.None);
+            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
         }
 
         protected override void OnLoad()
@@ -56,11 +56,11 @@ namespace Realit.Core.Features.CameraSwitch
         
             RealitSceneManager.UI.CreateWindow(_Data.windowName, _Data.window);
 
-            GameNotifications.Instance.canUpdate.AddChannel(this, PriorityTags.None, false);
-            RealitSceneManager.UI.windowPriority.AddChannel(this, PriorityTags.None, _Data.windowName);
+            GameNotifications.Instance.canUpdate.AddChannel(MyChannelKey, PriorityTags.None, false);
+            RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, _Data.windowName);
 
-            CursorManager.Instance.cursorLockMode.AddChannel(this, PriorityTags.None, UnityEngine.CursorLockMode.None);
-            CursorManager.Instance.cursorVisibility.AddChannel(this, PriorityTags.None, true);
+            CursorManager.Instance.cursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, UnityEngine.CursorLockMode.None);
+            CursorManager.Instance.cursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
 
         }
 
@@ -71,11 +71,11 @@ namespace Realit.Core.Features.CameraSwitch
 
             RealitSceneManager.UI.DestroyWindow(_Data.windowName);
 
-            GameNotifications.Instance.canUpdate.RemoveChannel(this);
-            RealitSceneManager.UI.windowPriority.RemoveChannel(this);
+            GameNotifications.Instance.canUpdate.RemoveChannel(MyChannelKey);
+            RealitSceneManager.UI.windowPriority.RemoveChannel(MyChannelKey);
 
-            CursorManager.Instance.cursorLockMode.RemoveChannel(this);
-            CursorManager.Instance.cursorVisibility.RemoveChannel(this);
+            CursorManager.Instance.cursorLockMode.RemoveChannel(MyChannelKey);
+            CursorManager.Instance.cursorVisibility.RemoveChannel(MyChannelKey);
 
         }
 

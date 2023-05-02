@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Debug = UnityEngine.Debug;
 
 namespace LTX.ChanneledProperties.Tests
 {
@@ -33,8 +34,9 @@ namespace LTX.ChanneledProperties.Tests
                 properties[i].AddChannel(this, PriorityTags.Smallest);
 
             stopwatch.Stop();
-            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds);
+            Debug.Log(stopwatch.ElapsedMilliseconds);
             Profiler.EndSample();
+            Debug.Break();
         }
 
         [Button]
@@ -47,8 +49,9 @@ namespace LTX.ChanneledProperties.Tests
                 properties[i].RemoveChannel(this);
             stopwatch.Stop();
 
-            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds);
+            Debug.Log(stopwatch.ElapsedMilliseconds);
             Profiler.EndSample();
+            Debug.Break();
         }
 
         [SerializeField]
@@ -63,12 +66,13 @@ namespace LTX.ChanneledProperties.Tests
             
             for (int i = 0; i < PropertiesCount; i++)
             {
-                if (properties[i].HasChannelOwnBy(this))
+                if (properties[i].HasChannel(this))
                     properties[i].Write(this, Value);
             }
             stopwatch.Stop();
-            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds);
+            Debug.Log(stopwatch.ElapsedMilliseconds);
             Profiler.EndSample();
+            Debug.Break();
         }
 
         [Button]
@@ -82,8 +86,9 @@ namespace LTX.ChanneledProperties.Tests
                 v = properties[i].Value;
             
             stopwatch.Stop();
-            UnityEngine.Debug.Log(stopwatch.ElapsedMilliseconds);
+            Debug.Log(stopwatch.ElapsedMilliseconds);
             Profiler.EndSample();
+            Debug.Break();
         }
     }
 }

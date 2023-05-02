@@ -26,42 +26,51 @@ namespace LTX.ChanneledProperties
         public event Action<T> OnValueChanged;
 
         //Properties
-        public int ChannelCount => channels.Count;
-        public bool HasMainChannel => MainChannelIndex != -1 && ChannelCount > 0;
-
+        public int ChannelCount => _channelCount;
+        
         private Channel<T> MainChannel
         {
             get
             {
-                if (_channelsAreDirty)
+                if (_needsRefresh)
                     FindMainChannel();
 
-                return HasMainChannel ? channels[MainChannelIndex] : default;
+                return HasMainChannel ? channels[MainChannelKey] : default;
             }
         }
 
-        private int MainChannelIndex
+        private ChannelKey MainChannelKey
         {
             get
             {
-                if (_channelsAreDirty)
+                if (_needsRefresh)
                     FindMainChannel();
 
-                return _mainChannelIndex;
+                return HasMainChannel ? _mainChannelKey : default;
             }
         }
+        public bool HasMainChannel
+        {
+            get
+            {
+                if (_needsRefresh)
+                    FindMainChannel();
 
-        public object MainChannelOwner => MainChannel.Owner;
+                return _hasMainChannel;
+            }
+        }
 
         public T Value
         {
             get
             {
-                T value = ChannelCount != 0 && HasMainChannel ? MainChannel.Value : _defaultValue;
 #if UNITY_EDITOR
+                T value = HasMainChannel ? MainChannel.Value : _defaultValue;
                 _value = value;
-#endif
                 return value;
+#else
+                return HasMainChannel ? MainChannel.Value : _defaultValue
+#endif
             }
         }
 
@@ -70,65 +79,77 @@ namespace LTX.ChanneledProperties
         private T _value;
 #endif
         [SerializeField]
-        private List<Channel<T>> channels;
+        private Dictionary<ChannelKey, Channel<T>> channels;
 
         [SerializeField]
-        private int _mainChannelIndex;
+        private Dictionary<object, Channel<T>> keyOwners;
+
         [SerializeField]
-        private bool _channelsAreDirty;
+        private ChannelKey _mainChannelKey;
+        [SerializeField]
+        private bool _hasMainChannel;
+        [SerializeField]
+        private bool _needsRefresh;
         [SerializeField]
         private T _defaultValue;
+        [SerializeField]
+        private int _channelCount;
 
+
+        private int _internalKeyCount;
 
         public ChanneledProperty() : this(default) { }
         
-        public ChanneledProperty(T defaultValue)
+        public ChanneledProperty(T defaultValue, int capacity = 16)
         {
-            this._channelsAreDirty = true;
+            this._needsRefresh = true;
             
-            channels = new List<Channel<T>>();
+            channels = new(capacity);
             this._defaultValue = defaultValue;
         }
 
 
-        public T this[object owner] => GetValueFromOwner(owner);
+        public T this[ChannelKey key] => GetValueFrom(key);
 
 
 
-        public void AddChannel(object owner, int priority) => AddChannel(owner, priority, _defaultValue);
-        public void AddChannel(object owner, PriorityTags priority) => AddChannel(owner, (int)priority, _defaultValue);
-        public void AddChannel(object owner, PriorityTags priority, T value) => AddChannel(owner, (int)priority, value);
-        public void AddChannel(object owner, int priority, T value)
+        public void AddChannel(ChannelKey key, int priority)
+            => AddChannel(key, priority, _defaultValue);
+        public void AddChannel(ChannelKey key, PriorityTags priority)
+            => AddChannel(key, (int)priority, _defaultValue);
+        public void AddChannel(ChannelKey key, PriorityTags priority, T value)
+            => AddChannel(key, (int)priority, value);
+
+        public void AddChannel(ChannelKey key, int priority, T value)
         {
-            Channel<T> channel = new(priority, owner, value);
+            Channel<T> channel = new(priority, value);
 
-            if (TryGetChannelIndex(owner, out int index))
-                channels[index] = channel;
+            int lastMainPriority = HasMainChannel ? MainChannel.Priority : int.MinValue;
+
+            channels.Add(key, channel);
+            _channelCount = channels.Count;
+
+            if (lastMainPriority <= priority)
+                FindMainChannel();
             else
-            {
-                int lastMainPriority = HasMainChannel ? MainChannel.Priority : int.MinValue;
-                channels.Add(channel);
-
-                this._channelsAreDirty = true;
-                if (lastMainPriority <= priority)
-                    NotifyValueChange();
-            }
+                this._needsRefresh = true;
         }
+        
         /// <summary>
         /// Removes completly a channel
         /// </summary>
-        /// <param name="owner">Owner of the channel</param>
+        /// <param name="key">Key of the channel</param>
         /// <returns>True if the channel existed</returns>
-        public bool RemoveChannel(object owner)
+        public bool RemoveChannel(ChannelKey key)
         {
-            if (TryGetChannelIndex(owner, out int index))
+            if (HasChannel(key))
             {                
-                int lastMainChannelIndex = MainChannelIndex;
-                channels.RemoveAt(index);
+                var lastMainChannelKey = MainChannelKey;
+                channels.Remove(key);
+                _channelCount = channels.Count;
 
-                this._channelsAreDirty = true;
-                if (lastMainChannelIndex == index)
-                    NotifyValueChange();
+                if (lastMainChannelKey.Equals(key))
+                    FindMainChannel();
 
                 return true;
             }
@@ -139,17 +160,20 @@ namespace LTX.ChanneledProperties
         /// <summary>
         /// Write a value into a channel.
         /// </summary>
-        /// <param name="owner">Owner of the channel</param>
+        /// <param name="key">Key of the channel</param>
         /// <param name="value">New value</param>
         /// <returns>True if the channel existed and value was successfuly writed</returns>
-        public bool Write(object owner, T value)
+        public bool Write(ChannelKey key, T value)
         {
-            if (TryGetChannelIndex(owner, out int index))
+            if (TryGetChannel(key, out Channel<T> channel))
             {
-                int lastMainChannelIndex = MainChannelIndex;
-                channels[index].Set(value);
+                channel.Value = value;
 
-                if (lastMainChannelIndex == index)
+                //Updating struct value inside dictionnary
+                channels[key] = channel;
+
+                //If main channel was changed
+                if(HasMainChannel && MainChannelKey.Equals(key))
                     NotifyValueChange();
 
                 return true;
@@ -157,40 +181,43 @@ namespace LTX.ChanneledProperties
 
             return false;
         }
+
         /// <summary>
         /// Set a new priority for a channel without erasing it.
         /// </summary>
-        /// <param name="owner">Owner of the channel</param>
+        /// <param name="key">Key of the channel</param>
         /// <param name="newPriority">New priority</param>
         /// <returns>True if the channel existed and was successfuly modified</returns>
-        public bool ChangeChannelPriority(object owner, int newPriority)
+        public bool ChangeChannelPriority(ChannelKey key, int newPriority)
         {
-            if (TryGetChannelIndex(owner, out int index))
+            if (TryGetChannel(key, out Channel<T> channel))
             {
                 int mainPriority = -1;
 
                 if (HasMainChannel)
                     mainPriority = MainChannel.Priority;
 
-                channels[index].ChangePriority(newPriority);
+                channel.Priority = newPriority;
 
-                if (newPriority > 0 && newPriority > mainPriority || HasChannelOwnBy(owner))
-                {
-                    _channelsAreDirty = true;
-                    NotifyValueChange();
-                }
+                //Updating channel inside dictionnary
+                channels[key] = channel;
+
+                if (newPriority > 0 && newPriority > mainPriority)
+                    FindMainChannel();
+
                 return true;
             }
 
             return false;
         }
+
         /// <summary>
         /// Set a new priority for a channel without erasing it.
         /// </summary>
-        /// <param name="owner">Owner of the channel</param>
+        /// <param name="key">Key of the channel</param>
         /// <param name="newPriority">New priority</param>
         /// <returns>True if the channel existed and was successfuly modified</returns>
-        public bool ChangeChannelPriority(object owner, PriorityTags newPriority) => ChangeChannelPriority(owner, (int)newPriority);
+        public bool ChangeChannelPriority(ChannelKey key, PriorityTags newPriority) => ChangeChannelPriority(key, (int)newPriority);
 
         /// <summary>
         /// Remove all channels
@@ -199,94 +226,51 @@ namespace LTX.ChanneledProperties
         {
             channels.Clear();
 
-            _mainChannelIndex = -1;
-            _channelsAreDirty = true;
+            _mainChannelKey = default;
+            _hasMainChannel = false;
+            _needsRefresh = true;
+            _channelCount = 0;
 
             NotifyValueChange();
         }
 
         /// <summary>
-        /// Get the value of a channel if the owner is in charge of it.
+        /// Get the channel of a key if he's in charge of it.
         /// </summary>
-        /// <param name="owner">Owner of a channel</param>
-        /// <param name="value">Output. Default if not found.</param>
-        /// <returns>True if a channel is found</returns>
-        public bool TryGetValueFromOwner(object owner, out T value)
-        {
-            if (TryGetChannelIndex(owner, out int index))
-            {
-                value = channels[index].Value;
-                return true;
-            }
-            else
-            {
-                value = default;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Get the channel of a owner if he's in charge of it.
-        /// </summary>
-        /// <param name="owner">Owner of a channel</param>
+        /// <param name="key">Key of a channel</param>
         /// <param name="channel">Output. Default if not found.</param>
         /// <returns>True if a channel is found</returns>
-        public bool TryGetChannel(object owner, out Channel<T> channel)
+        public bool TryGetChannel(ChannelKey key, out Channel<T> channel)
         {
-            if (TryGetChannelIndex(owner, out int index))
-            {
-                channel = channels[index];
+            if (channels.TryGetValue(key, out channel))
                 return true;
-            }
             else
             {
                 channel = default;
                 return false;
             }
         }
-        /// <summary>
-        /// Does this owner is in charge of a channel?
-        /// </summary>
-        /// <param name="owner"></param>
-        /// <returns></returns>
-        public bool OwnsChannel(object owner) => GetChannelIndex(owner) != -1;
 
         /// <summary>
-        /// Does this owner is in charge of the main channel?
+        /// Faster way to get value from key but key needs to exists
         /// </summary>
-        /// <param name="owner"></param>
-        /// <returns></returns>
-        public bool HasChannelOwnBy(object owner) => HasMainChannel && GetChannelIndex(owner) == MainChannelIndex;
-
-
-        /// <summary>
-        /// Faster way to get value from owner but owner needs to exists
-        /// </summary>
-        /// <param name="owner">Owner of a channel</param>
+        /// <param name="key">Key of a channel</param>
         /// <returns>Value of channel</returns>
-        private T GetValueFromOwner(object owner) => channels[GetChannelIndex(owner)].Value;
+        private T GetValueFrom(ChannelKey key)
+        {
+            if (TryGetChannel(key, out Channel<T> channel))
+                return channel.Value;
+
+            return default(T);
+        }
 
         /// <summary>
-        /// Get the index of the channel in the global list
+        /// Does this key is in charge of the main channel?
         /// </summary>
-        /// <param name="owner">Owner of a channel<</param>
-        /// <returns>Index</returns>
-        private int GetChannelIndex(object owner)
-        {
-            foreach (var channel in channels)
-            {
-                if (channel.Owner == owner)
-                    return channels.IndexOf(channel);
-            }
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool HasChannel(ChannelKey key) => HasMainChannel && channels.ContainsKey(key);
 
-            return -1;
-        }
-
-        private bool TryGetChannelIndex(object owner, out int index)
-        {
-            index = GetChannelIndex(owner);
-            return index != -1;
-        }
 
         /// <summary>
         /// Go through all channels and find the one in control
@@ -294,32 +278,60 @@ namespace LTX.ChanneledProperties
         private void FindMainChannel()
         {
             //Not dirty anymore because the new value is re-evaluated.
-            this._channelsAreDirty = false;
-            
-            if (ChannelCount > 0)
+            this._needsRefresh = false;
+            if (this.ChannelCount == 0)
             {
-                int index = 0;
-                //Getting the channel with the highest priority.
-                //If two channels are equals, then the first (which is the oldest) is kept.
-                for (int i = 1; i < ChannelCount; i++)
-                {
-                    if (channels[i].Priority > channels[index].Priority)
-                        index = i;
-                }
+                _hasMainChannel = false;
+                _mainChannelKey = default;
 
-                //Channels with priority set to none can never be in control.
-                //If all channels are set to none, then the property returns the default value.
-                _mainChannelIndex = channels[index].Priority <= 0 ? -1 : index;
+                return;
+            }
+
+            ///Debug
+            //var watch = new System.Diagnostics.Stopwatch();
+            //watch.Start();
+
+            bool hasMainChannel = this._hasMainChannel;
+            ChannelKey mainChannelKey = this._mainChannelKey;
+
+            int highestPriority = -1;
+
+            foreach (var kvp in channels)
+            {
+                var channel = kvp.Value;
+                var channelKey = kvp.Key;
+
+                if (channel.Priority > highestPriority)
+                {
+                    mainChannelKey = channelKey;
+                    hasMainChannel = true;
+                }
+            }
+            ///Debug
+            //watch.Stop();
+            //Debug.Log($"Going through channels has taken {watch.ElapsedMilliseconds} which is {watch.ElapsedMilliseconds / (float)this.ChannelCount} ms per channel");
+            
+            
+            //Channels with priority set to none can never be in control.
+            //If all channels are set to none, then the property returns the default value.
+            if (hasMainChannel)
+            {
+                this._hasMainChannel = hasMainChannel;
+                this._mainChannelKey = mainChannelKey;
             }
             else
-                _mainChannelIndex = -1;
+            {
+                this._hasMainChannel = false;
+            }
+
+            if(this._hasMainChannel != hasMainChannel || !this._mainChannelKey.Equals(mainChannelKey))
+                NotifyValueChange();
         }
 
 
         private void NotifyValueChange()
         {
-            var v = Value;
-            OnValueChanged?.Invoke(v);
+            OnValueChanged?.Invoke(Value);
         }
 
         public static implicit operator T(ChanneledProperty<T> interaction) => interaction.Value;

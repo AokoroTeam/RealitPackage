@@ -38,22 +38,22 @@ namespace Realit.Core.UI
 
 
 
-        public void StartLoadingScreen(object key, int priority)
+        public void StartLoadingScreen(Object key, int priority)
         {
             progresses.AddChannel(key, priority);
             gameObject.SetActive(true);
         }
 
-        public void StopLoadingScreen(object key)
+        public void StopLoadingScreen(Object key)
         {
             progresses.RemoveChannel(key);
             if (progresses.ChannelCount == 0)
                 gameObject.SetActive(false);
         }
 
-        public void UpdateBar(object key, float progress, string label)
+        public void UpdateBar(Object key, float progress, string label)
         {
-            if(progresses.OwnsChannel(key))
+            if(progresses.HasChannel(key))
                 progresses.Write(key, (progress, label));
 
 
