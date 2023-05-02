@@ -1,6 +1,5 @@
-using Aokoro;
-using System.Collections;
-using System.Collections.Generic;
+using LTX;
+using LTX.ChanneledProperties;
 using UnityEngine;
 
 namespace Realit.Core.Managers

@@ -1,15 +1,10 @@
-using NaughtyAttributes;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+using LTX.ChanneledProperties;
 using Realit.Core.Player;
 using Realit.Core.Player.Movement;
-
+using UnityEngine;
 using static Realit.Core.Controls.MobileControls;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
-
 
 namespace Realit.Core.Controls
 {
@@ -118,7 +113,7 @@ namespace Realit.Core.Controls
         #region Channels Management
         private void AddChannels()
         {
-            playerCharacter.movementInput.AddChannel(this, Aokoro.PriorityTags.Default);
+            playerCharacter.movementInput.AddChannel(this, PriorityTags.Default);
         }
 
         private void RemoveChannels()

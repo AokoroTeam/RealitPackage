@@ -1,10 +1,10 @@
 using Aokoro.Entities.Player;
-using Aokoro.UI.ControlsDiplaySystem;
-using NaughtyAttributes;
-using System;
+using Aokoro.UI.ControlsDiplay;
+using LTX.ControlsDisplay;
+
+using Realit.Core.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Realit.Core.Player;
 
 namespace Realit.Core.Features
 {

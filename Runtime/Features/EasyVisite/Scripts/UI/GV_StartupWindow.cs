@@ -1,6 +1,5 @@
+using LTX.ChanneledProperties;
 using Realit.Core.Managers;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Realit.Core.Features.GuidedVisite
@@ -9,8 +8,8 @@ namespace Realit.Core.Features.GuidedVisite
     {
         private void Awake()
         {
-            RealitSceneManager.Player.Freezed.AddChannel(this, Aokoro.PriorityTags.Highest, true);
-            FeaturesManager.Instance.canExecuteFeature.AddChannel(this, Aokoro.PriorityTags.Highest, false);
+            RealitSceneManager.Player.Freezed.AddChannel(this, PriorityTags.Highest, true);
+            FeaturesManager.Instance.canExecuteFeature.AddChannel(this, PriorityTags.Highest, false);
         }
 
         private void OnDestroy()

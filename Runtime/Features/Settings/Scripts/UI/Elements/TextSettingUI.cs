@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 
-using Aokoro.Settings;
-using Aokoro.Settings.UI;
-using Aokoro.Settings.Types;
+using LTX.Settings;
+using LTX.Settings.UI;
+using LTX.Settings.Types;
 
 using TMPro;
 using Michsky.MUIP;

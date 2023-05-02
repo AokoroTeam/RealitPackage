@@ -1,11 +1,8 @@
-using System.Collections;
+using LTX.UI;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using DG;
 using UnityEngine.Events;
-using System;
 
 namespace Aokoro.UI
 {

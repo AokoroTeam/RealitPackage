@@ -1,14 +1,11 @@
-using Aokoro;
+using LTX.ChanneledProperties;
 using Realit.Core.Managers;
 using Realit.Core.Player.CameraManagement;
 using Realit.Core.Player.Movement;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 namespace Realit.Core.Features.GuidedVisite
 {
@@ -206,7 +203,7 @@ namespace Realit.Core.Features.GuidedVisite
             switch (ctx.phase)
             {
                 case InputActionPhase.Started:
-                    overUI = UIExtentions.IsPointerOverUi(Pointer.current.position.value);
+                    overUI = Aokoro.UIExtentions.IsPointerOverUi(Pointer.current.position.value);
                     break;
                 case InputActionPhase.Performed:
                     if (!overUI)

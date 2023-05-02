@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Aokoro.Sequencing;
+using LTX.Sequencing;
 
 namespace Aokoro.AI.Paths
 {

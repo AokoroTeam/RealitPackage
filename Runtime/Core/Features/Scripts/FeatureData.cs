@@ -4,7 +4,7 @@ using UnityEngine;
 using Realit.Core.Managers;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
-using Aokoro.Settings;
+using LTX.Settings;
 
 namespace Realit.Core.Features
 {

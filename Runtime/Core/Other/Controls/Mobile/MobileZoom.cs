@@ -9,6 +9,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 using Realit.Core.Player.CameraManagement;
+using LTX.ChanneledProperties;
 
 namespace Realit.Core.Controls
 {
@@ -70,7 +71,7 @@ namespace Realit.Core.Controls
         void MobileControls.IMobileControl.Enable(Realit_Player player)
         {
             if (player.GetLivingComponent(out cameraManager))
-                cameraManager.ZInput.AddChannel(this, Aokoro.PriorityTags.Default);
+                cameraManager.ZInput.AddChannel(this, PriorityTags.Default);
         }
 
         void MobileControls.IMobileControl.Disable(Realit_Player player)

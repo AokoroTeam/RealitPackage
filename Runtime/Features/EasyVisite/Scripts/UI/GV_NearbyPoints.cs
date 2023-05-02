@@ -1,7 +1,4 @@
-using Aokoro;
-using Aokoro.UI;
-using System;
-using System.Collections;
+using LTX.UI;
 using System.Collections.Generic;
 using UnityEngine;
 

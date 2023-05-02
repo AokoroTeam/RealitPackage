@@ -1,12 +1,12 @@
-using System.Collections;
+using DG.Tweening;
+using LTX.UI;
+using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using DG.Tweening;
-using NaughtyAttributes;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+
 
 namespace Aokoro.UI
 {

@@ -1,13 +1,8 @@
-﻿
-using Aokoro;
-using Aokoro.Entities;
-using Aokoro.Entities.Player;
-using Aokoro.Settings;
-using Cinemachine;
+﻿using Cinemachine;
+using LTX.Settings;
 using NaughtyAttributes;
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Realit.Core.Player.CameraManagement
 {

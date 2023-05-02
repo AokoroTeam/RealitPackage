@@ -1,9 +1,6 @@
-using NaughtyAttributes;
-using Realit.Core.Managers;
+using LTX.ChanneledProperties;
 using Realit.Core.Player;
-using Realit.Core.Player.CameraManagement;
 using UnityEngine;
-using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace Realit.Core.Controls
 {
@@ -41,8 +38,8 @@ namespace Realit.Core.Controls
             if (playerCamController != null)
             {
                 //Debug.Log("Lowering prioriry");
-                playerCamController.XInput.ChangeChannelPriority(this, Aokoro.PriorityTags.None);
-                playerCamController.YInput.ChangeChannelPriority(this, Aokoro.PriorityTags.None);
+                playerCamController.XInput.ChangeChannelPriority(this, PriorityTags.None);
+                playerCamController.YInput.ChangeChannelPriority(this, PriorityTags.None);
             }
         }
 
@@ -51,8 +48,8 @@ namespace Realit.Core.Controls
             if (playerCamController != null)
             {
                 //Debug.Log("Augmenting prioriry");
-                playerCamController.XInput.ChangeChannelPriority(this, Aokoro.PriorityTags.High);
-                playerCamController.YInput.ChangeChannelPriority(this, Aokoro.PriorityTags.High);
+                playerCamController.XInput.ChangeChannelPriority(this, PriorityTags.High);
+                playerCamController.YInput.ChangeChannelPriority(this, PriorityTags.High);
             }
         }
 

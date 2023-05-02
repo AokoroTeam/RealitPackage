@@ -1,3 +1,4 @@
+using LTX.ChanneledProperties;
 using NaughtyAttributes;
 using Realit.Core.Player;
 using Realit.Core.Player.CameraManagement;
@@ -125,8 +126,8 @@ namespace Realit.Core.Controls
         #region Channels Management
         private void AddChannels(CameraManager cam)
         {
-            cam.XInput.AddChannel(this, Aokoro.PriorityTags.High, 0);
-            cam.YInput.AddChannel(this, Aokoro.PriorityTags.High, 0);
+            cam.XInput.AddChannel(this, PriorityTags.High, 0);
+            cam.YInput.AddChannel(this, PriorityTags.High, 0);
         }
         private void RemoveChannels(CameraManager cam)
         {

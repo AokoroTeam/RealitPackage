@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Aokoro.Settings.UI;
-using Aokoro.Settings;
+using LTX.Settings;
+using LTX.Settings.UI;
 using Michsky.MUIP;
+using UnityEngine;
 
 namespace Realit.Core.Features.Settings.UI
 {

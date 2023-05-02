@@ -1,4 +1,4 @@
-using Aokoro.Settings;
+using LTX.Settings;
 using EasyCharacterMovement;
 using Realit.Core.Managers;
 using Realit.Core.Player;

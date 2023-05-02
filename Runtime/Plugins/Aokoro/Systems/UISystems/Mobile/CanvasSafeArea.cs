@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using LTX.UI;
 using UnityEngine;
-using UnityEngine.UI;
-using Aokoro.UI;
 
 namespace Aokoro.UI
 {

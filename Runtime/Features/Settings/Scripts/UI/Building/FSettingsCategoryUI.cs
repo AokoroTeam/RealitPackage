@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Aokoro.Settings.UI;
+using LTX.Settings.UI;
 
 namespace Realit.Core.Features.Settings.UI
 {

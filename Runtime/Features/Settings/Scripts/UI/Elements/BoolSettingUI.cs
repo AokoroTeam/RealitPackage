@@ -3,9 +3,9 @@ using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
-using Aokoro.Settings;
-using Aokoro.Settings.UI;
-using Aokoro.Settings.Types;
+using LTX.Settings;
+using LTX.Settings.UI;
+using LTX.Settings.Types;
 
 namespace Realit.Core.Features.Settings.UI
 {

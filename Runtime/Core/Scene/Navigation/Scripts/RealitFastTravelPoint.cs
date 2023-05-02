@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using DG.Tweening;
+using LTX.ChanneledProperties;
+using NaughtyAttributes;
 using Realit.Core.Managers;
 using Realit.Core.Player.Movement;
-using NaughtyAttributes;
-using Aokoro;
+using UnityEngine;
 
 namespace Realit.Core.Player.Navigation
 {

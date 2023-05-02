@@ -1,19 +1,10 @@
-using System.Collections;
+using LTX.Settings;
+using NaughtyAttributes;
+using Realit.Core.Managers;
+using Realit.Core.Player;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
-
-using Screen = UnityEngine.Device.Screen;
-using Application = UnityEngine.Device.Application;
-using SystemInfo = UnityEngine.Device.SystemInfo;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
-using Realit.Core.Managers;
-using Realit.Core.Features.UI;
-using Realit.Core.Player;
-using NaughtyAttributes;
-using Aokoro.Settings;
 
 namespace Realit.Core.Controls
 {

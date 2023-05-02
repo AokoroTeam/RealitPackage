@@ -8,6 +8,9 @@ using NaughtyAttributes;
 using Michsky.MUIP;
 using static Michsky.MUIP.WindowManager;
 
+using LTX.UI;
+using LTX.ChanneledProperties;
+
 namespace Aokoro.UI
 {
     [ExecuteInEditMode, DefaultExecutionOrder(-90)]

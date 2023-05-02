@@ -1,13 +1,7 @@
-﻿using System.Collections;
+﻿using LTX.ChanneledProperties;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using System;
-using System.Linq;
-using NaughtyAttributes;
-using UnityEngine.AI;
-using Aokoro;
-using System.ComponentModel;
 
 namespace Aokoro.Entities
 {

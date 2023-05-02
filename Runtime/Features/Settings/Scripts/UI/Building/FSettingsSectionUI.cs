@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-using Aokoro.Settings.UI;
+using LTX.Settings;
+using LTX.Settings.UI;
 using TMPro;
-using Aokoro.Settings;
-using System;
+using UnityEngine;
 
 namespace Realit.Core.Features.Settings.UI
 {

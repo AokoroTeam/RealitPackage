@@ -1,9 +1,8 @@
-using System.Collections;
+using LTX.Sequencing;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
-using System;
-using Aokoro.Sequencing;
+
 using Random = UnityEngine.Random;
 
 namespace Aokoro.AI.Paths

@@ -1,7 +1,5 @@
-using Aokoro;
+using LTX.ChanneledProperties;
 using Michsky.MUIP;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
