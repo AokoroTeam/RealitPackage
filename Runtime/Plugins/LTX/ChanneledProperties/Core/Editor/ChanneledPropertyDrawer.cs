@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace LTX.ChanneledProperties.Editor
 {
-    
+    /*
     [CustomPropertyDrawer(typeof(ChanneledProperty<>))]
     public class ChanneledPropertyDrawer : PropertyDrawer
     {
@@ -104,6 +104,6 @@ namespace LTX.ChanneledProperties.Editor
                 return 0;
         }
     }
-    
+    */
 }
 #endif

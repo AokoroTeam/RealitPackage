@@ -50,46 +50,22 @@ namespace LTX.ChanneledProperties
             }
         }
 
-        public T Value
-        {
-            get
-            {
-#if UNITY_EDITOR
-                T value = HasMainChannel ? MainChannel.Value : _defaultValue;
-                _value = value;
-                return value;
-#else
-                return HasMainChannel ? MainChannel.Value : _defaultValue
-#endif
-            }
-        }
+        public T Value => HasMainChannel ? MainChannel.Value : _defaultValue;
 
-#if UNITY_EDITOR
-        [SerializeField]
-        private T _value;
-#endif
         [SerializeField]
         private Channel<T>[] channels;
-        [SerializeField]
+        //[SerializeField]
         private Dictionary<ChannelKey, int> keyPointers;
-        [SerializeField]
+        //[SerializeField]
         private bool[] availableSlots;
 
-        [SerializeField]
         private ChannelKey _mainChannelKey;
-        [SerializeField]
         private bool _hasMainChannel;
-        [SerializeField]
         private bool _needsRefresh;
-        [SerializeField]
         private T _defaultValue;
-        [SerializeField]
         private int _channelCount;
-        [SerializeField]
         private int _capacity;
-        [SerializeField]
         private bool _expandOnFullCapacityReached;
-
 
         public ChanneledProperty() : this(default, 16, false) { }
         public ChanneledProperty(T defaultValue) : this(defaultValue, 16, false) { }
@@ -341,7 +317,9 @@ namespace LTX.ChanneledProperties
             }
 
             bool hasMainChannel = this._hasMainChannel;
+            bool lastHasMainChannel = this._hasMainChannel;
             ChannelKey mainChannelKey = this._mainChannelKey;
+            ChannelKey lastMainChannelKey = this._mainChannelKey;
 
             int highestPriority = -1;
 
@@ -352,8 +330,10 @@ namespace LTX.ChanneledProperties
                 while (enumerator.MoveNext())
                 {
                     pointer = enumerator.Current;
-                    if (channels[pointer.Value].Priority > highestPriority)
+                    int priority = channels[pointer.Value].Priority;
+                    if (priority > highestPriority)
                     {
+                        highestPriority = priority;
                         mainChannelKey = pointer.Key;
                         hasMainChannel = true;
                     }
@@ -372,7 +352,7 @@ namespace LTX.ChanneledProperties
                 this._hasMainChannel = false;
             }
 
-            if (this._hasMainChannel != hasMainChannel || _mainChannelKey._id != mainChannelKey._id)
+            if (lastHasMainChannel != hasMainChannel || lastMainChannelKey._id != mainChannelKey._id)
                 NotifyValueChange();
             
         }

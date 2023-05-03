@@ -47,13 +47,13 @@ namespace LTX.ChanneledProperties.Samples
 
         public void ChangeSliderValue(float value)
         {
-            manager.texts.ChangeChannelPriority(channelKey, (int)slider.value);
+            manager.texts.ChangeChannelPriority(channelKey, (int)value);
         }
 
         public void ChangeChannelActivity(bool isOn)
         {
             if(isOn)
-                manager.texts.AddChannel(channelKey, (int)slider.value);
+                manager.texts.AddChannel(channelKey, (int)slider.value, text.text);
             else
                 manager.texts.RemoveChannel(channelKey);
         }
