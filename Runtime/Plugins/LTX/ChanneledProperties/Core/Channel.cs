@@ -8,6 +8,10 @@ namespace LTX.ChanneledProperties
     [System.Serializable]
     public struct Channel<T>
     {
+        public static Channel<T> Empty => _empty;
+        private static Channel<T> _empty => new Channel<T>();
+
+
         public int Priority { 
             get => _priority;
             set => _priority = value;
@@ -20,6 +24,7 @@ namespace LTX.ChanneledProperties
 
         [SerializeField]
         private int _priority;
+
         [SerializeField]
         private T _value;
 
@@ -29,6 +34,6 @@ namespace LTX.ChanneledProperties
             this._value = Value;
         }
 
-        public Channel(PriorityTags Priority, T Value) : this((int)Priority, Value) { }
+        public Channel(PriorityTags Priority, T Value) : this(ChannelUtility.PriorityToInt(Priority), Value) { }
     }
 }

@@ -71,19 +71,29 @@ namespace LTX.ChanneledProperties
 
 
         [SerializeField]
-        private long _id;
+        internal long _id;
 
 #if UNITY_EDITOR
         [SerializeField]
         private Object pointer;
 #endif
+
+        private int hashcode;
+
         private ChannelKey(long id)
         {
             _id = id;
+            hashcode = id.GetHashCode();
+
 #if UNITY_EDITOR
             pointer = null;
 #endif
         }
+
+        public override int GetHashCode() => hashcode;
+
+        public override bool Equals(object obj) => base.Equals(obj);
+
 
         public static implicit operator ChannelKey(Object unityObject)
         {
@@ -92,16 +102,5 @@ namespace LTX.ChanneledProperties
             else
                 return GetUniqueChannelKey(unityObject);
         }
-        public override int GetHashCode() => _id.GetHashCode();
-
-        public override bool Equals(object obj)
-        {
-            if(obj is ChannelKey key)
-                return key._id == _id;
-
-            return base.Equals(obj);
-        }
-
-
     }
 }
