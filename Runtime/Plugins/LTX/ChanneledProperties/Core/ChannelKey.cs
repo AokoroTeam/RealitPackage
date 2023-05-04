@@ -8,7 +8,10 @@ namespace LTX.ChanneledProperties
     [System.Serializable]
     public struct ChannelKey
     {
-#region Static
+        #region Static
+        internal static ChannelKey None => _None;
+        private static ChannelKey _None = new ChannelKey(-1);
+
         private static Dictionary<Object, ChannelKey> _createdKeys;
 
         private static long _internalChannelKeyCount = 0;
@@ -79,6 +82,7 @@ namespace LTX.ChanneledProperties
 #endif
 
         private int hashcode;
+
 
         private ChannelKey(long id)
         {
