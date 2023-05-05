@@ -33,8 +33,8 @@ namespace Realit.Core.Features.CameraSwitch
             if (Realit_Player.LocalPlayer.GetLivingComponent(out CameraManager manager))
                 currentProfile = manager.CurrentProfile;
 
-            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
-            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
 
             RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
@@ -43,8 +43,8 @@ namespace Realit.Core.Features.CameraSwitch
         protected override void OnEnd()
         {
 
-            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 
             RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
@@ -59,8 +59,8 @@ namespace Realit.Core.Features.CameraSwitch
             GameNotifications.Instance.canUpdate.AddChannel(MyChannelKey, PriorityTags.None, false);
             RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, _Data.windowName);
 
-            CursorManager.Instance.cursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, UnityEngine.CursorLockMode.None);
-            CursorManager.Instance.cursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
+            CursorManager.CursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, UnityEngine.CursorLockMode.None);
+            CursorManager.CursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
 
         }
 
@@ -74,8 +74,8 @@ namespace Realit.Core.Features.CameraSwitch
             GameNotifications.Instance.canUpdate.RemoveChannel(MyChannelKey);
             RealitSceneManager.UI.windowPriority.RemoveChannel(MyChannelKey);
 
-            CursorManager.Instance.cursorLockMode.RemoveChannel(MyChannelKey);
-            CursorManager.Instance.cursorVisibility.RemoveChannel(MyChannelKey);
+            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
+            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
 
         }
 

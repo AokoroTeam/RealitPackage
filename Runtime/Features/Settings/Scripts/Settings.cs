@@ -49,8 +49,8 @@ namespace Realit.Core.Features.Settings
 
             GameNotifications.Instance.canUpdate.AddChannel(MyChannelKey, PriorityTags.None, false);
 
-            CursorManager.Instance.cursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
-            CursorManager.Instance.cursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
+            CursorManager.CursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
+            CursorManager.CursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
         }
         protected override void OnUnload()
         {
@@ -65,8 +65,8 @@ namespace Realit.Core.Features.Settings
 
             GameNotifications.Instance.canUpdate.RemoveChannel(MyChannelKey);
 
-            CursorManager.Instance.cursorLockMode.RemoveChannel(MyChannelKey);
-            CursorManager.Instance.cursorVisibility.RemoveChannel(MyChannelKey);
+            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
+            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
         }
 
         protected override void OnStart()
@@ -79,8 +79,8 @@ namespace Realit.Core.Features.Settings
             
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
             
-            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
-            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
         }
 
         protected override void OnEnd()
@@ -96,8 +96,8 @@ namespace Realit.Core.Features.Settings
 
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             
-            CursorManager.Instance.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            CursorManager.Instance.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
         }
 
         

@@ -63,8 +63,8 @@ namespace Realit.Core.Features.GuidedVisite
             RealitSceneManager.UI.CreateWindow(_Data.FeatureName, _Data.window);
             RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, Data.FeatureName);
 
-            CursorManager.Instance.cursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
-            CursorManager.Instance.cursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
+            CursorManager.CursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
+            CursorManager.CursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
 
 
             Player.Realit_Player player = RealitSceneManager.Player;
@@ -98,8 +98,8 @@ namespace Realit.Core.Features.GuidedVisite
         protected override void OnUnload()
         {
             points = null;
-            CursorManager.Instance.cursorLockMode.RemoveChannel(MyChannelKey);
-            CursorManager.Instance.cursorVisibility.RemoveChannel(MyChannelKey);
+            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
+            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
 
             
             RealitSceneManager.UI.windowPriority.RemoveChannel(MyChannelKey);
@@ -142,10 +142,8 @@ namespace Realit.Core.Features.GuidedVisite
                 return;
             }
 
-            CursorManager cursor = CursorManager.Instance;
-
-            cursor.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
-            cursor.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
+            CursorManager.CursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
 
 
             if (cameraManager != null)
@@ -173,10 +171,9 @@ namespace Realit.Core.Features.GuidedVisite
         protected override void OnEnd()
         {
             RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-
-            CursorManager cursor = CursorManager.Instance;
-            cursor.cursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            cursor.cursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 
             if (cameraManager != null)
                 cameraManager.SwitchToCameraProfile(lastPlayerProfile);

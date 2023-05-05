@@ -25,7 +25,7 @@ namespace LTX.ChanneledProperties
                 if (_needsRefresh)
                     FindMainChannel();
 
-                return HasMainChannel ? channels[keyPointers[MainChannelKey]] : default;
+                return HasMainChannel ? Channels[keyPointers[MainChannelKey]] : default;
             }
         }
 
@@ -52,6 +52,17 @@ namespace LTX.ChanneledProperties
 
         public T Value => HasMainChannel ? MainChannel.Value : _defaultValue;
 
+        private Channel<T>[] Channels 
+        { 
+            get
+            {
+                if (channels == null || channels.Length <= _capacity)
+                    SetupChannels(_capacity);
+
+                return channels;
+            }
+        }
+
         [SerializeField]
         private Channel<T>[] channels;
         [SerializeField]
@@ -74,23 +85,10 @@ namespace LTX.ChanneledProperties
         private bool _expandOnFullCapacityReached;
 
 #region Constructors
-        public ChanneledProperty() : this(default, 16, false) { }
-        public ChanneledProperty(T defaultValue) : this(defaultValue, 16, false) { }
-        public ChanneledProperty(T defaultValue, int capacity) : this(defaultValue, capacity, false) { }
-        public ChanneledProperty(T defaultValue, bool expandOnFullCapacityReached) : this(defaultValue, 16, expandOnFullCapacityReached ) { }
         
-        public ChanneledProperty(T defaultValue, int capacity, bool expandOnFullCapacityReached)
+        public ChanneledProperty(T defaultValue = default, int capacity = 16, bool expandOnFullCapacityReached = false)
         {
-            channels = new Channel<T>[capacity];
-            availableSlots = new bool[capacity];
-            keyPointers = new Dictionary<ChannelKey, int>(capacity);
-            
-
-            for (int i = 0; i < capacity; i++)
-            {
-                availableSlots[i] = true;
-                channels[i] = new Channel<T>(-10, default(T), ChannelKey.None);
-            }
+            SetupChannels(capacity);
 
             this._needsRefresh = true;
             this._defaultValue = defaultValue;
@@ -98,8 +96,21 @@ namespace LTX.ChanneledProperties
             this._expandOnFullCapacityReached = expandOnFullCapacityReached;
         }
 
+        private void SetupChannels(int capacity)
+        {
+            channels = new Channel<T>[capacity];
+            availableSlots = new bool[capacity];
+            keyPointers = new Dictionary<ChannelKey, int>(capacity);
 
-#endregion
+
+            for (int i = 0; i < capacity; i++)
+            {
+                availableSlots[i] = true;
+                channels[i] = new Channel<T>(-10, default(T), ChannelKey.None);
+            }
+        }
+        #endregion
+
         public T this[ChannelKey key] => GetValueFrom(key);
 
         public void AddChannel(ChannelKey key) => AddChannel(key, PriorityTags.None, _defaultValue);
@@ -128,9 +139,9 @@ namespace LTX.ChanneledProperties
                 {
                     availableSlots[i] = false;
 
-                    channels[i].Priority = priority;
-                    channels[i].Value = value;
-                    channels[i].Key = key;
+                    Channels[i].Priority = priority;
+                    Channels[i].Value = value;
+                    Channels[i].Key = key;
 
                     keyPointers.Add(key, i);
                     _channelCount++;
@@ -157,7 +168,7 @@ namespace LTX.ChanneledProperties
                 int index = keyPointers[key];
                 var lastMainChannelKey = MainChannelKey;
 
-                channels[index] = Channel<T>.Empty;
+                Channels[index] = Channel<T>.Empty;
                 availableSlots[index] = true;
                 keyPointers.Remove(key);
                 
@@ -182,7 +193,7 @@ namespace LTX.ChanneledProperties
             for (int i = 0; i < newCapacity; i++)
             {
                 newAvaiableSlots[i] = i < _capacity ? availableSlots[i] : true;
-                newChannels[i] = i < _capacity ? channels[i] : Channel<T>.Empty;
+                newChannels[i] = i < _capacity ? Channels[i] : Channel<T>.Empty;
             }
 
             availableSlots = newAvaiableSlots;
@@ -202,15 +213,18 @@ namespace LTX.ChanneledProperties
                 channel.Value = value;
 
                 //Updating struct value inside dictionnary
-                channels[keyPointers[key]] = channel;
+                int index = keyPointers[key];
+
+                Channels[index] = channel;
 
                 //If main channel was changed
-                if(HasMainChannel && MainChannelKey.Equals(key))
+                if(HasMainChannel && MainChannelKey._id == key._id)
                     NotifyValueChange();
 
                 return true;
             }
 
+            Debug.Log($"Couldn't find key with id {key._id}");
             return false;
         }
 
@@ -232,7 +246,7 @@ namespace LTX.ChanneledProperties
                 channel.Priority = newPriority;
 
                 //Updating channel inside dictionnary
-                channels[keyPointers[key]] = channel;
+                Channels[keyPointers[key]] = channel;
 
                 if (IsMainChannel(key) || newPriority > 0 && newPriority > mainPriority)
                     FindMainChannel();
@@ -261,7 +275,7 @@ namespace LTX.ChanneledProperties
             for(int i = 0; i < _capacity; i++)
             {
                 availableSlots[i] = true;
-                channels[i] = default;
+                Channels[i] = default;
             }
 
             _mainChannelKey = default;
@@ -282,7 +296,7 @@ namespace LTX.ChanneledProperties
         {
             if (keyPointers.TryGetValue(key, out int index))
             {
-                channel = channels[index];
+                channel = Channels[index];
                 return true;
             }
             else
@@ -351,7 +365,7 @@ namespace LTX.ChanneledProperties
                 if (availableSlots[i])
                     continue;
 
-                Channel<T> channel = channels[i];
+                Channel<T> channel = Channels[i];
 
                 int priority = channel.Priority;
                 if (priority > highestPriority)

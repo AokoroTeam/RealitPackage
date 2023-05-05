@@ -78,8 +78,8 @@ namespace Realit.Core.Player
 
         protected override void SetupCursorForPlayer()
         {
-            CursorManager.Instance.cursorLockMode.AddChannel(this, PriorityTags.Default, CursorLockMode.Locked);
-            CursorManager.Instance.cursorVisibility.AddChannel(this, PriorityTags.Default, false);
+            CursorManager.CursorLockMode.AddChannel(this, PriorityTags.Default, CursorLockMode.Locked);
+            CursorManager.CursorVisibility.AddChannel(this, PriorityTags.Default, false);
         }
 
         

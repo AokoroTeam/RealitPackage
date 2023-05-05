@@ -63,9 +63,11 @@ namespace LTX.ChanneledProperties
         public static ChannelKey GetUniqueChannelKey(Object pointer)
         {
             var channelKey = GetUniqueChannelKey();
+
 #if UNITY_EDITOR
             channelKey.pointer = pointer;
 #endif
+            _createdKeys.Add(pointer, channelKey);
             return channelKey;
         }
 
