@@ -62,13 +62,16 @@ namespace LTX.ChanneledProperties
 
         public static ChannelKey GetUniqueChannelKey(Object pointer)
         {
-            var channelKey = GetUniqueChannelKey();
+            var key = GetUniqueChannelKey();
 
 #if UNITY_EDITOR
-            channelKey.pointer = pointer;
+            key.pointer = pointer;
 #endif
-            _createdKeys.Add(pointer, channelKey);
-            return channelKey;
+
+            //Debug.Log($"Created key with id {key._id} for {pointer.name}", key.pointer);
+            _createdKeys.Add(pointer, key);
+
+            return key;
         }
 
 #endregion
@@ -80,7 +83,7 @@ namespace LTX.ChanneledProperties
 
 #if UNITY_EDITOR
         [SerializeField]
-        private Object pointer;
+        internal Object pointer;
 #endif
 
         private int hashcode;

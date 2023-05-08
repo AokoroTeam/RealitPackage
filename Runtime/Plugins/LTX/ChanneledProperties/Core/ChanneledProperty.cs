@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace LTX.ChanneledProperties
 {
-    
+
 
     [System.Serializable]
     public class ChanneledProperty<T>
@@ -17,7 +17,7 @@ namespace LTX.ChanneledProperties
 
         //Properties
         public int ChannelCount => _channelCount;
-        
+
         private Channel<T> MainChannel
         {
             get
@@ -52,11 +52,11 @@ namespace LTX.ChanneledProperties
 
         public T Value => HasMainChannel ? MainChannel.Value : _defaultValue;
 
-        private Channel<T>[] Channels 
-        { 
+        private Channel<T>[] Channels
+        {
             get
             {
-                if (channels == null || channels.Length <= _capacity)
+                if (channels == null || channels.Length < _capacity)
                     SetupChannels(_capacity);
 
                 return channels;
@@ -84,8 +84,13 @@ namespace LTX.ChanneledProperties
         [SerializeField]
         private bool _expandOnFullCapacityReached;
 
-#region Constructors
-        
+        #region Constructors
+
+        private ChanneledProperty() : this(default, 16, false)
+        {
+
+        }
+
         public ChanneledProperty(T defaultValue = default, int capacity = 16, bool expandOnFullCapacityReached = false)
         {
             SetupChannels(capacity);
@@ -120,6 +125,13 @@ namespace LTX.ChanneledProperties
 
         public void AddChannel(ChannelKey key, int priority, T value)
         {
+            if(HasChannel(key))
+            {
+                ChangeChannelPriority(key, priority);
+                Write(key, value);
+                return;
+            }
+
             if (_channelCount >= _capacity)
             {
                 //If here, then the channeled property has reached max capacity
@@ -223,8 +235,13 @@ namespace LTX.ChanneledProperties
 
                 return true;
             }
+#if UNITY_EDITOR
+            if (key.pointer != null)
+                Debug.LogWarning($"Couldn't find key with id {key._id} for {key.pointer.name}", key.pointer);
+            else
+#endif
+                Debug.LogWarning($"Couldn't find key with id {key._id}");
 
-            Debug.Log($"Couldn't find key with id {key._id}");
             return false;
         }
 

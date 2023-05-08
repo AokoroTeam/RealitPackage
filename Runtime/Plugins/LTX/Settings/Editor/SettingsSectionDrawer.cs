@@ -95,19 +95,28 @@ namespace LTX.Settings.Editor
         {
             SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
             EditorGUI.indentLevel++;
-            if (element.isExpanded)
+            if (element != null)
             {
-                EditorGUI.PropertyField(rect, element, true);
-            }
-            else
-            {
-                SerializedProperty value = element.FindPropertyRelative(nameof(ISetting<object>.Value));
+                if (element.isExpanded)
+                {
+                    EditorGUI.PropertyField(rect, element, true);
+                }
+                else
+                {
+                    SerializedProperty value = element.FindPropertyRelative(nameof(ISetting<object>.Value));
 
-                float width = 130;
-                Rect valueRect = new Rect(rect.width - width, rect.y, width, rect.height);
-                GUIContent label = new GUIContent(element.displayName);
-                EditorGUI.PropertyField(valueRect, value, GUIContent.none);
-                EditorGUI.PropertyField(rect, element, false);
+                    if (value != null)
+                    {
+                        float width = 130;
+                        Rect valueRect = new Rect(rect.width - width, rect.y, width, rect.height);
+                        EditorGUI.PropertyField(valueRect, value, GUIContent.none);
+                        EditorGUI.PropertyField(rect, element, false);
+                    }
+                    else
+                    {
+                        Debug.Log("Could'nt find value");
+                    }
+                }
             }
             EditorGUI.indentLevel--;
         }
