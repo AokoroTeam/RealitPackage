@@ -123,7 +123,7 @@ namespace LTX.ControlsDisplay
                 }
             }
 
-            Debug.Log($"No compatible scheme for {schemeName}");
+            Debug.LogWarning($"[Command Display] No compatible scheme for {schemeName}");
             Hide();
             //Debug.Log("[Control Display] Controls have been successfuly updated", gameObject);
         }

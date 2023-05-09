@@ -72,11 +72,15 @@ namespace LTX.Settings
         public static bool TryGetSettingValue<T>(string internalName, out T value)
         {
             if (IsValid && SettingsHandler.TryGetSettingValue(internalName, out value))
-            {
                 return true;
-            }
 
-            
+            value = default;
+            return false;
+        }
+        public static bool TrySetSettingValue<T>(string internalName, T value)
+        {
+            if (IsValid && SettingsHandler.TrySetSettingValue(internalName, value))
+                return true;
 
             value = default;
             return false;

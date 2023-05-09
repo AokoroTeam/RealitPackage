@@ -10,6 +10,7 @@ using UnityEngine.UIElements;
 
 namespace LTX.ChanneledProperties.Editor
 {
+
     
     [CustomPropertyDrawer(typeof(ChanneledProperty<>))]
     public class ChanneledPropertyDrawer : PropertyDrawer
@@ -231,6 +232,15 @@ namespace LTX.ChanneledProperties.Editor
             }
             else
                 return 0;
+        }
+        public override bool CanCacheInspectorGUI(SerializedProperty property)
+        {
+            return false;
+        }
+
+        private void EnsureValidState()
+        {
+
         }
     }
 }

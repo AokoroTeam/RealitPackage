@@ -23,13 +23,13 @@ namespace Aokoro.Entities.Player
         public Animator anim;
         [HideInInspector]
         public Rigidbody rb;
-        [Space]
-        [ReadOnly, BoxGroup("DEBUG")]
-        public InputActionMap currentMap;
+        //[Space]
+        //[ReadOnly, BoxGroup("Inputs")]
+        //public InputActionMap currentMap;
         private AudioListener audioListener;
         [ReadOnly, BoxGroup("Inputs")]
         public ChanneledProperty<string> actionMap;
-
+  
         public AudioListener AudioListener
         {
             get
@@ -158,6 +158,7 @@ namespace Aokoro.Entities.Player
 
         public void ChangeActionMap(string targetMap)
         {
+            
             if (playerInput.actions != null)
             {
                 if (playerInput.actions.FindActionMap(targetMap) != null)
@@ -172,7 +173,9 @@ namespace Aokoro.Entities.Player
                     }
 
                     playerInput.SwitchCurrentActionMap(targetMap);
-                    currentMap = playerInput.currentActionMap;
+                    //currentMap = playerInput.currentActionMap;
+
+                    Debug.Log($"[Realit Player] Changing action map to {playerInput.currentActionMap.name}");
                 }
             }
         }

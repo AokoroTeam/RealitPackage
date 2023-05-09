@@ -29,7 +29,6 @@ namespace Realit.Core.Features.CameraSwitch
 
         protected override void OnStart()
         {
-            var d = Data as CameraSwitch_Data;
             if (Realit_Player.LocalPlayer.GetLivingComponent(out CameraManager manager))
                 currentProfile = manager.CurrentProfile;
 
@@ -42,7 +41,6 @@ namespace Realit.Core.Features.CameraSwitch
 
         protected override void OnEnd()
         {
-
             CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 

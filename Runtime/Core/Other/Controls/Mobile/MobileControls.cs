@@ -35,24 +35,15 @@ namespace Realit.Core.Controls
                 SubscribeAndRefresh(RealitSceneManager.Player);
 
             RealitSceneManager.OnPlayerIsSetup += SubscribeAndRefresh;
-            SetDefaultScheme();
+            ChangeScheme(string.Empty);
         }
 
-        private void SetDefaultScheme()
+        private void SyncSchemeWithSetting()
         {
             if (MainSettingsManager.TryGetSettingValue(SchemeSettingName, out string scheme))
-            {
-                for (int i = 0; i < schemes.Length; i++)
-                {
-                    if (schemes[i].SchemeName == scheme)
-                    {
-                        currentScheme = schemes[i];
-                        return;
-                    }
-                }
-            }
-
-            currentScheme = defaultScheme;
+                ChangeScheme(scheme, false);
+            else
+                ChangeScheme(defaultScheme.SchemeName);
         }
 
         private void OnDestroy()
@@ -100,7 +91,7 @@ namespace Realit.Core.Controls
             SyncWithPlayer(player);
         }
 
-        public void ChangeScheme(string schemeName)
+        public void ChangeScheme(string schemeName, bool writeIntoSetting = true)
         {
             if (player == null)
                 return;
@@ -118,6 +109,9 @@ namespace Realit.Core.Controls
 
             if(currentScheme != null)
                 currentScheme.EnableScheme(player);
+
+            if(writeIntoSetting)
+                MainSettingsManager.TrySetSettingValue(SchemeSettingName, CurrentSchemeName);
         }
 
         private void SyncWithPlayer(Realit_Player realit_Player)
@@ -132,13 +126,7 @@ namespace Realit.Core.Controls
                 canvasGroup.interactable = isMobile;
                 canvasGroup.blocksRaycasts = true;
 
-                for (int i = 0; i < schemes.Length; i++)
-                {
-                    if (isMobile && schemes[i] == currentScheme)
-                        schemes[i].EnableScheme(realit_Player);
-                    else
-                        schemes[i].DisableScheme(realit_Player);
-                }
+                ChangeScheme(isMobile ? defaultScheme.SchemeName : string.Empty);
             }
         }
 

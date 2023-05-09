@@ -181,6 +181,17 @@ namespace LTX.Settings
             value = default;
             return false;
         }
+        public bool TrySetSettingValue<T>(string settingInternalName, T value)
+        {
+            var setting = GetSettingWithInternalName(settingInternalName);
+            if (setting is ISetting<T> s)
+            {
+                WriteSetting(settingInternalName, ref s);
+                return true;
+            }
+
+            return false;
+        }
 
         public void WriteAllDirtySettings() => WriteSettings(true);
 
@@ -191,13 +202,7 @@ namespace LTX.Settings
                 foreach (var settingInternalName in dirtySettings)
                 {
                     var s = GetSettingWithInternalName(settingInternalName);
-                    if (!settingProvider.TryWriteSetting(ref s))
-                        Debug.LogError($"[Settings] Couldn't write setting {settingInternalName}");
-                    else
-                    {
-                        //In case setting was changed because of writting
-                        ApplySetting(s, false);
-                    }
+                    WriteSetting(settingInternalName, ref s);
                 }
                 dirtySettings.Clear();
             }
@@ -214,6 +219,17 @@ namespace LTX.Settings
                         ApplySetting(s, false);
                     }
                 }
+            }
+        }
+        private void WriteSetting<T>(string settingInternalName, ref ISetting<T> s) => WriteSetting(settingInternalName, ref s);
+        private void WriteSetting(string settingInternalName, ref ISetting s)
+        {
+            if (!settingProvider.TryWriteSetting(ref s))
+                Debug.LogError($"[Settings] Couldn't write setting {settingInternalName}");
+            else
+            {
+                //In case setting was changed because of writting
+                ApplySetting(s, false);
             }
         }
 
