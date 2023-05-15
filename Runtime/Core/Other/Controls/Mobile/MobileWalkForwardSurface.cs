@@ -1,4 +1,5 @@
 using LTX.ChanneledProperties;
+using NaughtyAttributes;
 using Realit.Core.Player;
 using Realit.Core.Player.Movement;
 using UnityEngine;
@@ -17,7 +18,9 @@ namespace Realit.Core.Controls
         [SerializeField, Range(0,1)]
         private float multiplier = 0.2f;
 
+        [SerializeField, ReadOnly]
         private bool isHolding;
+        [SerializeField, ReadOnly]
         private bool waitingForHold;
 
         private Vector2 currentInput;

@@ -197,11 +197,13 @@ namespace LTX.ChanneledProperties.Editor
                 if (slotsProperty.GetArrayElementAtIndex(i).boolValue)
                     continue;
 
-                displayList.Add(channels.GetArrayElementAtIndex(i));
+                SerializedProperty item = channels.GetArrayElementAtIndex(i);
+                
+                displayList.Add(item);
             }
-            //Now we had a display list and the list add and remove not affect source SerializedProperty.
             
-            list = new ReorderableList(displayList, typeof(SerializedProperty), false, false, false, false);
+            //Now we had a display list and the list add and remove not affect source SerializedProperty.
+            list = new ReorderableList(displayList, Type.GetType(channels.arrayElementType), false, false, false, false);
 
             list.elementHeightCallback = idx => ElementHeight(idx, list, slotsProperty);
             list.drawElementCallback = (rect, index, isActive, isFocused) => DrawChannelElement(rect, index, list, slotsProperty);
@@ -232,10 +234,6 @@ namespace LTX.ChanneledProperties.Editor
             }
             else
                 return 0;
-        }
-        public override bool CanCacheInspectorGUI(SerializedProperty property)
-        {
-            return false;
         }
 
         private void EnsureValidState()

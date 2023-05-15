@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Reflection;
-using static UnityEditor.Experimental.GraphView.Port;
-using System.Collections.ObjectModel;
 
 namespace LTX.ChanneledProperties
 {
@@ -52,7 +49,7 @@ namespace LTX.ChanneledProperties
 
         public T Value => HasMainChannel ? MainChannel.Value : _defaultValue;
 
-        [SerializeField, HideInInspector]
+        [SerializeField]
         private Channel<T>[] channels;
         [SerializeField, HideInInspector]
         private Dictionary<ChannelKey, int> keyPointers;

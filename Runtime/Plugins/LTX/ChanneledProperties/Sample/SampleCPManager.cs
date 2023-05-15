@@ -11,6 +11,8 @@ namespace LTX.ChanneledProperties.Samples
 
         [SerializeField]
         private TextMeshProUGUI text;
+        [SerializeField]
+        private Channel<string>[]channels;
 
         private void Awake()
         {

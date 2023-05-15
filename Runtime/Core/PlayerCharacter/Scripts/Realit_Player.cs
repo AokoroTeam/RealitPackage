@@ -10,6 +10,10 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using Screen = UnityEngine.Device.Screen;
+using Application = UnityEngine.Device.Application;
+using SystemInfo = UnityEngine.Device.SystemInfo;
+
 namespace Realit.Core.Player
 {
     public class Realit_Player : PlayerManager
@@ -20,8 +24,16 @@ namespace Realit.Core.Player
         private Transform featuresRoot;
         public Transform FeaturesRoot => featuresRoot;
 
+        protected override void Start()
+        {
+            base.Start();
+            if(Application.isMobilePlatform)
+                playerInput.SwitchCurrentControlScheme("Mobile");
+            else
+                playerInput.SwitchCurrentControlScheme("Keyboard&Mouse");
 
-        
+        }
+
         private void OnEnable()
         {
             playerInput.onControlsChanged += PlayerInput_onControlsChanged;

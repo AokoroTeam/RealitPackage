@@ -96,19 +96,17 @@ namespace Realit.Core.Controls
             if (player == null)
                 return;
 
+            currentScheme = null;
             for (int i = 0; i < schemes.Length; i++)
             {
-                schemes[i].DisableScheme(player);
-
                 if (schemes[i].SchemeName == schemeName)
                 {
                     currentScheme = schemes[i];
-                    break;
+                    currentScheme.EnableScheme(player);
                 }
+                else
+                    schemes[i].DisableScheme(player);
             }
-
-            if(currentScheme != null)
-                currentScheme.EnableScheme(player);
 
             if(writeIntoSetting)
                 MainSettingsManager.TrySetSettingValue(SchemeSettingName, CurrentSchemeName);
@@ -121,6 +119,10 @@ namespace Realit.Core.Controls
                 string currentControlScheme = RealitSceneManager.Player.playerInput.currentControlScheme;
 
                 bool isMobile = currentControlScheme == "Mobile";
+                if(isMobile)
+                    Debug.Log("[Mobile Controles] Activating touch control");
+                else
+                    Debug.Log("[Mobile Controles] Deactivating touch control");
 
                 canvasGroup.alpha = isMobile ? 1 : 0;
                 canvasGroup.interactable = isMobile;
