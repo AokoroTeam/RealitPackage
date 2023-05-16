@@ -10,11 +10,14 @@ namespace Realit.Core.Features.GuidedVisite.UI
     public class GV_Window : MonoBehaviour
     {
         [SerializeField]
-        ButtonManager skipButton;
+        CanvasGroup skipButton;
 
         private void OnEnable()
         {
-            if(RealitSceneManager.Player.GetLivingComponent(out PlayerCharacter playerCharacter))
+            skipButton.interactable = false;
+            skipButton.alpha = 0;
+
+            if (RealitSceneManager.Player.GetLivingComponent(out PlayerCharacter playerCharacter))
             {
                 playerCharacter.OnAgentStartsMoving += PlayerCharacter_OnAgentStartsMoving;
                 playerCharacter.OnAgentStopsMoving += PlayerCharacter_OnAgentStopsMoving;
@@ -32,12 +35,14 @@ namespace Realit.Core.Features.GuidedVisite.UI
 
         private void PlayerCharacter_OnAgentStopsMoving()
         {
-            skipButton.Interactable(false);
+            skipButton.interactable = false;
+            skipButton.alpha = 0;
         }
 
         private void PlayerCharacter_OnAgentStartsMoving()
         {
-            skipButton.Interactable(true);
+            skipButton.interactable = true;
+            skipButton.alpha = 1;
         }
 
         public void Skip()

@@ -125,7 +125,6 @@ namespace Realit.Core.Player.Movement
 
                 RotateTowards(agent.velocity.normalized, true);
                 //Debug.Log(agent.remainingDistance);
-
                 if (!agent.pathPending)
                 {
                     if (agent.remainingDistance <= agent.stoppingDistance
@@ -136,6 +135,7 @@ namespace Realit.Core.Player.Movement
                         OnAgentArrived();
                     else
                     {
+                        SetPosition(agent.nextPosition, false);
                         var v = LookAheadOfPath();
 
                         camManager.XInput.Write(agent, v.x);
@@ -314,7 +314,7 @@ namespace Realit.Core.Player.Movement
                 if (agent.SetPath(path))
                 {
                     isAgentMoving = true;
-                    agent.updatePosition = true;
+                    //agent.updatePosition = true;
                     //agent.updateRotation = true;
                     Freezed.AddChannel(agent, PriorityTags.VeryHigh, true);
 

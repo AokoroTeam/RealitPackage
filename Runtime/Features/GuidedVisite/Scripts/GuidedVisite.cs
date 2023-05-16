@@ -145,24 +145,23 @@ namespace Realit.Core.Features.GuidedVisite
             CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
             CursorManager.CursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
 
-
-            if (cameraManager != null)
-            {
-                lastPlayerProfile = cameraManager.CurrentProfile;
-                cameraManager.SwitchToCameraProfile(GetData<GuidedVisite_Data>().profile);
-            }
-
             if (playerCharacter != null)
             {
                 playerCharacter.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
                 playerCharacter.Manager.actionMap.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
             }
+            else
+                LogWarning("Player Character is missing");
 
-            if(cameraManager != null)
+            if (cameraManager != null)
             {
-                cameraManager.XInput.ChangeChannelPriority(MyChannelKey, PriorityTags.High + 1);
-                cameraManager.YInput.ChangeChannelPriority(MyChannelKey, PriorityTags.High + 1);
+                lastPlayerProfile = cameraManager.CurrentProfile;
+                cameraManager.SwitchToCameraProfile(GetData<GuidedVisite_Data>().profile);
+                cameraManager.XInput.ChangeChannelPriority(MyChannelKey, 30);
+                cameraManager.YInput.ChangeChannelPriority(MyChannelKey, 30);
             }
+            else
+                LogWarning("Camera manager is missing");
 
             
             GoToPoint(points[0], true);

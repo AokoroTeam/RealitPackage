@@ -38,6 +38,15 @@ namespace Realit.Core.Controls
             ChangeScheme(string.Empty);
         }
 
+        private void OnEnable()
+        {
+            SyncSchemeWithSetting();
+        }
+
+        private void OnDisable()
+        {
+            ChangeScheme(string.Empty, false);
+        }
         private void SyncSchemeWithSetting()
         {
             if (MainSettingsManager.TryGetSettingValue(SchemeSettingName, out string scheme))

@@ -18,7 +18,6 @@ namespace LTX.ChanneledProperties
     internal static class ChannelUtility
     {
         
-
         internal static int PriorityToInt(PriorityTags priorityTags) => priorityTags switch
         {
             PriorityTags.None => -1,
@@ -31,5 +30,6 @@ namespace LTX.ChanneledProperties
             PriorityTags.Highest => 100,
             _ => -1,
         };
+
     }
 }

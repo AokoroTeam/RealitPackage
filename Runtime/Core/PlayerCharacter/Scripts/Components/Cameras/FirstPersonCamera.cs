@@ -47,6 +47,15 @@ namespace Realit.Core.Player.CameraManagement
         CinemachineRecomposer _composer;
 
         [BoxGroup("Zoom")]
+        [SerializeField]
+        private float baseFOV = 50;
+        [BoxGroup("Zoom")]
+        [SerializeField]
+        private float maxModifier = 1.25f;
+
+        private Vector2 currentResolution;
+        
+        [BoxGroup("Zoom")]
         [AxisStateProperty]
         public AxisState m_ZoomAxis = new AxisState(.35f, 1, false, false, 300f, 0.1f, 0.1f, "Zoom", true);
 
@@ -59,6 +68,12 @@ namespace Realit.Core.Player.CameraManagement
         {
             base.OnValidate();
             m_ZoomAxis.Validate();
+
+            if (Application.isPlaying)
+            {
+                currentResolution = Vector2.zero;
+                AjustFOV();
+            }
         }
 
         private void Awake()
@@ -70,8 +85,10 @@ namespace Realit.Core.Player.CameraManagement
         private void OnDisable()
         {
             m_ZoomAxis.Value = 0;
+            
         }
 
+        
         public override void RecenterSmooth(Vector3 direction, float damp = -1)
         {
             if (damp >= 0)
@@ -117,13 +134,28 @@ namespace Realit.Core.Player.CameraManagement
 
                     m_ZoomAxisRecentering.DoRecentering(ref m_ZoomAxis, Time.deltaTime, 1);
 
-                    if(Recomposer != null)
+                    if (Recomposer != null)
                         Recomposer.m_ZoomScale = m_ZoomAxis.Value;
+                    AjustFOV();
                 }
                 finally
                 {
                     CinemachineCore.CurrentTimeOverride = lastcurrentTime;
                 }
+
+            }
+        }
+
+        private void AjustFOV()
+        {
+            Vector2 res = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            if (res != currentResolution)
+            {
+                currentResolution = res;
+                float fov = res.y > res.x ? baseFOV * Mathf.Min(maxModifier, res.y / res.x) : baseFOV;
+
+                Vcam.m_Lens.FieldOfView = fov;
+                Debug.Log($"New resolution detected");
             }
         }
     }

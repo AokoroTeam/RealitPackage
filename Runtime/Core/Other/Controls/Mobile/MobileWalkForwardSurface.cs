@@ -72,6 +72,8 @@ namespace Realit.Core.Controls
             WaitForHold(touch);
         }
 
+        float currentTime = 0;
+
         private void WaitForHold(Touch touch)
         {
             switch (touch.phase)
@@ -80,6 +82,7 @@ namespace Realit.Core.Controls
                     //Debug.Log("Beginning");
                     //Ensure that finger is not on UI when starting the hold phase
                     waitingForHold = !MobileControls.IsPointerOverUi(touch.startScreenPosition);
+                    currentTime = 0;
                     break;
                 case TouchPhase.Moved:
                     //If moved before the timer, then cancel the hold phase
@@ -96,6 +99,7 @@ namespace Realit.Core.Controls
                     break;
                 case TouchPhase.Ended:
                     //Debug.Log("Touch has ended.");
+                    currentTime = 0;
                     waitingForHold = false;
                     isHolding = false;
                     break;
@@ -103,8 +107,10 @@ namespace Realit.Core.Controls
 
             if (waitingForHold && !isHolding)
             {
-                //Debug.Log($"Start time : {touch.startTime}. \n Time : {touch.time} \n Total time : {touch.startTime - touch.time}");
-                if (touch.time - touch.startTime >= timeForHold)
+                currentTime += Time.deltaTime;
+
+                //Debug.Log($"Start time : {touch.startTime}. \n Time : {touch.time} \n Total time : {currentTime}");
+                if (currentTime >= timeForHold)
                 {
                     //Debug.Log("Hold validated.");
                     waitingForHold = false;
