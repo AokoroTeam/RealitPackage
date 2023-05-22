@@ -115,6 +115,27 @@ namespace Realit.Core.Controls
             }
         }
 
+        protected virtual void ProcessTouch(Touch touch)
+        {
+            //Only use hold that is not pointing on anything (to prevent moving when using UI)
+            if (!touch.isTap && touch.isInProgress && !MobileControls.IsPointerOverUi(touch.startScreenPosition))
+            {
+                Vector2 delta = touch.delta;
+
+                //Sometimes in editor, delta can be NaN.
+                if (!float.IsNaN(delta.x) || !float.IsNaN(delta.y))
+                {
+                    wasPressedLastFrame = true;
+                    currentSpeed = delta * multiplier;
+                    return;
+                }
+            }
+
+            //Else, slow down
+            wasPressedLastFrame = false;
+            currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
+        }
+
         protected virtual int GetTouchIndex()
         {
             int touchIndex = this.touchIndex;

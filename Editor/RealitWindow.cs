@@ -86,7 +86,7 @@ namespace Realit.Editor
                     if (realitProfile == null)
                     {
                         realitProfile = RealitReaderBuildContent.CreateInstance<RealitReaderBuildContent>();
-                        AssetDatabase.CreateAsset(realitProfile, "Assets/Realit/Realit Reader/Resources/RealitBuildContent.asset");
+                        AssetDatabase.CreateAsset(realitProfile, "Assets/Resources/RealitBuildContent.asset");
                         Debug.Log("Realit Build Content created");
                     }
 
