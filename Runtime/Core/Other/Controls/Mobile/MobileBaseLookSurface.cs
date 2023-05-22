@@ -17,6 +17,7 @@ namespace Realit.Core.Controls
         [SerializeField]
         protected float deceleration;
 
+        [ShowNonSerializedField]
         protected Vector2 currentSpeed;
 
         [ShowNonSerializedField]
@@ -70,7 +71,7 @@ namespace Realit.Core.Controls
                 RemoveChannels(playerCamController);
         }
 
-        private void EvaluateValues()
+        protected virtual void EvaluateValues()
         {
 
             //Null handling
