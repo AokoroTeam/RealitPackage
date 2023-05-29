@@ -20,13 +20,42 @@ namespace Realit.Core.Controls
         [SerializeField, Required]
         private MobileControlScheme defaultScheme;
 
-        private MobileControlScheme[] schemes;
+        private Dictionary<MobileControlScheme, int> schemes;
         private CanvasGroup canvasGroup;
         private Realit_Player player;
 
         private void Awake()
         {
-            schemes = GetComponentsInChildren<MobileControlScheme>();
+            schemes = new Dictionary<MobileControlScheme, int>();
+
+            var childrenSchemes = GetComponentsInChildren<MobileControlScheme>();
+
+            if (MainSettingsManager.SettingsHandler.TryGetSetting(SchemeSettingName, out ChoiceSetting choiceSetting))
+            {
+                string[] choices = choiceSetting.Choices;
+
+                for (int i = 0; i < childrenSchemes.Length; i++)
+                {
+                    var mbs = childrenSchemes[i];
+                    int index = -1;
+
+                    for (int j = 0; j < choices.Length; j++)
+                    {
+                        if (choices[j] == mbs.SchemeName)
+                        {
+                            index = j;
+                            break;
+                        }
+                    }
+
+                    if (index != -1)
+                        schemes.Add(mbs, index);
+                    else
+                        //Carrement
+                        Destroy(mbs.gameObject);
+                }
+            }
+
             canvasGroup = GetComponent<CanvasGroup>();
 
             //EnhancedTouchSupport.Enable();
@@ -49,16 +78,24 @@ namespace Realit.Core.Controls
         }
         private void SyncSchemeWithSetting()
         {
-            if (MainSettingsManager.TryGetSettingValue(SchemeSettingName, out string scheme))
-                ChangeScheme(scheme, false);
-            else
-                ChangeScheme(defaultScheme.SchemeName);
+            if (MainSettingsManager.TryGetSettingValue(SchemeSettingName, out int scheme))
+            {
+                foreach (var kv in schemes)
+                {
+                    if(kv.Value == scheme)
+                    {
+                        ChangeScheme(kv.Key.SchemeName, false);
+                        return;
+                    }
+                }
+            }
+            
+            ChangeScheme(defaultScheme.SchemeName);
         }
 
         private void OnDestroy()
         {
             //EnhancedTouchSupport.Disable();
-
             if (RealitSceneManager.Player != null)
                 RealitSceneManager.Player.OnControlChanges -= SyncWithPlayer;
             
@@ -106,19 +143,20 @@ namespace Realit.Core.Controls
                 return;
 
             currentScheme = null;
-            for (int i = 0; i < schemes.Length; i++)
+
+            foreach (var scheme in schemes)
             {
-                if (schemes[i].SchemeName == schemeName)
+                if (scheme.Key.SchemeName == schemeName)
                 {
-                    currentScheme = schemes[i];
+                    currentScheme = scheme.Key;
                     currentScheme.EnableScheme(player);
+
+                    if (writeIntoSetting)
+                        MainSettingsManager.TrySetSettingValue(SchemeSettingName, scheme.Value);
                 }
                 else
-                    schemes[i].DisableScheme(player);
+                    scheme.Key.DisableScheme(player);
             }
-
-            if(writeIntoSetting)
-                MainSettingsManager.TrySetSettingValue(SchemeSettingName, CurrentSchemeName);
         }
 
         private void SyncWithPlayer(Realit_Player realit_Player)

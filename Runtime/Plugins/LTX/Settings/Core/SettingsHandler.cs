@@ -33,6 +33,7 @@ namespace LTX.Settings
         [SerializeField]
         protected ISettingProvider settingProvider;
 
+        private Dictionary<string, List<Action<ISetting>>> callbacks;
 
         public SettingsHandler(ISettingProvider settingProvider, SettingsCategory[] categories)
         {
@@ -40,6 +41,8 @@ namespace LTX.Settings
             dirtySettings = new List<string>();
 
             this.settingProvider = settingProvider;
+            callbacks = new Dictionary<string, List<Action<ISetting>>>();
+
             SetCategories(categories);
         }
 
@@ -108,13 +111,31 @@ namespace LTX.Settings
                 OnCategoryContentChanges?.Invoke();
             }
         }
+        public bool TryGetSetting<T>(string internalName, out T setting) where T : ISetting
+        {
+            var isetting = GetSetting(internalName);
+            if(isetting is T tSetting)
+            {
+                setting = tSetting;
+                return true;
+            }
 
-        public ISetting GetSettingWithInternalName(string internalName)
+            setting = default;
+            return false;
+        }
+
+        public bool TryGetSettingInternal(string internalName, out ISetting setting)
+        {
+            setting = GetSetting(internalName);
+            return setting != null;
+        }
+
+        public ISetting GetSetting(string internalName)
         {
             if(settingsPath.TryGetValue(internalName, out List<SettingPath> paths))
             {
                 SettingPath p = paths[0];
-                return GetSettingWithPath(p);
+                return GetSetting(p);
             }
             else
             {
@@ -122,13 +143,13 @@ namespace LTX.Settings
             }
         }
 
-        protected ISetting GetSettingWithPath(SettingPath p) => categories[p.category].Sections[p.section].Settings[p.setting];
+        protected ISetting GetSetting(SettingPath p) => categories[p.category].Sections[p.section].Settings[p.setting];
         public bool ApplySetting(ISetting setting, bool addToDirtyCollection = true)
         {
             if (setting == null)
                 return false;
 
-            if (settingsPath.TryGetValue(setting.InternalName, out List <SettingPath> paths))
+            if (settingsPath.TryGetValue(setting.InternalName, out List<SettingPath> paths))
             {
                 foreach (SettingPath p in paths)
                     categories[p.category].Sections[p.section].Settings[p.setting] = setting;
@@ -171,7 +192,7 @@ namespace LTX.Settings
         }
         public bool TryGetSettingValue<T>(string settingInternalName, out T value)
         {
-            var setting = GetSettingWithInternalName(settingInternalName);
+            var setting = GetSetting(settingInternalName);
             if(setting is ISetting<T> s)
             {
                 value = s.Value;
@@ -183,9 +204,10 @@ namespace LTX.Settings
         }
         public bool TrySetSettingValue<T>(string settingInternalName, T value)
         {
-            var setting = GetSettingWithInternalName(settingInternalName);
+            var setting = GetSetting(settingInternalName);
             if (setting is ISetting<T> s)
             {
+                s.SetValue(value);
                 WriteSetting(settingInternalName, ref s);
                 return true;
             }
@@ -201,7 +223,7 @@ namespace LTX.Settings
             {
                 foreach (var settingInternalName in dirtySettings)
                 {
-                    var s = GetSettingWithInternalName(settingInternalName);
+                    var s = GetSetting(settingInternalName);
                     WriteSetting(settingInternalName, ref s);
                 }
                 dirtySettings.Clear();
@@ -210,7 +232,7 @@ namespace LTX.Settings
             {
                 foreach(var kvp in settingsPath) 
                 {
-                    var s = GetSettingWithInternalName(kvp.Key);
+                    var s = GetSetting(kvp.Key);
                     if (!settingProvider.TryWriteSetting(ref s))
                         Debug.LogError($"[Settings] Couldn't write setting {kvp.Key}");
                     else
@@ -242,7 +264,7 @@ namespace LTX.Settings
             {
                 string internalName = kvp.Key;
 
-                ISetting s = GetSettingWithInternalName(internalName);
+                ISetting s = GetSetting(internalName);
 
                 //If the setting doesn't exist yet then reset it
                 if (!settingProvider.TryReadSetting(ref s))
@@ -263,5 +285,25 @@ namespace LTX.Settings
         }
 
         public void ManuallyTriggerContentChange() => OnCategoryContentChanges?.Invoke();
+
+        public void AddCallback(string internalName, Action<ISetting> callback)
+        {
+            if(!callbacks.TryGetValue(internalName, out List<Action<ISetting>> list))
+            {
+                list = new List<Action<ISetting>>();
+                callbacks.Add(internalName, list);
+            }
+
+            if(!list.Contains(callback))
+                list.Add(callback);
+        }
+
+        public void RemoveCallback(string internalName, Action<ISetting> callback)
+        {
+            if (!callbacks.TryGetValue(internalName, out List<Action<ISetting>> list))
+                return;
+
+            list?.Remove(callback);
+        }
     }
 }

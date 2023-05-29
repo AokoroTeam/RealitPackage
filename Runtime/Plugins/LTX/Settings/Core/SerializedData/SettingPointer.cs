@@ -10,7 +10,7 @@ namespace LTX.Settings
         public string internalName;
         public SettingsHandler handler;
 
-        public ISetting GetSetting() => handler.GetSettingWithInternalName(internalName);
+        public ISetting GetSetting() => handler.GetSetting(internalName);
 
         public SettingPointer(string internalName, SettingsHandler handler)
         {

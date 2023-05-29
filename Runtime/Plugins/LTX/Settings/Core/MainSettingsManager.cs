@@ -69,6 +69,7 @@ namespace LTX.Settings
             CreateSettingHandler();
         }
 
+
         public static bool TryGetSettingValue<T>(string internalName, out T value)
         {
             if (IsValid && SettingsHandler.TryGetSettingValue(internalName, out value))
@@ -82,7 +83,6 @@ namespace LTX.Settings
             if (IsValid && SettingsHandler.TrySetSettingValue(internalName, value))
                 return true;
 
-            value = default;
             return false;
         }
 

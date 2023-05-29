@@ -30,11 +30,6 @@ namespace Realit.Core.Features.Settings.UI
 
         public int CurrentIndex { get; private set; }
 
-        private void Awake()
-        {
-
-        }
-
         public void OnValueChanged(int index) => CurrentIndex = index;
         protected override ISetting SyncSettingWithUI()
         {
