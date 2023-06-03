@@ -41,6 +41,7 @@ namespace Realit.Core.Controls
 
                     for (int j = 0; j < choices.Length; j++)
                     {
+                        Debug.Log(choices[j]);
                         if (choices[j] == mbs.SchemeName)
                         {
                             index = j;
@@ -51,8 +52,11 @@ namespace Realit.Core.Controls
                     if (index != -1)
                         schemes.Add(mbs, index);
                     else
+                    {
+                        Debug.Log(mbs.SchemeName);
                         //Carrement
                         Destroy(mbs.gameObject);
+                    }
                 }
             }
 

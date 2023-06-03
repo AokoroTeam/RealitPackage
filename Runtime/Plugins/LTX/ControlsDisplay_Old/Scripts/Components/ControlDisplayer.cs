@@ -101,9 +101,23 @@ namespace LTX.ControlsDisplay
             Clean();
 
             InputAction[] inputActions = ActionProvider.GetInputActions();
-            InputDevice[] devices = ActionProvider.GetDevices();
-            string schemeName = ActionProvider.GetControlScheme();
 
+            if(inputActions.Length == 0)
+            {
+                Debug.LogWarning("[Control Display] Couldn't retrieve InputActions from ActionProvider. Aborting operation.");
+                Hide();
+                return;
+            }
+
+            InputDevice[] devices = ActionProvider.GetDevices();
+            if (devices.Length == 0)
+            {
+                Debug.LogWarning("[Control Display] Couldn't retrieve devices from ActionProvider. Aborting operation.");
+                Hide();
+                return;
+            }
+
+            string schemeName = ActionProvider.GetControlScheme();
             if (controlSchemes.Count == 0 || controlSchemes.Contains(schemeName))
             {
                 if (ControlsDiplaySystem.GetControlsForControlScheme(schemeName, out ControlScheme scheme))
@@ -122,10 +136,11 @@ namespace LTX.ControlsDisplay
                     return;
                 }
             }
-
-            Debug.LogWarning($"[Command Display] No compatible scheme for {schemeName}");
-            Hide();
-            //Debug.Log("[Control Display] Controls have been successfuly updated", gameObject);
+            else
+            {
+                Debug.LogWarning($"[Control Display] No compatible scheme for {schemeName}");
+                Hide();
+            }
         }
 
         private void Clean()

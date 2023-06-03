@@ -270,7 +270,14 @@ namespace Realit.Core.Player.Movement
 
         public InputAction[] GetInputActions() => ActionAsset.actionMaps[0].actions.ToArray();
 
-        public InputDevice[] GetDevices() => Manager.playerInput.devices.ToArray();
+        public InputDevice[] GetDevices()
+        {
+            var pi = Manager.playerInput;
+            if(pi.hasMissingRequiredDevices)
+                return InputSystem.devices.ToArray();
+            else
+                return Manager.playerInput.devices.ToArray();
+        }
         #endregion
 
         #region Nav

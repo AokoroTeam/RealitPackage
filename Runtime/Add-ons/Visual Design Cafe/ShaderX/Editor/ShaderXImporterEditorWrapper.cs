@@ -38,7 +38,7 @@ namespace VisualDesignCafe.ShaderX.Editor
             _editor.OnInspectorGUI();
 
             if( _editor.ApplyAndImport )
-                ApplyAndImport();
+                SaveChanges();
 
             ApplyRevertGUI();
         }

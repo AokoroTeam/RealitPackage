@@ -43,11 +43,15 @@ namespace Aokoro.UI.ControlsDiplay
         private void OnEnable()
         {
             playerInput.onControlsChanged += OnControlsChanges;
+            playerInput.onDeviceLost += OnControlsChanges;
+            playerInput.onDeviceRegained += OnControlsChanges;
         }
 
         private void OnDisable()
         {
             playerInput.onControlsChanged -= OnControlsChanges;
+            playerInput.onDeviceLost -= OnControlsChanges;
+            playerInput.onDeviceRegained -= OnControlsChanges;
         }
         private void OnControlsChanges(PlayerInput playerInput)
         {

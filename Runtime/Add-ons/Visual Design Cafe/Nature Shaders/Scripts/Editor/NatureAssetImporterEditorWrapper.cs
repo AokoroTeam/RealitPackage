@@ -42,7 +42,7 @@ namespace VisualDesignCafe.Nature.Editor.Importers
             _editor.OnInspectorGUI();
             ApplyRevertGUI();
             if( _editor.ApplyAndImport )
-                ApplyAndImport();
+                SaveChanges();
         }
 
         public override void OnEnable()

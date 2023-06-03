@@ -13,7 +13,7 @@ using LTX.ChanneledProperties;
 
 namespace Aokoro.UI
 {
-    [ExecuteInEditMode, DefaultExecutionOrder(-90)]
+    [DefaultExecutionOrder(-90)]
     public class UIManager : BaseUIManager
     {
         public Transform WindowsParent;
@@ -41,6 +41,7 @@ namespace Aokoro.UI
         {
             windowPriority = new ChanneledProperty<string>();
             windowPriority.AddChannel(this, 1, defaultWindow);
+
             OnValidate();
             base.Awake();
         }
