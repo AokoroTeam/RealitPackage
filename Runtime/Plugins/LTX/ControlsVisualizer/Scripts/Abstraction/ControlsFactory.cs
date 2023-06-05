@@ -16,7 +16,6 @@ namespace LTX.ControlsVisualizer
 
         public ControlsFactory() : this(ControlsFactorySettings.DefaultSettings)
         {
-            InputSettings
         }
         public ControlsFactory(ControlsFactorySettings factorySettings) 
         {
@@ -40,7 +39,7 @@ namespace LTX.ControlsVisualizer
             int skipBindingCount = 0;
 
             commandBuffer.Clear();
-
+            /*
             //Going through all bindings inside of the action
             var bindings = action.bindings;
             int bindingCount = bindings.Count;
@@ -88,8 +87,9 @@ namespace LTX.ControlsVisualizer
                     control.Addcombination(representation);
                 }
             }
-
             return control;
+            */
+            return default;
         }
     }
 }
