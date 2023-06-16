@@ -11,6 +11,8 @@ namespace Realit.Core.Features.GuidedVisite
     {
         [BoxGroup("Global")]
         public CameraControllerProfile profile;
+        [BoxGroup("Global")]
+        public GameObject overlayCamera;
 
         [BoxGroup("UI")]
         public GameObject window;

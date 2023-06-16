@@ -44,8 +44,13 @@ namespace LTX.Settings.UI
             SectionsUI = new S[sections.Length];
 
             for (int i = 0; i < sections.Length; i++)
-                SetupSection(sections, i);
+            {
+                if (CanCreateSectionUI(sections[i]))
+                    SetupSection(sections, i);
+            }
         }
+
+        protected virtual bool CanCreateSectionUI(SettingsSection settingsSection) => true;
 
         protected virtual void SetupSection(SettingsSection[] sections, int i)
         {

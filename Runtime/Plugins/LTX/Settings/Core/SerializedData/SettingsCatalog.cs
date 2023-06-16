@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LTX.Settings
 {
-    [CreateAssetMenu(fileName = "Settings", menuName = "Aokoro/Settings/Catalog")]
+    [CreateAssetMenu(fileName = "Settings", menuName = "LTX/Settings/Catalog")]
     public class SettingsCatalog : ScriptableObject
     {
         public SettingsCategory[] categories;

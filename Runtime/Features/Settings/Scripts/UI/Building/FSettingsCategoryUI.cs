@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LTX.Settings.UI;
+using LTX.Settings;
 
 namespace Realit.Core.Features.Settings.UI
 {
@@ -13,10 +14,11 @@ namespace Realit.Core.Features.Settings.UI
         {
             swa = GetComponentInParent<SettingWindowActions>();
         }
-        private void Start()
-        {
-        }
 
+        protected override bool CanCreateSectionUI(SettingsSection settingsSection)
+        {
+            return settingsSection.Count != 0;
+        }
         public void ResetSections()
         {
             for (int i = 0; i < SectionsUI.Length; i++)

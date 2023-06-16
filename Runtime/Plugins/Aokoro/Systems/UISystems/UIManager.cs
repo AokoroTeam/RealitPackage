@@ -39,8 +39,11 @@ namespace Aokoro.UI
         }
         protected override void Awake()
         {
-            windowPriority = new ChanneledProperty<string>();
-            windowPriority.AddChannel(this, 1, defaultWindow);
+            if (Application.isPlaying)
+            {
+                windowPriority = new ChanneledProperty<string>();
+                windowPriority.AddChannel(this, 1, defaultWindow);
+            }
 
             OnValidate();
             base.Awake();

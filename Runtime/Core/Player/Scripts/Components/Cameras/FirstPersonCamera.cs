@@ -89,7 +89,7 @@ namespace Realit.Core.Player.CameraManagement
         }
 
         
-        public override void RecenterSmooth(Vector3 direction, float damp = -1)
+        public override void Recenter(Vector3 direction, float damp = -1)
         {
             if (damp >= 0)
             {

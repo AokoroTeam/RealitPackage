@@ -17,10 +17,6 @@ namespace Realit.Core.Features.Settings.UI
 
             base.Populate(section);
         }
-        protected override BaseSettingUI CreateSettingUI(ISetting setting)
-        {
-            return base.CreateSettingUI(setting);
-        }
 
         internal void ResetSettings()
         {

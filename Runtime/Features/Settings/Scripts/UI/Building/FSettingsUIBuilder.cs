@@ -31,6 +31,11 @@ namespace Realit.Core.Features.Settings.UI
             windowManager.InitializeWindows();
         }
 
+        protected override bool CanCreateCategoryUI(SettingsCategory category)
+        {
+            return category.Sections.Length != 0;
+        }
+
         protected override FSettingsCategoryUI CreateCategoryUI(SettingsCategory category)
         {
             FSettingsCategoryUI fSettingsCategoryUI = base.CreateCategoryUI(category);

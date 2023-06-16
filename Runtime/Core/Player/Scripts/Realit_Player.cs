@@ -24,6 +24,8 @@ namespace Realit.Core.Player
         private Transform featuresRoot;
         public Transform FeaturesRoot => featuresRoot;
 
+
+        private bool controlsHaveChanged = false;
         protected override void Start()
         {
             base.Start();
@@ -34,59 +36,29 @@ namespace Realit.Core.Player
 
         }
 
+        
         private void OnEnable()
         {
-            playerInput.onControlsChanged += PlayerInput_onControlsChanged;
+            controlsHaveChanged = true;
         }
 
         private void OnDisable()
         {
-            playerInput.onControlsChanged -= PlayerInput_onControlsChanged;
+            controlsHaveChanged = false;
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
-            /*
-            Touchscreen touchscreen = Touchscreen.current;
-            Keyboard keyboard = Keyboard.current;
-            Mouse mouse = Mouse.current;
-            Gamepad gamepad = Gamepad.current;
-
-            if (touchscreen != null && touchscreen.wasUpdatedThisFrame)
+            if(controlsHaveChanged)
             {
-                if (playerInput.currentControlScheme != "Mobile")
-                    playerInput.SwitchCurrentControlScheme("Mobile", touchscreen, gamepad);
-
-                //Debug.Log("To mobile");
-                return;
+                controlsHaveChanged = false;
+                OnControlChanges?.Invoke(this);
             }
-
-
-            if (keyboard != null && mouse != null && 
-                (keyboard.wasUpdatedThisFrame || mouse.leftButton.IsPressed() || mouse.rightButton.IsPressed())
-                )
-            {
-                if (playerInput.currentControlScheme != "Keyboard&Mouse")
-                    playerInput.SwitchCurrentControlScheme("Keyboard&Mouse", keyboard, mouse);
-                
-                //Debug.Log("To pc");
-                return;
-            }
-
-
-            if (gamepad != null && gamepad.wasUpdatedThisFrame && !gamepad.description.empty)
-            {
-                if (playerInput.currentControlScheme != "Gamepad")
-                    playerInput.SwitchCurrentControlScheme("Gamepad", gamepad);
-                //Debug.Log("To gamepad");
-                return;
-            }
-            */
         }
 
 
-        private void PlayerInput_onControlsChanged(PlayerInput obj) => OnControlChanges?.Invoke(this);
+        private void PlayerInput_onControlsChanged(PlayerInput obj) => controlsHaveChanged = true;
 
         protected override void SetupCursorForPlayer()
         {
@@ -103,11 +75,6 @@ namespace Realit.Core.Player
                 playerFeatures[i].Player = this;
             
             return instance;
-        }
-
-        private void OnDestroy()
-        {
-            //Debug.Log("Player has been destroyed");
         }
     }
 }

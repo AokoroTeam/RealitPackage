@@ -2,19 +2,21 @@ using LTX;
 using LTX.Sequencing;
 
 using NaughtyAttributes;
+using Realit.Core.Features;
 using Realit.Core.Managers;
 using Realit.Core.Scenes;
 
 using Realit.Core.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Realit.Core
 {
     [DefaultExecutionOrder(-100)]
-    [AddComponentMenu("Realit/Reader/RealitReader")]
+    [AddComponentMenu("Realit/Realit Manager")]
     public class Realit : Singleton<Realit>
     {
         public event Action<bool> OnBuiltInModeLoading;
@@ -29,13 +31,16 @@ namespace Realit.Core
         [SerializeField] GameObject playerAsset;
 
         [HideInInspector]
-        public GameObject PlayerRessource;
+        public GameObject PlayerRessource { get; private set; }
+        [HideInInspector]
+        public Transform Spawn { get; private set; }
+
         [BoxGroup("Demo")]
         public bool IsBuiltInMode;
         [BoxGroup("Demo"), ShowIf(nameof(IsBuiltInMode))]
         public bool setupInThisSceneAtLaunch;
         [BoxGroup("Demo"), Expandable, ShowIf(nameof(setupInThisSceneAtLaunch)), Space]
-        public RealitBuiltInSceneProfile sceneProfile;
+        public RealitScene sceneProfile;
 
         [BoxGroup("Runtime"), ReadOnly]
         public bool IsReadyForLoading = false;
@@ -43,6 +48,19 @@ namespace Realit.Core
         public LoadingPanel loadingPanel;
 
         private Sequencer createManagerSeq;
+
+        public static RealitBuildContent BuildContent
+        {
+            get
+            {
+                if(buildContent == null)
+                    buildContent = Resources.Load<RealitBuildContent>("RealitBuildContent");
+
+                return buildContent;
+            }
+        }
+
+        private static RealitBuildContent buildContent;
 
         protected override void Awake()
         {
@@ -84,7 +102,7 @@ namespace Realit.Core
             }
         }
 
-        public void LoadScene(RealitBuiltInSceneProfile sceneProfile)
+        public void LoadScene(RealitScene sceneProfile)
         {
             if (IsReadyForLoading && IsBuiltInMode)
             {
@@ -118,7 +136,7 @@ namespace Realit.Core
             loadingPanel.StopLoadingScreen(this);
 
         }
-        private IEnumerator ILoadSceneProfile(RealitBuiltInSceneProfile sceneProfile)
+        private IEnumerator ILoadSceneProfile(RealitScene sceneProfile)
         {
             loadingPanel.StartLoadingScreen(this, 100);
             this.sceneProfile = sceneProfile;
@@ -140,7 +158,7 @@ namespace Realit.Core
             }
         }
 
-        private IEnumerator ISetupSceneWithProfile(RealitBuiltInSceneProfile sceneProfile)
+        private IEnumerator ISetupSceneWithProfile(RealitScene sceneProfile)
         {
             loadingPanel.StartLoadingScreen(this, 100);
 
@@ -153,12 +171,33 @@ namespace Realit.Core
             });
 
             //Spawning player
-            ;
-            Transform spawn = GameObject.FindGameObjectWithTag("Respawn").transform;
-            var go = Instantiate(playerAsset, spawn.transform.position, spawn.transform.rotation);
+            Spawn = GameObject.FindGameObjectWithTag("Respawn").transform;
+            var go = Instantiate(playerAsset, Spawn.transform.position, Spawn.transform.rotation);
             OnPlayerInstantiated(go);
 
-            RealitSceneManager.Instance.InitializeScene(sceneProfile.features);
+            List<FeatureDataAsset> featureDataAssets = new List<FeatureDataAsset>();
+
+            FeatureDataAsset[] defaultFeatures = BuildContent.DefaultFeatures;
+            for (int i = 0; i < defaultFeatures.Length; i++)
+            {
+                if (defaultFeatures[i] != null)
+                    featureDataAssets.Add(defaultFeatures[i]);
+            }
+
+            for (int i = 0; i < sceneProfile.features.Length; i++)
+            {
+                var feature = sceneProfile.features[i];
+                if (featureDataAssets.Contains(feature))
+                {
+                    Debug.LogWarning($"[Features] {feature.FeatureName} is already a global feature. Consider removing it from the scene profile");
+                    continue;
+                }
+
+                if(feature != null)
+                    featureDataAssets.Add(feature);
+            }
+
+            RealitSceneManager.Instance.InitializeScene(featureDataAssets.ToArray());
 
             loadingPanel.StopLoadingScreen(this);
         }

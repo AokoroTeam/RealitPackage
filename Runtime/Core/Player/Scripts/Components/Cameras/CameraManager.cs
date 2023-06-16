@@ -3,10 +3,12 @@ using Aokoro.Entities.Player;
 using LTX.ChanneledProperties;
 using NaughtyAttributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 namespace Realit.Core.Player.CameraManagement
 {
@@ -187,6 +189,7 @@ namespace Realit.Core.Player.CameraManagement
 #endif
 
                 controller.transform.SetParent(PlayerManager.PlayerContainer.transform);
+                controller.Recenter(Realit.Instance.Spawn.forward);
             }
             else
                 Debug.LogWarning(
@@ -196,6 +199,7 @@ namespace Realit.Core.Player.CameraManagement
             controller.gameObject.SetActive(false);
 
         }
+
         public void RemoveController(BaseCameraController controller)
         {
             if (Controllers.Remove(controller.Profile))

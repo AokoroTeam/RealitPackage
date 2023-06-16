@@ -18,6 +18,7 @@ namespace LTX.Settings
         [SerializeReference]
         private List<ISetting> settingsList;
 
+        public int Count => settingsList.Count;
         public ISetting[] GetSettings() => Settings.ToArray();
 
         internal List<ISetting> Settings

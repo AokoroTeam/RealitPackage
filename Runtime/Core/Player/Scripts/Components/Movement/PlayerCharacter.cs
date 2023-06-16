@@ -402,7 +402,7 @@ namespace Realit.Core.Player.Movement
             Vector3 lookAtPoint = point - Camera.main.transform.position;
 
             if(camManager.HasCameraController)
-                camManager.CurrentCameraController.RecenterSmooth(Vector3.Lerp(lookAtPoint, flatToPoint, yLerp), cameraSmoothness);
+                camManager.CurrentCameraController.Recenter(Vector3.Lerp(lookAtPoint, flatToPoint, yLerp), cameraSmoothness);
         }
 
         public void OnAgentArrived()

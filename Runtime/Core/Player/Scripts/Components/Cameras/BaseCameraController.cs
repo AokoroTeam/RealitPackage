@@ -13,7 +13,6 @@ namespace Realit.Core.Player.CameraManagement
         [BoxGroup("Infos"), Required]
         public CameraControllerProfile Profile;
         
-
         [BoxGroup("Overrides")]
         [SerializeField, Range(0, 5)]
         private float xModifier = 1;
@@ -31,14 +30,14 @@ namespace Realit.Core.Player.CameraManagement
                 gameObject.name = Profile.name;
         }
 
-        public virtual void RecenterSmooth(Vector3 forward, float damp = -1)
+        public virtual void Recenter(Vector3 forward, float damp = -1)
         {
             if (damp < 0)
                 transform.forward = forward;
             else
                 transform.forward = Vector3.Lerp(transform.forward, forward, damp * Time.deltaTime);
         }
-
+        
         public virtual float GetAxisValue(int axis)
         {
             if (enabled && cameraManager != null)
@@ -73,5 +72,6 @@ namespace Realit.Core.Player.CameraManagement
         }
 
         public abstract void OnUpdate();
+
     }
 }

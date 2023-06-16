@@ -3,6 +3,7 @@ using NaughtyAttributes;
 using Realit.Core.Player;
 using Realit.Core.Player.Movement;
 using UnityEngine;
+using UnityEngine.UI;
 using static Realit.Core.Controls.MobileControls;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
@@ -22,10 +23,20 @@ namespace Realit.Core.Controls
         private bool isHolding;
         [SerializeField, ReadOnly]
         private bool waitingForHold;
+        [SerializeField]
+        private Image holdCircle;
 
         private Vector2 currentInput;
         PlayerCharacter playerCharacter;
-            
+
+
+
+        private void Awake()
+        {
+            holdCircle.gameObject.SetActive(false);
+        }
+
+
         void MobileControls.IMobileControl.Perform()
         {
             EvaluateValues();
@@ -46,8 +57,6 @@ namespace Realit.Core.Controls
             if (playerCharacter != null || player.GetLivingComponent(out playerCharacter))
                 RemoveChannels();
         }
-
-
         private void EvaluateValues()
         {
             var touches = Touch.activeTouches;
@@ -66,6 +75,7 @@ namespace Realit.Core.Controls
             if (isHolding)
             {
                 currentInput = Vector2.up * multiplier;
+                holdCircle.gameObject.SetActive(false);
                 return;
             }
 
@@ -82,6 +92,7 @@ namespace Realit.Core.Controls
                     //Debug.Log("Beginning");
                     //Ensure that finger is not on UI when starting the hold phase
                     waitingForHold = !MobileControls.IsPointerOverUi(touch.startScreenPosition);
+                    holdCircle.transform.position = touch.startScreenPosition;
                     currentTime = 0;
                     break;
                 case TouchPhase.Moved:
@@ -102,13 +113,20 @@ namespace Realit.Core.Controls
                     currentTime = 0;
                     waitingForHold = false;
                     isHolding = false;
+                    holdCircle.gameObject.SetActive(false);
                     break;
             }
+            holdCircle.gameObject.SetActive(waitingForHold && !isHolding);
 
             if (waitingForHold && !isHolding)
             {
                 currentTime += Time.deltaTime;
 
+                //Animation
+                float t = currentTime / (float)timeForHold;
+
+                holdCircle.fillAmount = t;
+                        
                 //Debug.Log($"Start time : {touch.startTime}. \n Time : {touch.time} \n Total time : {currentTime}");
                 if (currentTime >= timeForHold)
                 {

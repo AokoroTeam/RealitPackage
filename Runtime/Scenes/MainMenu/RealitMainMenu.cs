@@ -27,7 +27,7 @@ namespace Realit.Core
         [SerializeField]
         GameObject closeButton;
 
-        RealitBuiltInSceneProfile[] scenes;
+        RealitScene[] scenes;
 
         private bool loading;
 
@@ -36,22 +36,25 @@ namespace Realit.Core
 #if UNITY_WEBGL
             closeButton.SetActive(false);
 #endif
-            RealitReaderBuildContent buildContent = Resources.Load<RealitReaderBuildContent>("RealitBuildContent");
-            scenes = buildContent.scenes;
-
-            HorizontalSelector.Item[] items = new HorizontalSelector.Item[scenes.Length];
-
-            for (int i = 0; i < scenes.Length; i++)
+            if (Realit.BuildContent != null)
             {
-                HorizontalSelector.Item item = new()
-                {
-                    itemTitle = scenes[i].SceneName
-                };
+                scenes = Realit.BuildContent.Scenes;
 
-                items[i] = item;
+                HorizontalSelector.Item[] items = new HorizontalSelector.Item[scenes.Length];
+
+                for (int i = 0; i < scenes.Length; i++)
+                {
+                    HorizontalSelector.Item item = new()
+                    {
+                        itemTitle = scenes[i].SceneName
+                    };
+
+                    items[i] = item;
+                }
+
+                selector.items = new List<HorizontalSelector.Item>(items);
             }
 
-            selector.items = new List<HorizontalSelector.Item>(items);
             loading = false;
         }
 

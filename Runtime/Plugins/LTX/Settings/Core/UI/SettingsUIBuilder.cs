@@ -95,7 +95,10 @@ namespace LTX.Settings.UI
 
             List<SettingsCategory> categories = SettingsHandler.categories;
             foreach (var category in categories)
-                SetupCategory(category);
+            {
+                if(CanCreateCategoryUI(category))
+                    SetupCategory(category);
+            }
 
         }
         /// <summary>
@@ -128,6 +131,7 @@ namespace LTX.Settings.UI
 
             return baseSettingCategoryUI;
         }
+        protected virtual bool CanCreateCategoryUI(SettingsCategory category) => true;
 
         /// <summary>
         /// Create the category manager that will hold all the data and create all sections.

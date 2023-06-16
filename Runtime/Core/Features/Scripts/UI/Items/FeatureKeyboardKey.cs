@@ -28,7 +28,8 @@ namespace Realit.Core.Features.UI
 #if UNITY_WEBGL
                 textMesh.text = inputAction.GetBindingDisplayString(0, InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
 #else
-                textMesh.text = inputAction.GetBindingDisplayString(0);
+                var displayString = inputAction.GetBindingDisplayString(0, out string device, out string controlPath);
+                textMesh.text = controlPath;
 #endif
             }
 

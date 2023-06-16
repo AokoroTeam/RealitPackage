@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.Rendering.Universal;
 namespace Realit.Core.Features.GuidedVisite
 {
 
@@ -30,10 +30,11 @@ namespace Realit.Core.Features.GuidedVisite
             }
         }
 
-        private CameraControllerProfile lastPlayerProfile;
-        private PlayerCharacter playerCharacter;
-        private CameraManager cameraManager;
-        private PlayerInput playerInputs;
+        public CameraControllerProfile lastPlayerProfile;
+        public PlayerCharacter playerCharacter;
+        public CameraManager cameraManager;
+        public PlayerInput playerInputs;
+        internal GV_CamOverlay overlayCamera;
 
         public GuidedVisite(FeatureDataAsset asset) : base(asset)
         {
@@ -44,9 +45,11 @@ namespace Realit.Core.Features.GuidedVisite
         protected override void OnLoad()
         {
             GuidedVisite_Data _Data = Data as GuidedVisite_Data;
+            Debug.Log("loading");
 
+            //Points
             var ps = GameObject.FindGameObjectsWithTag("GV_Point");
-            List<GV_Point> pointsList = new List<GV_Point>();
+            List<GV_Point> pointsList = new();
             for (int i = 0; i < ps.Length; i++)
             {
                 if (ps[i].TryGetComponent(out GV_Point point))
@@ -60,13 +63,19 @@ namespace Realit.Core.Features.GuidedVisite
 
             points = new GV_Point[pointsList.Count];
             pointsList.CopyTo(points);
+
+            //Camera
+            overlayCamera = GameObject.Instantiate(_Data.overlayCamera).GetComponent<GV_CamOverlay>();
+            
+            //UI
             RealitSceneManager.UI.CreateWindow(_Data.FeatureName, _Data.window);
             RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, Data.FeatureName);
 
+            //Cursor
             CursorManager.CursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
             CursorManager.CursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
 
-
+            //Player
             Player.Realit_Player player = RealitSceneManager.Player;
 
             if (player.GetLivingComponent(out PlayerCharacter character))
@@ -98,6 +107,7 @@ namespace Realit.Core.Features.GuidedVisite
         protected override void OnUnload()
         {
             points = null;
+
             CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
             CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
 
@@ -169,6 +179,7 @@ namespace Realit.Core.Features.GuidedVisite
 
         protected override void OnEnd()
         {
+
             RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             
             CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);

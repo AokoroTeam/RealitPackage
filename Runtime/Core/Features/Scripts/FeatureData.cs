@@ -54,5 +54,19 @@ namespace Realit.Core.Features
         public virtual bool CanGenerateFeature() => true;
 
         public virtual SettingsSection[] GetSettings() => settings;
+
+        public override bool Equals(object other)
+        {
+            return base.Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return featureName.GetHashCode();
+        }
+        public override string ToString()
+        {
+            return JsonUtility.ToJson(this, false);
+        }
     }
 }

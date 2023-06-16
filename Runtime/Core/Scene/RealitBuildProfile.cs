@@ -8,11 +8,11 @@ using UnityEngine;
 namespace Realit.Editor
 {
 
-    [CreateAssetMenu(fileName = "New build profile", menuName = "Aokoro/Realit/Reader/Build/BuildProfile")]
+    [CreateAssetMenu(fileName = "New build profile", menuName = "Aokoro/Realit/Build/BuildProfile")]
     public class RealitBuildProfile : ScriptableObject
     {
         public string buildName;
         [NaughtyAttributes.Expandable]
-        public RealitBuiltInSceneProfile[] scenes;
+        public RealitScene[] scenes;
     }
 }

@@ -46,17 +46,21 @@ namespace LTX.Settings.UI
             for (int i = 0; i < length; i++)
             {
                 ISetting setting = settings[i];
-                S settingUI = CreateSettingUI(setting);
-                settingsUI[i] = settingUI;
-
-                if (settingUI != null)
+                if (CanCreateSettingUI(setting))
                 {
-                    settingUI.Builder = UIBuilder;
-                    settingUI.SettingPointer = new SettingPointer(setting.InternalName, UIBuilder.SettingsHandler);
-                    settingUI.SyncUIWithSetting(setting);
+                    S settingUI = CreateSettingUI(setting);
+                    settingsUI[i] = settingUI;
+
+                    if (settingUI != null)
+                    {
+                        settingUI.Builder = UIBuilder;
+                        settingUI.SettingPointer = new SettingPointer(setting.InternalName, UIBuilder.SettingsHandler);
+                        settingUI.SyncUIWithSetting(setting);
+                    }
                 }
             }
         }
+        protected virtual bool CanCreateSettingUI(ISetting setting) => true;
 
         protected virtual S CreateSettingUI(ISetting setting)
         {
