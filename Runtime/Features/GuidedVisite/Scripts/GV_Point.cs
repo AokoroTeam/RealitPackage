@@ -14,8 +14,6 @@ namespace Realit.Core.Features.GuidedVisite
         [SerializeField]
         private TextMeshProUGUI label;
         [SerializeField]
-        private Transform arrow;
-        [SerializeField]
         private Canvas canvas;
         [SerializeField]
         private LayerMask groundLayer;
@@ -29,14 +27,14 @@ namespace Realit.Core.Features.GuidedVisite
         {
             label.text = PointName;
             if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 100, groundLayer))
-                transform.position = hitInfo.point;
+                transform.position = hitInfo.point + Vector3.up * 0.001f;
         }
 
         private void LateUpdate()
         {
             if (cam != null)
             {
-                transform.forward = cam.transform.position - transform.position;
+                label.transform.forward = -(cam.transform.position - transform.position);
             }
         }
 
@@ -56,12 +54,21 @@ namespace Realit.Core.Features.GuidedVisite
             }
         }
 
-        protected override void OnFeatureInitiate()
+        public void ShowPoint()
         {
-            cam = Feature.overlayCamera.cam;
-            canvas.worldCamera = cam;
+            canvas.gameObject.SetActive(true);
         }
 
+        public void HidePoint()
+        {
+            canvas.gameObject.SetActive(false);
+        }
+
+
+        public void OnClick()
+        {
+            Feature.GoToPoint(this, false);
+        }
         protected override void OnFeatureStarts()
         {
             gameObject.SetActive(true);
@@ -71,5 +78,11 @@ namespace Realit.Core.Features.GuidedVisite
         {
             gameObject.SetActive(false);
         }
+        protected override void OnFeatureInitiate()
+        {
+            cam = Feature.overlayCamera.cam;
+            canvas.worldCamera = cam;
+        }
+
     }
 }

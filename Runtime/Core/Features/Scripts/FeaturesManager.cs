@@ -88,8 +88,6 @@ namespace Realit.Core.Features
             AreFeaturesLoaded = false;
             Features = new();
 
-            FeaturesLoadedCallbacks.Clear();
-
             List<FeatureDataAsset> sortedFeaturesData = new(featureDataAsset);
             sortedFeaturesData.Sort((first, second) => first.loadingPriority.CompareTo(second.loadingPriority));
             sortedFeaturesData.Reverse();

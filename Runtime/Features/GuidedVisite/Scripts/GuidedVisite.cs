@@ -45,7 +45,6 @@ namespace Realit.Core.Features.GuidedVisite
         protected override void OnLoad()
         {
             GuidedVisite_Data _Data = Data as GuidedVisite_Data;
-            Debug.Log("loading");
 
             //Points
             var ps = GameObject.FindGameObjectsWithTag("GV_Point");
@@ -275,6 +274,16 @@ namespace Realit.Core.Features.GuidedVisite
                 playerCharacter.StartAgentTravel(point.transform.position);
 
             _currentPoint = point;
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                var p = points[i];
+                if (p != _currentPoint && _currentPoint.nearbyPoints.Contains(p))
+                    p.ShowPoint();
+                else
+                    p.HidePoint();
+            }
+
             OnPointChanged?.Invoke(point);
         }
     }

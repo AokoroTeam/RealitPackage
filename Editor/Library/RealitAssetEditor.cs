@@ -21,9 +21,12 @@ namespace Realit.Library.Editor
             if (!Application.isPlaying)
             {
                 RealitAsset realitLibraryPrefab = target as RealitAsset;
-                GameObject gameObject = realitLibraryPrefab.gameObject;
-                realitLibraryPrefab.projectPath = GetPrefabAssetpath(gameObject);
-                serializedObject.Update();
+                if (target != null)
+                {
+                    GameObject gameObject = realitLibraryPrefab.gameObject;
+                    realitLibraryPrefab.projectPath = GetPrefabAssetpath(gameObject);
+                    serializedObject.Update();
+                }
             }
         }
 
@@ -31,24 +34,27 @@ namespace Realit.Library.Editor
         {
             RealitAsset realitLibraryPrefab = target as RealitAsset;
 
-            GUI.enabled = false;
-            EditorGUILayout.ObjectField("Library asset", RealitLibrarySettings.Instance, typeof(RealitLibrarySettings), false);
-            
-            if (!Application.isPlaying)
-                EditorGUILayout.PropertyField(ProjectPathProperty);
-            
-            EditorGUILayout.PropertyField(AddressablePathProperty);
-            GUI.enabled = true;
-            
-            if (!Application.isPlaying)
+            if (realitLibraryPrefab != null)
             {
-                string prefabPath = ProjectPathProperty.stringValue;
-                if (GUILayout.Button("Generate Assets"))
-                    RealitLibrarySettings.GenerateRessources(prefabPath);
-            }
+                GUI.enabled = false;
+                EditorGUILayout.ObjectField("Library asset", RealitLibrarySettings.Instance, typeof(RealitLibrarySettings), false);
 
-            //Apply
-            serializedObject.ApplyModifiedProperties();
+                if (!Application.isPlaying)
+                    EditorGUILayout.PropertyField(ProjectPathProperty);
+
+                EditorGUILayout.PropertyField(AddressablePathProperty);
+                GUI.enabled = true;
+
+                if (!Application.isPlaying)
+                {
+                    string prefabPath = ProjectPathProperty.stringValue;
+                    if (GUILayout.Button("Generate Assets"))
+                        RealitLibrarySettings.GenerateRessources(prefabPath);
+                }
+
+                //Apply
+                serializedObject.ApplyModifiedProperties();
+            }
         }
 
 

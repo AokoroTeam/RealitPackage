@@ -23,6 +23,7 @@ namespace Realit.Core.Features.GuidedVisite
         {
             transform.position = mainCam.transform.position;
             transform.rotation = mainCam.transform.rotation;
+            cam.fieldOfView = mainCam.fieldOfView;
         }
         protected override void OnFeatureInitiate()
         {
