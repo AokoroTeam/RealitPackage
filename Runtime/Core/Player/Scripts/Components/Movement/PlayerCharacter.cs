@@ -17,6 +17,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using Application = UnityEngine.Device.Application;
 
+using RotationMode = EasyCharacterMovement.RotationMode;
+
 namespace Realit.Core.Player.Movement
 {
     [AddComponentMenu("Realit/Player/PlayerCharacter")]
@@ -25,10 +27,12 @@ namespace Realit.Core.Player.Movement
         private const string AutoMovementWindow = "automovement";
         
         //Serialized fields
-        [BoxGroup("Status")]
+        [BoxGroup("ChanneledProperties"), ReadOnly]
         public ChanneledProperty<bool> Freezed;
-        [BoxGroup("Movement")]
+        [BoxGroup("ChanneledProperties"), ReadOnly]
         public ChanneledProperty<Vector2> movementInput;
+        [BoxGroup("ChanneledProperties"), ReadOnly]
+        public ChanneledProperty<RotationMode> rotationMode;
         
         [Space]
 
@@ -80,6 +84,9 @@ namespace Realit.Core.Player.Movement
             camManager.OnCameraProfileChanged += OnCameraProfileChanged;
 
             movementInput = new ChanneledProperty<Vector2>(Vector2.zero);
+            rotationMode = new ChanneledProperty<RotationMode>(GetRotationMode());
+            rotationMode.OnValueChanged += SetRotationMode;
+
         }
 
         protected override void OnStart()
@@ -130,6 +137,8 @@ namespace Realit.Core.Player.Movement
                         camManager.YInput.Write(agent, v.y);
                     }
                 }
+
+                Animate();
             }
 
             if (!Freezed)
@@ -229,7 +238,14 @@ namespace Realit.Core.Player.Movement
             return speed;
         }
 
-      
+        public override Vector3 GetVelocity()
+        {
+            if (isAgentMoving)
+                return agent.velocity;
+
+            return base.GetVelocity();
+        }
+
         #region Nav
         public void MoveToScreenLocationAsAgent(Vector2 screenPoint)
         {
@@ -394,7 +410,7 @@ namespace Realit.Core.Player.Movement
 
         #endregion
 
-        public void OnCameraProfileChanged()
+        public void OnCameraProfileChanged(BaseCameraController from, BaseCameraController to)
         {
             if (camManager)
             {
@@ -403,17 +419,23 @@ namespace Realit.Core.Player.Movement
                 {
                     //First person camera
                     case "FC":
-                        SetRotationMode(RotationMode.OrientToCameraViewDirection);
+                        //SetRotationMode(RotationMode.OrientToCameraViewDirection);
+                        SetRotationMode(RotationMode.OrientToMovement);
                         skinnedMeshRenderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
                         break;
                     //Third person camera
                     case "TC":
                         SetRotationMode(RotationMode.OrientToMovement);
+                        
+                        if(from != null)
+                            RotateTowards(from.transform.forward, true);
+
                         skinnedMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
                         break;
                     //Shoulder camera
                     case "SC":
-                        SetRotationMode(RotationMode.OrientToCameraViewDirection);
+                        //SetRotationMode(RotationMode.OrientToCameraViewDirection);
+                        SetRotationMode(RotationMode.OrientToMovement);
                         skinnedMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
                         break;
                 }

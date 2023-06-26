@@ -235,7 +235,7 @@ namespace Realit.Core.Features
         {
             if (Features.TryGetValue(featureName, out Feature feature))
             {
-                feature.LogMessage("Toggling feature");
+                //feature.LogMessage("Toggling feature");
                 feature.InternalToggleFeature();
             }
         }

@@ -14,7 +14,11 @@ namespace Realit.Core.Player.CameraManagement
 {
     public class CameraManager : MonoBehaviour, IEntityComponent<PlayerManager>, ILateUpdateEntityComponent<PlayerManager>
     {
-        public event Action OnCameraProfileChanged;
+        /// <summary>
+        /// First BaseCameraController : From
+        /// Second BaseCameraController : To
+        /// </summary>
+        public event Action<BaseCameraController, BaseCameraController> OnCameraProfileChanged;
         [BoxGroup("Base settings")]
         [SerializeField, Range(.01f, 4)]
         private float verticalSpeed = 1;
@@ -103,25 +107,20 @@ namespace Realit.Core.Player.CameraManagement
 
         public bool SwitchToCameraProfile(CameraControllerProfile cameraProfile)
         {
-            if(!Controllers.ContainsKey(cameraProfile))
+            if (Controllers.TryGetValue(cameraProfile, out BaseCameraController next))
             {
-                Debug.LogWarning($"Couldn't find {cameraProfile} inside array");
-                return false;
+                BaseCameraController last = CurrentProfile != null && Controllers.ContainsKey(CurrentProfile) ? Controllers[CurrentProfile] : null;
+                CurrentProfile = cameraProfile;
+
+                foreach (var kvp in Controllers)
+                    kvp.Value.gameObject.SetActive(kvp.Key == cameraProfile);
+
+                OnCameraProfileChanged?.Invoke(last, next);
+                return true;
             }
 
-            CurrentProfile = cameraProfile;
-            foreach (var kvp in Controllers)
-            {
-                GameObject cameraGO = kvp.Value.gameObject;
-
-                if (kvp.Key == cameraProfile)
-                    cameraGO.SetActive(true);
-                else
-                    cameraGO.SetActive(false);
-
-            }
-            OnCameraProfileChanged?.Invoke();
-            return true;
+            Debug.LogWarning($"Couldn't find {cameraProfile} inside array");
+            return false;
         }
 
         private void OnEnable()

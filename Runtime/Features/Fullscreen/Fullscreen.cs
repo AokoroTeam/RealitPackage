@@ -82,7 +82,7 @@ namespace Realit.Core.Features.Fullscreen
                     icon.SetIcon((Data as Fullscreen_Data).expand);
             }
         }
-
+#if UNITY_WEBGL
         private void OnTryToSetFullscreen(status status)
         {
             switch (status)
@@ -97,6 +97,7 @@ namespace Realit.Core.Features.Fullscreen
                     break;
             }
         }
+#endif
 
         protected override void OnStart()
         {

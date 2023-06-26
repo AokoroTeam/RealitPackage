@@ -18,17 +18,16 @@ namespace Realit.Core.Player.Controls.Modules
         [SerializeField]
         CanvasGroup canvasGroup;
         [SerializeField]
-        float maxSize = 500;
+        Vector2 minMaxSize = new(30,500);
         [SerializeField]
-        float minSize = 30;
-
+        AnimationCurve curve;
 
         Dictionary<MonoBehaviour, Action<Vector2>> observers = new();
 
         private void Start()
         {
-            round.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minSize * 2);
-            round.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minSize * 2);
+            round.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, minMaxSize.x * 2);
+            round.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, minMaxSize.x * 2);
         }
 
         public void AddObserver(MonoBehaviour mono, Action<Vector2> callback)
@@ -75,9 +74,11 @@ namespace Realit.Core.Player.Controls.Modules
                     if (!float.IsNaN(pos.x) || !float.IsNaN(pos.y))
                     {
                         wasPressedLastFrame = true;
-                        Vector2 delta = Vector2.ClampMagnitude(pos - startPos, maxSize);
+                        Vector2 delta = Vector2.ClampMagnitude(pos - startPos, minMaxSize.y);
                         canvasGroup.alpha = 1;
-                        bool bigEnough = delta.sqrMagnitude > minSize * minSize;
+
+                        float magnitude = delta.magnitude;
+                        bool bigEnough = magnitude > minMaxSize.x;
 
                         arrow.transform.gameObject.SetActive(bigEnough);
                         round.transform.gameObject.SetActive(!bigEnough);
@@ -86,11 +87,11 @@ namespace Realit.Core.Player.Controls.Modules
                         
                         if (bigEnough)
                         {
-                            currentSpeed = delta * multiplier;
+                            currentSpeed = delta * multiplier * curve.Evaluate(Mathf.InverseLerp(minMaxSize.x, minMaxSize.y, magnitude));
 
                             arrow.transform.position = startPos;
                             arrow.transform.right = delta;
-                            arrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, delta.magnitude);
+                            arrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, magnitude);
 
                             return;
                         }
