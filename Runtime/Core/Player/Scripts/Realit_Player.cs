@@ -16,49 +16,21 @@ using SystemInfo = UnityEngine.Device.SystemInfo;
 
 namespace Realit.Core.Player
 {
+
+    [AddComponentMenu("Realit/Player/Manager")]
     public class Realit_Player : PlayerManager
     {
-        public event Action<Realit_Player> OnControlChanges;
-
         [SerializeField, BoxGroup("Features")]
         private Transform featuresRoot;
         public Transform FeaturesRoot => featuresRoot;
-
-
-        private bool controlsHaveChanged = false;
-        protected override void Start()
+        
+        protected void Start()
         {
-            base.Start();
             if(Application.isMobilePlatform)
                 playerInput.SwitchCurrentControlScheme("Mobile");
             else
                 playerInput.SwitchCurrentControlScheme("Keyboard&Mouse");
-
         }
-
-        
-        private void OnEnable()
-        {
-            controlsHaveChanged = true;
-        }
-
-        private void OnDisable()
-        {
-            controlsHaveChanged = false;
-        }
-
-        protected override void LateUpdate()
-        {
-            base.LateUpdate();
-            if(controlsHaveChanged)
-            {
-                controlsHaveChanged = false;
-                OnControlChanges?.Invoke(this);
-            }
-        }
-
-
-        private void PlayerInput_onControlsChanged(PlayerInput obj) => controlsHaveChanged = true;
 
         protected override void SetupCursorForPlayer()
         {

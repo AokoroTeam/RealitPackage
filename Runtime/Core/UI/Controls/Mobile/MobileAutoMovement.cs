@@ -8,10 +8,10 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.EnhancedTouch;
 
-using static Realit.Core.Controls.MobileControls;
+using static Realit.Core.Player.Controls.MobileControls;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileAutoMovement : MonoBehaviour, IMobileControl
     {
@@ -51,15 +51,15 @@ namespace Realit.Core.Controls
             }
         }
 
-        void IMobileControl.Enable(Realit_Player player)
+        void IMobileControl.Enable(PlayerControls player)
         {
-            if (!player.GetLivingComponent(out playerCharacter))
+            if (!player.Manager.GetLivingComponent(out playerCharacter))
                 gameObject.SetActive(false);
             else
                 gameObject.SetActive(true);
         }
 
-        void IMobileControl.Disable(Realit_Player player)
+        void IMobileControl.Disable(PlayerControls player)
         {
 
         }

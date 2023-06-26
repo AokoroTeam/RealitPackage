@@ -12,69 +12,67 @@ namespace Realit.Core.Features.CameraSwitch
     [System.Serializable]
     public class CameraSwitch : Feature
     {
-        public CameraControllerProfile currentProfile;
-        public readonly List<CameraSwitchProfile> associatedProfiles;
+        private CameraManager _cameraManager;
+        private Queue<CameraControllerProfile> _cameraControllerProfiles;
+
+        public Queue<CameraControllerProfile> CameraControllerProfiles 
+        { 
+            get
+            {
+                if(_cameraControllerProfiles == null)
+                    _cameraControllerProfiles = new Queue<CameraControllerProfile>();
+
+                if(_cameraControllerProfiles.Count == 0)
+                {
+                    if(_cameraManager != null)
+                    {
+                        foreach (var controller in _cameraManager.Controllers)
+                        {
+                            CameraControllerProfile profile = controller.Key;
+                            _cameraControllerProfiles.Enqueue(profile);
+                        }
+                    }
+                }
+
+                return _cameraControllerProfiles;
+            }
+        }
 
         public CameraSwitch(FeatureDataAsset asset) : base(asset)
         {
-            associatedProfiles = new List<CameraSwitchProfile>();
-            var d = asset as CameraSwitch_Data;
-            foreach(var p in d.profiles)
-            {
-                associatedProfiles.Add(p);
-                //LogMessage($"{p.profile.name} added to list");
-            }
         }
 
 
         protected override void OnStart()
         {
-            if (Realit_Player.LocalPlayer.GetLivingComponent(out CameraManager manager))
-                currentProfile = manager.CurrentProfile;
+            if (_cameraManager != null)
+            {
+                CameraControllerProfile currentProfile = _cameraManager.CurrentProfile;
+                CameraControllerProfile profile = currentProfile;
 
-            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
-            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+                while (profile == currentProfile)
+                {
+                    if (!CameraControllerProfiles.TryDequeue(out profile))
+                        break;
+                }
 
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
-            GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+                _cameraManager.SwitchToCameraProfile(profile);
+            }
+            EndFeature();
         }
 
         protected override void OnEnd()
         {
-            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
         }
 
         protected override void OnLoad()
         {
-            CameraSwitch_Data _Data = Data as CameraSwitch_Data;
-        
-            RealitSceneManager.UI.CreateWindow(_Data.windowName, _Data.window);
-
-            GameNotifications.Instance.canUpdate.AddChannel(MyChannelKey, PriorityTags.None, false);
-            RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, _Data.windowName);
-
-            CursorManager.CursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, UnityEngine.CursorLockMode.None);
-            CursorManager.CursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
-
+            _cameraManager = Realit_Player.LocalPlayer.GetLivingComponent<CameraManager>();
         }
 
 
         protected override void OnUnload()
         {
-            CameraSwitch_Data _Data = Data as CameraSwitch_Data;
-
-            RealitSceneManager.UI.DestroyWindow(_Data.windowName);
-
-            GameNotifications.Instance.canUpdate.RemoveChannel(MyChannelKey);
-            RealitSceneManager.UI.windowPriority.RemoveChannel(MyChannelKey);
-
-            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
-            CursorManager.CursorLockMode.RemoveChannel(MyChannelKey);
-
         }
 
         internal void SelectCameraType(CameraControllerProfile profile)

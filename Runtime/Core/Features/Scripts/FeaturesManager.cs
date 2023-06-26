@@ -1,6 +1,5 @@
 using LTX;
 using LTX.ChanneledProperties;
-using LTX.ControlsDisplay;
 using Realit.Core.Features.UI;
 using Realit.Core.Managers;
 
@@ -169,8 +168,6 @@ namespace Realit.Core.Features
                 executeFeatures = new InputActionMap("executeFeatures");
                 executeFeatures.Disable();
 
-                //Filters to display accordingly
-                CD_ActionSettings[] actionSettings = new CD_ActionSettings[featuresCount];
                 int i = 0;
 
                 foreach (var kvp in Features)
@@ -201,9 +198,6 @@ namespace Realit.Core.Features
                         action.AddBinding($"<Keyboard>/numpad{digit}", groups: "Keyboard&Mouse");
 
                     }
-
-                    //Indicates to the UI where to find this actions and how to name them
-                    actionSettings[i] = new CD_ActionSettings(featureName, featureName, 1);
 
                     i++;
                 }

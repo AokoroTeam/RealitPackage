@@ -1,5 +1,6 @@
 using LTX;
 using LTX.ChanneledProperties;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Realit.Core.Managers
@@ -28,7 +29,9 @@ namespace Realit.Core.Managers
             }
         }
 
+        [SerializeField, ReadOnly]
         private ChanneledProperty<CursorLockMode> cursorLockMode;
+        [SerializeField, ReadOnly]
         private ChanneledProperty<bool> cursorVisibility;
 
         private void CursorVisibility_OnValueChanged(bool value) => Cursor.visible = value;

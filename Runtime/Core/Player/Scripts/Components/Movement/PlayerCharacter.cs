@@ -1,18 +1,15 @@
 using Aokoro.Entities;
 using Aokoro.Entities.Player;
-using Aokoro.UI.ControlsDiplay;
 
 using LTX.ChanneledProperties;
-using LTX.ControlsDisplay;
 using LTX.Settings;
-
-using NaughtyAttributes;
 
 using Realit.Core.Managers;
 using Realit.Core.Player.CameraManagement;
 
-using System;
 using EasyCharacterMovement;
+using NaughtyAttributes;
+using System;
 
 using UnityEngine;
 using UnityEngine.AI;
@@ -22,14 +19,12 @@ using Application = UnityEngine.Device.Application;
 
 namespace Realit.Core.Player.Movement
 {
-    [AddComponentMenu("Realit/Reader/Player/Movement/PlayerCharacter")]
-    public class PlayerCharacter : Character, IEntityComponent<PlayerManager>, IPlayerInputAssetProvider, IInputActionsProvider
+    [AddComponentMenu("Realit/Player/PlayerCharacter")]
+    public class PlayerCharacter : Character, IEntityComponent<PlayerManager>
     {
         private const string AutoMovementWindow = "automovement";
         
         //Serialized fields
-        [ReadOnly, BoxGroup("UI")]
-        public PlayerMovementUI UI;
         [BoxGroup("Status")]
         public ChanneledProperty<bool> Freezed;
         [BoxGroup("Movement")]
@@ -63,11 +58,7 @@ namespace Realit.Core.Player.Movement
         //Entity
         public PlayerManager Manager { get; set; }
         string IEntityComponent.ComponentName => "PlayerCharacter";
-
-        //Control display
-        public InputActionAsset ActionAsset { get => inputActions; set => inputActions = value; }
-        private PlayerControls playerControls;
-        private bool hasNewActions = false;
+        int IEntityComponent.InitialisationPriority => 0;
         
         //Components
         private NavMeshAgent agent;
@@ -78,7 +69,6 @@ namespace Realit.Core.Player.Movement
         protected override void OnAwake()
         {
             base.OnAwake();
-            playerControls = GetComponent<PlayerControls>();
             agent = GetComponent<NavMeshAgent>();
             camManager = GetComponentInChildren<CameraManager>();
             skinnedMeshRenderer = animator.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -106,7 +96,6 @@ namespace Realit.Core.Player.Movement
             base.OnOnEnable();
 
             movementInput.AddChannel(this, PriorityTags.Smallest);
-            playerControls.OnControlChanges += TriggerRefresh;
         }
 
         protected override void OnOnDisable()
@@ -114,7 +103,6 @@ namespace Realit.Core.Player.Movement
             base.OnOnDisable();
             
             movementInput.RemoveChannel(this);
-            playerControls.OnControlChanges -= TriggerRefresh;
         }
 
         protected override void OnUpdate()
@@ -172,7 +160,6 @@ namespace Realit.Core.Player.Movement
         {
             inputActions = manager.playerInput.actions;
             camera = Camera.main;
-            ShowUI();
 
             RealitSceneManager.UI.CreateWindow(AutoMovementWindow, agentMovingWindow);
             if (!Application.isMobilePlatform)
@@ -194,21 +181,6 @@ namespace Realit.Core.Player.Movement
                 Debug.LogWarning("[Player Character] Couldn't access player camera controller");
         }
 
-        public void BindToNewActions(InputActionAsset asset)
-        {
-            hasNewActions = true;
-            base.DeinitPlayerInput();
-
-            base.inputActions = asset;
-            base.InitPlayerInput();
-        }
-
-        #region Base character
-        protected override void InitPlayerInput()
-        {
-            if(!hasNewActions)
-                base.InitPlayerInput();
-        }
         protected override void Animate()
         {
             if (animator)
@@ -257,29 +229,7 @@ namespace Realit.Core.Player.Movement
             return speed;
         }
 
-        #endregion
-
-        #region UI
-        public void ShowUI() => UI?.Show();
-        public void HideUI() => UI?.Hide();
-        #endregion
-
-        #region CD_InputActionsProvider
-        private void TriggerRefresh() => OnActionsNeedRefresh?.Invoke();
-        public string GetControlScheme() => Manager.playerInput.currentControlScheme;
-
-        public InputAction[] GetInputActions() => ActionAsset.actionMaps[0].actions.ToArray();
-
-        public InputDevice[] GetDevices()
-        {
-            var pi = Manager.playerInput;
-            if(pi.hasMissingRequiredDevices)
-                return InputSystem.devices.ToArray();
-            else
-                return Manager.playerInput.devices.ToArray();
-        }
-        #endregion
-
+      
         #region Nav
         public void MoveToScreenLocationAsAgent(Vector2 screenPoint)
         {

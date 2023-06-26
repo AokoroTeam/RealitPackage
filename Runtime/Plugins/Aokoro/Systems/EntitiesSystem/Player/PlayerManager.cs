@@ -17,7 +17,6 @@ namespace Aokoro.Entities.Player
 
         [HideInInspector]
         public PlayerInput playerInput;
-        public string DefaultActionMap;
 
         [HideInInspector]
         public Animator anim;
@@ -27,8 +26,6 @@ namespace Aokoro.Entities.Player
         //[ReadOnly, BoxGroup("Inputs")]
         //public InputActionMap currentMap;
         private AudioListener audioListener;
-        [ReadOnly, BoxGroup("Inputs")]
-        public ChanneledProperty<string> actionMap;
   
         public AudioListener AudioListener
         {
@@ -72,18 +69,14 @@ namespace Aokoro.Entities.Player
             
             anim = GetComponent<Animator>();
             rb = GetComponent<Rigidbody>();
-
-            actionMap = new ChanneledProperty<string>(DefaultActionMap);
-            actionMap.OnValueChanged += ChangeActionMap;
+;
             
             SetupVariables();
         }
         public virtual void OnAwake()
         {
-            SetupInputs();
             Initiate<PlayerManager>();
         }
-
 
         protected override void Initiate<T>()
         {
@@ -94,58 +87,10 @@ namespace Aokoro.Entities.Player
             base.Initiate<T>();
         }
 
-        protected virtual void Start()
-        {
-            ChangeActionMap(actionMap);
-            playerInput.currentActionMap?.Enable();
-        }
-
         protected virtual void SetupCursorForPlayer()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-        }
-
-        protected void SetupInputs()
-        {
-            playerInput.actions = GenerateInputActionAsset();
-            playerInput.ActivateInput();
-
-            var actionMaps = playerInput.actions.actionMaps;
-            foreach (var actionMap in actionMaps)
-                actionMap.Disable();
-        }
-
-        protected virtual InputActionAsset GenerateInputActionAsset()
-        {
-            var asset = ScriptableObject.CreateInstance<InputActionAsset>();
-            IPlayerInputAssetProvider[] inputProviders = GetComponentsInChildren<IPlayerInputAssetProvider>();
-
-            for (int i = 0; i < inputProviders.Length; i++)
-            {
-                IPlayerInputAssetProvider inputProvider = inputProviders[i];
-                InputActionAsset subAsset = inputProvider.ActionAsset;
-
-                //ControlSchemes
-                foreach (var scheme in subAsset.controlSchemes)
-                {
-                    if (!asset.FindControlScheme(scheme.name).HasValue)
-                        asset.AddControlScheme(scheme);
-                }
-
-                foreach (InputActionMap map in subAsset.actionMaps)
-                {
-                    InputActionMap mapCopy = map.Clone();
-                    mapCopy.Disable();
-                    asset.AddActionMap(mapCopy);
-                }
-            }
-
-            for (int i = 0; i < inputProviders.Length; i++)
-                inputProviders[i].BindToNewActions(asset);
-
-            asset.Enable();
-            return asset;
         }
 
         public void Respawn(Vector3 position, Quaternion rotation)
@@ -153,31 +98,6 @@ namespace Aokoro.Entities.Player
             rb.position = position;
             rb.rotation = rotation;
             OnRespawn?.Invoke();
-        }
-
-
-        public void ChangeActionMap(string targetMap)
-        {
-            
-            if (playerInput.actions != null)
-            {
-                if (playerInput.actions.FindActionMap(targetMap) != null)
-                {
-                    InputActionMap lastActionMap = playerInput.currentActionMap;
-                    lastActionMap?.Disable();
-
-                    if (lastActionMap != null)
-                    {
-                        string currentMap = lastActionMap.name;
-                        OnMapChange?.Invoke(currentMap, targetMap);
-                    }
-
-                    playerInput.SwitchCurrentActionMap(targetMap);
-                    //currentMap = playerInput.currentActionMap;
-
-                    Debug.Log($"[Realit Player] Changing action map to {playerInput.currentActionMap.name}");
-                }
-            }
         }
         private void OnEnable()
         {

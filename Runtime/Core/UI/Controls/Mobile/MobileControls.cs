@@ -6,14 +6,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileControls : MonoBehaviour
     {
-        private const string SchemeSettingName = "MobileControlScheme";
-        
-        [ShowNativeProperty]
-        public string CurrentSchemeName => currentScheme == null ? string.Empty : currentScheme.SchemeName;
+        private const string SchemeSettingName = "MobileControlScheme";        
+        public string TargetSchemeName
+        {
+            get
+            {
+                var ts = defaultScheme.SchemeName;
+
+                if (MainSettingsManager.TryGetSettingValue(SchemeSettingName, out int scheme))
+                {
+                    foreach (var kv in schemes)
+                    {
+                        if (kv.Value == scheme)
+                        {
+                            ts = kv.Key.SchemeName;
+                            break;
+                        }
+                    }
+                }
+                return ts;
+            }
+        }
 
         [SerializeField, ReadOnly]
         private MobileControlScheme currentScheme;
@@ -22,7 +39,9 @@ namespace Realit.Core.Controls
 
         private Dictionary<MobileControlScheme, int> schemes;
         private CanvasGroup canvasGroup;
-        private Realit_Player player;
+        private PlayerControls playerControls;
+
+        private bool isMobile = false;
 
         private void Awake()
         {
@@ -66,55 +85,21 @@ namespace Realit.Core.Controls
                 SubscribeAndRefresh(RealitSceneManager.Player);
 
             RealitSceneManager.OnPlayerIsSetup += SubscribeAndRefresh;
-            ChangeScheme(string.Empty);
-        }
-
-        private void OnEnable()
-        {
-            SyncSchemeWithSetting();
-        }
-
-        private void OnDisable()
-        {
-            ChangeScheme(string.Empty, false);
-        }
-        private void SyncSchemeWithSetting()
-        {
-            if (MainSettingsManager.TryGetSettingValue(SchemeSettingName, out int scheme))
-            {
-                foreach (var kv in schemes)
-                {
-                    if(kv.Value == scheme)
-                    {
-                        ChangeScheme(kv.Key.SchemeName, false);
-                        return;
-                    }
-                }
-            }
-            
-            ChangeScheme(defaultScheme.SchemeName);
         }
 
         private void OnDestroy()
         {
             //EnhancedTouchSupport.Disable();
-            if (RealitSceneManager.Player != null)
-                RealitSceneManager.Player.OnControlChanges -= SyncWithPlayer;
+            if (playerControls != null)
+                playerControls.OnControlChanges -= SyncWithPlayerControlScheme;
             
             RealitSceneManager.OnPlayerIsSetup -= SubscribeAndRefresh;
         }
 
-
-
-
-
-        // Update is called once per frame
         void Update()
         {
             if(currentScheme != null)
-            {
                 currentScheme.PerformControls();
-            }
         }
 
 
@@ -132,17 +117,22 @@ namespace Realit.Core.Controls
             return raycastResultsList.Count > 0;
         }
 
-        private void SubscribeAndRefresh(Realit_Player player)
+        private void SubscribeAndRefresh(Realit_Player playerManager)
         {
-            this.player = player;
-            player.OnControlChanges += SyncWithPlayer;
-            SyncWithPlayer(player);
+            if (playerManager.GetLivingComponent(out playerControls))
+            {
+                playerControls.OnControlChanges += SyncWithPlayerControlScheme;
+                SyncWithPlayerControlScheme(playerControls);
+            }
         }
 
-        public void ChangeScheme(string schemeName, bool writeIntoSetting = true)
+        public void ActivateMobileControls(string schemeName, bool writeIntoSetting = true)
         {
-            if (player == null)
+            if (playerControls == null)
                 return;
+
+            gameObject.SetActive(true);
+            isMobile = true;
 
             currentScheme = null;
 
@@ -151,41 +141,48 @@ namespace Realit.Core.Controls
                 if (scheme.Key.SchemeName == schemeName)
                 {
                     currentScheme = scheme.Key;
-                    currentScheme.EnableScheme(player);
+                    currentScheme.EnableScheme(playerControls);
 
                     if (writeIntoSetting)
                         MainSettingsManager.TrySetSettingValue(SchemeSettingName, scheme.Value);
                 }
                 else
-                    scheme.Key.DisableScheme(player);
+                    scheme.Key.DisableScheme(playerControls);
             }
         }
 
-        private void SyncWithPlayer(Realit_Player realit_Player)
+        private void DeactiveMobileControls()
         {
-            if (gameObject.activeInHierarchy)
-            {
-                string currentControlScheme = RealitSceneManager.Player.playerInput.currentControlScheme;
+            currentScheme = null;
+            gameObject.SetActive(false);
+            isMobile = false;
 
-                bool isMobile = currentControlScheme == "Mobile";
-                if(isMobile)
-                    Debug.Log("[Mobile Controles] Activating touch control");
-                else
-                    Debug.Log("[Mobile Controles] Deactivating touch control");
-
-                canvasGroup.alpha = isMobile ? 1 : 0;
-                canvasGroup.interactable = isMobile;
-                canvasGroup.blocksRaycasts = true;
-
-                ChangeScheme(isMobile ? defaultScheme.SchemeName : string.Empty);
-            }
+            foreach (var scheme in schemes)
+                scheme.Key.DisableScheme(playerControls);
         }
+
+        private void SyncWithPlayerControlScheme(PlayerControls controls)
+        {
+            string playerControlScheme = controls.PlayerInput.currentControlScheme;
+            bool isMobile = playerControlScheme == "Mobile";
+
+
+            //No sync necessary
+            if (isMobile == this.isMobile)
+                return;
+
+            if(isMobile)
+                ActivateMobileControls(TargetSchemeName);
+            else
+                DeactiveMobileControls();
+        }
+
 
         public interface IMobileControl
         {
             public void Perform();
-            public void Enable(Realit_Player player);
-            public void Disable(Realit_Player player);
+            public void Enable(PlayerControls player);
+            public void Disable(PlayerControls player);
         }
     }
 }

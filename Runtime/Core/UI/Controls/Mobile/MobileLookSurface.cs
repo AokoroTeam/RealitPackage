@@ -2,7 +2,7 @@ using LTX.ChanneledProperties;
 using Realit.Core.Player;
 using UnityEngine;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileLookSurface : MobileBaseLookSurface, MobileControls.IMobileControl
     {        
@@ -12,14 +12,14 @@ namespace Realit.Core.Controls
         MobileJoystick movingJoystick;
 
 
-        protected override void InternalEnable(Realit_Player player)
+        protected override void InternalEnable(PlayerControls player)
         {
             lookJoystick.OnPointerDownEvent += LookJoystick_OnPointerDown;
             lookJoystick.OnPointerUpEvent += LookJoystick_OnPointerUp;
             base.InternalEnable(player);
         }
 
-        protected override void InternalDisable(Realit_Player player)
+        protected override void InternalDisable(PlayerControls player)
         {
             lookJoystick.OnPointerDownEvent -= LookJoystick_OnPointerDown;
             lookJoystick.OnPointerUpEvent -= LookJoystick_OnPointerUp;

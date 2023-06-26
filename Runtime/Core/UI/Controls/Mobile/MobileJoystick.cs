@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Layouts;
 using UnityEngine.InputSystem.OnScreen;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileJoystick : OnScreenControl, MobileControls.IMobileControl
     {
@@ -50,12 +50,12 @@ namespace Realit.Core.Controls
             SendValueToControl(joystick.ScaledValue * .75f);
         }
 
-        void MobileControls.IMobileControl.Enable(Realit_Player player)
+        void MobileControls.IMobileControl.Enable(PlayerControls player)
         {
             joystick.interactable = true;
         }
 
-        void MobileControls.IMobileControl.Disable(Realit_Player player)
+        void MobileControls.IMobileControl.Disable(PlayerControls player)
         {
             joystick.interactable = false;
         }

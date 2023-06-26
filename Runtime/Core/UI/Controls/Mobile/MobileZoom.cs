@@ -7,7 +7,7 @@ using UnityEngine;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileZoom : MonoBehaviour, MobileControls.IMobileControl
     {
@@ -64,15 +64,15 @@ namespace Realit.Core.Controls
             }
         }
 
-        void MobileControls.IMobileControl.Enable(Realit_Player player)
+        void MobileControls.IMobileControl.Enable(PlayerControls player)
         {
-            if (player.GetLivingComponent(out cameraManager))
+            if (player.Manager.GetLivingComponent(out cameraManager))
                 cameraManager.ZInput.AddChannel(this, PriorityTags.Default);
         }
 
-        void MobileControls.IMobileControl.Disable(Realit_Player player)
+        void MobileControls.IMobileControl.Disable(PlayerControls player)
         {
-            if (player.GetLivingComponent(out cameraManager))
+            if (player.Manager.GetLivingComponent(out cameraManager))
                 cameraManager.ZInput.RemoveChannel(this);
         }
     }

@@ -7,6 +7,7 @@ namespace Aokoro.Entities
 
     public interface IEntityComponent 
     {
+        int InitialisationPriority { get; }
         string ComponentName { get; }
     }
 

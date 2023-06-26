@@ -15,7 +15,6 @@ namespace Realit.Core.Player.CameraManagement
     public class CameraManager : MonoBehaviour, IEntityComponent<PlayerManager>, ILateUpdateEntityComponent<PlayerManager>
     {
         public event Action OnCameraProfileChanged;
-
         [BoxGroup("Base settings")]
         [SerializeField, Range(.01f, 4)]
         private float verticalSpeed = 1;
@@ -52,7 +51,9 @@ namespace Realit.Core.Player.CameraManagement
         public float Z => ZInput * zoomSpeed;
 
         public PlayerManager Manager { get; set; }
-        public string ComponentName => "CameraManager";
+
+        string IEntityComponent.ComponentName => "CameraManager";
+        int IEntityComponent.InitialisationPriority => 0;
 
         public CameraControllerProfile CurrentProfile { get; set; }
 

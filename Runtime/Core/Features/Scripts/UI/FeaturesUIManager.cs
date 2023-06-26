@@ -52,12 +52,7 @@ namespace Realit.Core.Features.UI
                     int firstPriority = first.Data.uiPriority;
                     int secondPriority = second.Data.uiPriority;
 
-                    if (firstPriority > secondPriority)
-                        return 1;
-                    else if (firstPriority < secondPriority)
-                        return -1;
-
-                    return 0;
+                    return secondPriority.CompareTo(firstPriority);
                 }
             ));
                 LookForUIComponents(features);
@@ -82,8 +77,12 @@ namespace Realit.Core.Features.UI
                 ui.Clear();
 
                 foreach (var feature in features)
-                    ui.AddItem(feature);
+                {
+                    var item = ui.AddItem(feature);
+                    item.transform.SetSiblingIndex(features.IndexOf(feature));
+                }
             }
+
         }
 
         public bool TryGetUIForFeature(Feature feature, out FeatureIndicator indicator)

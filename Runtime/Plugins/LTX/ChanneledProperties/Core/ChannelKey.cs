@@ -66,6 +66,7 @@ namespace LTX.ChanneledProperties
 
 #if UNITY_EDITOR
             key.pointer = pointer;
+            key.ObjectType = pointer.GetType().Name;
 #endif
 
             //Debug.Log($"Created key with id {key._id} for {pointer.name}", key.pointer);
@@ -84,6 +85,8 @@ namespace LTX.ChanneledProperties
 #if UNITY_EDITOR
         [SerializeField]
         internal Object pointer;
+        [SerializeField]
+        internal string ObjectType;
 #endif
 
         private int hashcode;
@@ -96,6 +99,7 @@ namespace LTX.ChanneledProperties
 
 #if UNITY_EDITOR
             pointer = null;
+            ObjectType = null;
 #endif
         }
 

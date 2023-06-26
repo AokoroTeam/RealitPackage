@@ -8,7 +8,7 @@ using UnityEngine;
 
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileBaseLookSurface : MonoBehaviour, MobileControls.IMobileControl
     {
@@ -34,12 +34,12 @@ namespace Realit.Core.Controls
         }
 
 
-        void MobileControls.IMobileControl.Enable(Realit_Player player)
+        void MobileControls.IMobileControl.Enable(PlayerControls player)
         {
             InternalEnable(player);
         }
 
-        void MobileControls.IMobileControl.Disable(Realit_Player player)
+        void MobileControls.IMobileControl.Disable(PlayerControls player)
         {
             InternalDisable(player);
         }
@@ -52,9 +52,9 @@ namespace Realit.Core.Controls
                 WriteIntoChannels(playerCamController);
         }
 
-        protected virtual void InternalEnable(Realit_Player player)
+        protected virtual void InternalEnable(PlayerControls player)
         {
-            if (player.GetLivingComponent(out CameraManager newCam))
+            if (player.Manager.GetLivingComponent(out CameraManager newCam))
             {
                 if (playerCamController != null && newCam != playerCamController)
                     RemoveChannels(playerCamController);
@@ -65,7 +65,7 @@ namespace Realit.Core.Controls
             }
         }
 
-        protected virtual void InternalDisable(Realit_Player player)
+        protected virtual void InternalDisable(PlayerControls player)
         {
             if (playerCamController != null)
                 RemoveChannels(playerCamController);

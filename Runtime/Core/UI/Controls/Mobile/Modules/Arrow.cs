@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
-namespace Realit.Core.Controls.Modules
+namespace Realit.Core.Player.Controls.Modules
 {
     public class Arrow : MobileBaseLookSurface
     {
@@ -110,13 +110,13 @@ namespace Realit.Core.Controls.Modules
             }
         }
 
-        protected override void InternalDisable(Realit_Player player)
+        protected override void InternalDisable(PlayerControls player)
         {
             base.InternalDisable(player);
             canvasGroup.alpha = 0;
         }
 
-        protected override void InternalEnable(Realit_Player player)
+        protected override void InternalEnable(PlayerControls player)
         {
             base.InternalEnable(player);
             canvasGroup.alpha = 0;

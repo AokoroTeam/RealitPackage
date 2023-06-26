@@ -42,10 +42,10 @@ namespace Realit.Core.Features.Fullscreen
         public void RequestFullScreen()
         {
             Debug.Log("Requesting fullscreen");
+            if (Application.isEditor)
+                return;
 #if UNITY_WEBGL
-            requestFullscreen(navUI: navigationUI.hide);
-            if (Application.isMobilePlatform)
-                Screen.orientation = ScreenOrientation.LandscapeLeft;
+            requestFullscreen(OnTryToSetFullscreen, navigationUI.hide);
 #else
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
             Screen.fullScreen = true;      
@@ -56,8 +56,10 @@ namespace Realit.Core.Features.Fullscreen
         public void DisableFullScreen()
         {
             Debug.Log("Exiting fullscreen");
+            if (Application.isEditor)
+                return;
 #if UNITY_WEBGL
-            exitFullscreen();
+            exitFullscreen(OnTryToSetFullscreen);
 
 #else
             Screen.fullScreen = false;
@@ -78,6 +80,21 @@ namespace Realit.Core.Features.Fullscreen
                 OnFullScreenExit?.Invoke();
                 if (FeaturesManager.UI.TryGetUIForFeature(this, out FeatureIndicator icon))
                     icon.SetIcon((Data as Fullscreen_Data).expand);
+            }
+        }
+
+        private void OnTryToSetFullscreen(status status)
+        {
+            switch (status)
+            {
+                case status.Success:
+                    LogMessage("Fullscreen change has succeed");
+                    break;
+                case status.Error:
+                    LogMessage("Fullscreen change has failed");
+                    break;
+                default:
+                    break;
             }
         }
 

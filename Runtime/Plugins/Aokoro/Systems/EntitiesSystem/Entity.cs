@@ -36,7 +36,7 @@ namespace Aokoro.Entities
         protected virtual void Initiate<T>() where T : Entity
         {
 
-            var componentsArray = SetupComponents<T>(GetComponentsInChildren<IEntityComponent>(true));
+            var componentsArray = InitializeComponents<T>(GetComponentsInChildren<IEntityComponent>(true));
             components = new Dictionary<string, IEntityComponent>(componentsArray.Length);
 
             List<IUpdateEntityComponent> updatesList = new();
@@ -64,9 +64,9 @@ namespace Aokoro.Entities
             OnEntityInitiated?.Invoke(this);
         }
 
-        private IEntityComponent[] SetupComponents<T>(IEntityComponent[] ChildComponents) where T : Entity
+        private IEntityComponent[] InitializeComponents<T>(IEntityComponent[] ChildComponents) where T : Entity
         {
-            List<IEntityComponent> componentsList = new List<IEntityComponent>();
+            List<IEntityComponent> componentsList = new(ChildComponents);
             int count = ChildComponents.Length;
 
             for (int i = 0; i < count; i++)
@@ -112,8 +112,6 @@ namespace Aokoro.Entities
                     }
 
                 }
-
-                componentsList.Add(component);
             }
 
             return componentsList.ToArray();

@@ -3,9 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Realit.Core.Controls.MobileControls;
+using static Realit.Core.Player.Controls.MobileControls;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileControlScheme : MonoBehaviour
     {
@@ -21,7 +21,7 @@ namespace Realit.Core.Controls
             canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public void EnableScheme(Realit_Player player)
+        public void EnableScheme(PlayerControls player)
         {
             for (int i = 0; i < controls.Length; i++)
                 controls[i].Enable(player);
@@ -29,7 +29,7 @@ namespace Realit.Core.Controls
             canvasGroup.alpha = 1;
         }
 
-        public void DisableScheme(Realit_Player player)
+        public void DisableScheme(PlayerControls player)
         {
             for (int i = 0; i < controls.Length; i++)
                 controls[i].Disable(player);

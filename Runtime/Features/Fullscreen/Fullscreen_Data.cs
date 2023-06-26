@@ -11,6 +11,6 @@ namespace Realit.Core.Features.Fullscreen
 
         public override Fullscreen GenerateFeatureFromData() => new Fullscreen(this);
 
-        public override bool CanGenerateFeature() => Fullscreen.IsFullScreenSupported;
+        public override bool CanGenerateFeature() => Application.isEditor || Fullscreen.IsFullScreenSupported;
     }
 }

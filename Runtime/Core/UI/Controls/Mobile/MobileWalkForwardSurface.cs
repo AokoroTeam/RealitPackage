@@ -4,11 +4,11 @@ using Realit.Core.Player;
 using Realit.Core.Player.Movement;
 using UnityEngine;
 using UnityEngine.UI;
-using static Realit.Core.Controls.MobileControls;
+using static Realit.Core.Player.Controls.MobileControls;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileWalkForwardSurface : MonoBehaviour, IMobileControl
     {
@@ -29,32 +29,36 @@ namespace Realit.Core.Controls
         private Vector2 currentInput;
         PlayerCharacter playerCharacter;
 
-
-
         private void Awake()
         {
+
             holdCircle.gameObject.SetActive(false);
         }
-
 
         void MobileControls.IMobileControl.Perform()
         {
             EvaluateValues();
 
             if (playerCharacter != null)
-                WriteIntoChannels(currentInput);
+            {
+                if (isHolding || waitingForHold)
+                    SetPriorityToMax();
+                else
+                    SetPriorityToMin();
 
+                WriteIntoChannels(currentInput);
+            }
         }
 
-        void MobileControls.IMobileControl.Enable(Realit_Player player)
+        void MobileControls.IMobileControl.Enable(PlayerControls player)
         {
-            if (playerCharacter != null || player.GetLivingComponent(out playerCharacter))
+            if (playerCharacter != null || player.Manager.GetLivingComponent(out playerCharacter))
                 AddChannels();
         }
 
-        void MobileControls.IMobileControl.Disable(Realit_Player player)
+        void MobileControls.IMobileControl.Disable(PlayerControls player)
         {
-            if (playerCharacter != null || player.GetLivingComponent(out playerCharacter))
+            if (playerCharacter != null || player.Manager.GetLivingComponent(out playerCharacter))
                 RemoveChannels();
         }
         private void EvaluateValues()
@@ -140,7 +144,7 @@ namespace Realit.Core.Controls
         #region Channels Management
         private void AddChannels()
         {
-            playerCharacter.movementInput.AddChannel(this, PriorityTags.Default);
+            playerCharacter.movementInput.AddChannel(this, PriorityTags.None);
         }
 
         private void RemoveChannels()
@@ -148,6 +152,16 @@ namespace Realit.Core.Controls
             playerCharacter.movementInput.RemoveChannel(this);
         }
 
+        private void SetPriorityToMax()
+        {
+            if(playerCharacter.movementInput.HasChannel(this))
+                playerCharacter.movementInput.ChangeChannelPriority(this, PriorityTags.Default);
+        }
+        private void SetPriorityToMin()
+        {
+            if (playerCharacter.movementInput.HasChannel(this))
+                playerCharacter.movementInput.ChangeChannelPriority(this, PriorityTags.None);
+        }
         private void WriteIntoChannels(Vector2 value)
         {
             playerCharacter.movementInput.Write(this, value);

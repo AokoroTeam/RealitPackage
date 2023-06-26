@@ -1,12 +1,16 @@
 using LTX.ChanneledProperties;
 using Realit.Core.Managers;
 using Realit.Core.Player.CameraManagement;
+using Realit.Core.Player.Controls;
 using Realit.Core.Player.Movement;
+
 using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
+
+
 namespace Realit.Core.Features.GuidedVisite
 {
 
@@ -32,8 +36,10 @@ namespace Realit.Core.Features.GuidedVisite
 
         public CameraControllerProfile lastPlayerProfile;
         public PlayerCharacter playerCharacter;
+        public PlayerControls playerControls;
         public CameraManager cameraManager;
         public PlayerInput playerInputs;
+
         internal GV_CamOverlay overlayCamera;
 
         public GuidedVisite(FeatureDataAsset asset) : base(asset)
@@ -77,9 +83,6 @@ namespace Realit.Core.Features.GuidedVisite
             //Player
             Player.Realit_Player player = RealitSceneManager.Player;
 
-            if (player.GetLivingComponent(out PlayerCharacter character))
-                character.Freezed.RemoveChannel(MyChannelKey);
-
             if (player.GetLivingComponent(out playerCharacter))
             {
                 playerInputs = playerCharacter.Manager.playerInput;
@@ -100,7 +103,8 @@ namespace Realit.Core.Features.GuidedVisite
                 cameraManager.YInput.AddChannel(MyChannelKey, PriorityTags.None);
             }
 
-            player.actionMap.AddChannel(MyChannelKey, PriorityTags.None, "EV");
+            if(player.GetLivingComponent(out playerControls))
+                playerControls.actionMapPriority.AddChannel(MyChannelKey, PriorityTags.None, "EV");
         }
 
         protected override void OnUnload()
@@ -115,11 +119,12 @@ namespace Realit.Core.Features.GuidedVisite
             RealitSceneManager.UI.DestroyWindow(Data.FeatureName);
 
             if (playerCharacter != null)
-            {
                 playerCharacter.Freezed.RemoveChannel(MyChannelKey);
-                playerCharacter.Manager.actionMap.RemoveChannel(MyChannelKey);
-            }
 
+
+            if (playerControls != null)
+                playerControls.actionMapPriority.RemoveChannel(MyChannelKey);
+            
             if (playerInputs != null)
             {
                 var actionMap = playerInputs.actions.FindActionMap("EV");
@@ -157,10 +162,16 @@ namespace Realit.Core.Features.GuidedVisite
             if (playerCharacter != null)
             {
                 playerCharacter.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
-                playerCharacter.Manager.actionMap.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
             }
             else
-                LogWarning("Player Character is missing");
+                LogWarning("PlayerCharacter is missing");
+
+            if(playerControls != null)
+            {
+                playerControls.actionMapPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.High);
+            }
+            else
+                LogWarning("PlayerControls is missing");
 
             if (cameraManager != null)
             {
@@ -170,7 +181,7 @@ namespace Realit.Core.Features.GuidedVisite
                 cameraManager.YInput.ChangeChannelPriority(MyChannelKey, 30);
             }
             else
-                LogWarning("Camera manager is missing");
+                LogWarning("CameraManager is missing");
 
             
             GoToPoint(points[0], true);
@@ -188,11 +199,11 @@ namespace Realit.Core.Features.GuidedVisite
                 cameraManager.SwitchToCameraProfile(lastPlayerProfile);
 
             if (playerCharacter != null)
-            {
                 playerCharacter.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-                playerCharacter.Manager.actionMap.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            }
-
+            
+            if(playerControls != null)
+                playerControls.actionMapPriority.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            
             if (cameraManager != null)
             {
                 cameraManager.XInput.ChangeChannelPriority(MyChannelKey, PriorityTags.None);

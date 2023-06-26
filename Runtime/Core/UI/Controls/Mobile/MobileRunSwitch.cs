@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.Layouts;
 using UnityEngine.InputSystem.OnScreen;
 using UnityEngine.UI;
 
-namespace Realit.Core.Controls
+namespace Realit.Core.Player.Controls
 {
     public class MobileRunSwitch : OnScreenControl, MobileControls.IMobileControl
     {
@@ -43,11 +43,11 @@ namespace Realit.Core.Controls
             SendValueToControl(switchManager.isOn ? 1f : 0f);
         }
 
-        void MobileControls.IMobileControl.Enable(Realit_Player player)
+        void MobileControls.IMobileControl.Enable(PlayerControls player)
         {
         }
 
-        void MobileControls.IMobileControl.Disable(Realit_Player player)
+        void MobileControls.IMobileControl.Disable(PlayerControls player)
         {
         }
     }
