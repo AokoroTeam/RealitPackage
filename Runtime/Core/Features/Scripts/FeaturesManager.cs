@@ -169,7 +169,7 @@ namespace Realit.Core.Features
                 executeFeatures.Disable();
 
                 int i = 0;
-
+                int currentDigit = 1;
                 foreach (var kvp in Features)
                 {
                     string featureName = kvp.Key;
@@ -190,13 +190,13 @@ namespace Realit.Core.Features
                     else
                     {
                         ///Creates an action to start executing the feature binded to 1, then 2, then 3, etc....
-                        int digit = (i == 9 ? 0 : i + 1);
+                        int digit = (i == 10 ? 0 : currentDigit);
                         InputAction action = executeFeatures.AddAction(featureName, InputActionType.Button);
 
                         ///TODO : other devices than keyboard should have bindings too
                         action.AddBinding($"<Keyboard>/{digit}", groups: "Keyboard&Mouse");
                         action.AddBinding($"<Keyboard>/numpad{digit}", groups: "Keyboard&Mouse");
-
+                        currentDigit++;
                     }
 
                     i++;

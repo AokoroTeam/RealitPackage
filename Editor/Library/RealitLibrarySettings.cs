@@ -120,8 +120,6 @@ namespace Realit.Library.Editor
         }
 
 
-        [MenuItem("Realit/Library/Generate")]
-        public static void Generate() => Instance.GenerateLibrary();
 
         [Button]
         public void ScanLibrary()

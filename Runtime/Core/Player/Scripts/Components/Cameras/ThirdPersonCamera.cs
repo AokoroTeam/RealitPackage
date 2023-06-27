@@ -47,7 +47,7 @@ namespace Realit.Core.Player.CameraManagement
         {
             var offset = -forward.normalized;
             Debug.DrawLine(transform.position, FreeLook.LookAt.position + offset);
-
+            //Debug.Break();
             FreeLook.ForceCameraPosition(FreeLook.LookAt.position + offset, Quaternion.LookRotation(forward, Vector3.up));
         }
 

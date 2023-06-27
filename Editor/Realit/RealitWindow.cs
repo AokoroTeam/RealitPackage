@@ -15,9 +15,11 @@ namespace Realit.Editor
 
         private bool UsePreset;
         private string buildName;
+
+        private bool hasMainMenu;
         private Dictionary<RealitScene, bool> scenes = new();
 
-        [MenuItem("Realit/Window")]
+        [MenuItem("Tools/Aokoro/Realit")]
         public static void ShowWindw()
         {
             GetWindow<RealitWindow>("Realit");
@@ -56,14 +58,16 @@ namespace Realit.Editor
                 foreach (var scene in scenes)
                 {
                     EditorGUILayout.BeginHorizontal(GUILayout.Height(25), GUILayout.ExpandWidth(false));
-                    string sceneName = EditorGUILayout.TextField(scene.Key.SceneName, GUILayout.ExpandWidth(false));
+                    string sceneName = scene.Key.SceneName;
+
+                    EditorGUILayout.LabelField(sceneName, GUILayout.ExpandWidth(false));
 
                     if (!scene.Value)
                         EditorGUILayout.LabelField("Scene not valid", GUILayout.ExpandHeight(false), GUILayout.ExpandWidth(false));
 
-                    scene.Key.SceneName = sceneName;
                     EditorGUILayout.EndHorizontal();
                 }
+                hasMainMenu = GUILayout.Toggle(hasMainMenu, "Main Menu");
 
                 EditorGUI.indentLevel--;
                 EditorGUILayout.BeginHorizontal();
@@ -99,7 +103,7 @@ namespace Realit.Editor
 
 
             GUI.enabled = buildProfile != null && scenes.Count > 0 && scenes.All(ctx => ctx.Value);
-
+            
             if (GUILayout.Button("Send to build settings"))
             {
                 List<EditorBuildSettingsScene> orderedScenes = new List<EditorBuildSettingsScene>();
@@ -113,7 +117,7 @@ namespace Realit.Editor
 
                     if(fileName == "MainMenu")
                     {
-                        editorBuildSettingsScene.enabled = true;
+                        editorBuildSettingsScene.enabled = hasMainMenu;
                         orderedScenes.Insert(0, editorBuildSettingsScene);
                     }
                     else
