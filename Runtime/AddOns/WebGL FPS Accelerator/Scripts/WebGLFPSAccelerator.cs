@@ -232,9 +232,9 @@ namespace WFA
       Text[] list = FindObjectsOfType(typeof(Text)) as Text[];
       foreach (Text obj in list)
       {
-        obj.textDPI = textDPI;
-        obj.wfaDPI = DPI.value;
-            obj.SetAllDirty();
+        //obj.textDPI = textDPI;
+        //obj.wfaDPI = DPI.value;
+        obj.SetAllDirty();
       }
     }
 
