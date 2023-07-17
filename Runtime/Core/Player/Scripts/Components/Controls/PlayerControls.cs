@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Aokoro.Entities.Player;
-using Aokoro.Entities;
+using LTX.Entities.Player;
+using LTX.Entities;
 using System;
 using LTX.ChanneledProperties;
 using NaughtyAttributes;
+
+using Screen = UnityEngine.Device.Screen;
+using Application = UnityEngine.Device.Application;
+using SystemInfo = UnityEngine.Device.SystemInfo;
 
 namespace Realit.Core.Player.Controls
     
@@ -55,7 +59,8 @@ namespace Realit.Core.Player.Controls
         public void SetupInputDevices()
         {
             InputDevice[] devices = InputSystem.devices.ToArray();
-            PlayerInput.SwitchCurrentControlScheme(devices);
+            string controlScheme = Application.isMobilePlatform ? "Mobile" : "Keyboard&Mouse";
+            PlayerInput.SwitchCurrentControlScheme(controlScheme, devices);
         }
         protected void SetupInputs()
         {

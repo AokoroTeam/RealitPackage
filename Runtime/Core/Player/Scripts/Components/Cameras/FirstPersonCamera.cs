@@ -1,7 +1,7 @@
-using Aokoro.Entities.Player;
+using LTX.Entities.Player;
 using Cinemachine;
 using UnityEngine;
-using Aokoro.Entities;
+using LTX.Entities;
 using Cinemachine.Utility;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;

@@ -1,5 +1,5 @@
-using Aokoro.Entities;
-using Aokoro.Entities.Player;
+using LTX.Entities;
+using LTX.Entities.Player;
 using LTX.ChanneledProperties;
 using NaughtyAttributes;
 using System;

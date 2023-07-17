@@ -1,5 +1,5 @@
-using Aokoro.Entities;
-using Aokoro.Entities.Player;
+using LTX.Entities;
+using LTX.Entities.Player;
 
 using LTX.ChanneledProperties;
 using LTX.Settings;
@@ -31,6 +31,8 @@ namespace Realit.Core.Player.Movement
         public ChanneledProperty<bool> Freezed;
         [BoxGroup("ChanneledProperties"), ReadOnly]
         public ChanneledProperty<Vector2> movementInput;
+        [BoxGroup("ChanneledProperties"), ReadOnly]
+        public ChanneledProperty<bool> autoSprint;
         [BoxGroup("ChanneledProperties"), ReadOnly]
         public ChanneledProperty<RotationMode> rotationMode;
         
@@ -83,10 +85,11 @@ namespace Realit.Core.Player.Movement
 
             camManager.OnCameraProfileChanged += OnCameraProfileChanged;
 
-            movementInput = new ChanneledProperty<Vector2>(Vector2.zero);
-            rotationMode = new ChanneledProperty<RotationMode>(GetRotationMode());
+            movementInput = new(Vector2.zero);
+            rotationMode = new(GetRotationMode());
             rotationMode.OnValueChanged += SetRotationMode;
 
+            autoSprint = new(false);
         }
 
         protected override void OnStart()
@@ -216,6 +219,10 @@ namespace Realit.Core.Player.Movement
             movementInput.Write(this, base.GetMovementInput());
 
             return movementInput;
+        }
+        public override bool IsSprinting()
+        {
+            return canEverSprint && (_sprintButtonPressed || autoSprint);
         }
 
         public override float GetMaxSpeed()

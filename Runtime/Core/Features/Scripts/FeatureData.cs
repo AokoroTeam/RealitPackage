@@ -62,7 +62,7 @@ namespace Realit.Core.Features
 
         public override int GetHashCode()
         {
-            return featureName.GetHashCode();
+            return string.IsNullOrWhiteSpace(featureName) ? string.Empty.GetHashCode() : featureName.GetHashCode();
         }
         public override string ToString()
         {

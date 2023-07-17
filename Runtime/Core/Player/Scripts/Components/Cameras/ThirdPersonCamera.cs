@@ -1,5 +1,5 @@
-using Aokoro.Entities.Player;
-using Aokoro.Entities;
+using LTX.Entities.Player;
+using LTX.Entities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,7 +47,7 @@ namespace Realit.Core.Player.CameraManagement
         {
             var offset = -forward.normalized;
             Debug.DrawLine(transform.position, FreeLook.LookAt.position + offset);
-            //Debug.Break();
+
             FreeLook.ForceCameraPosition(FreeLook.LookAt.position + offset, Quaternion.LookRotation(forward, Vector3.up));
         }
 

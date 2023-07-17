@@ -1,20 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Realit.Core
 {
     public class RealitWebgl : MonoBehaviour
     {
-        private Dictionary<string, List<Action>> callbacks;
-#if UNITY_WEBGL
-        private void Awake()
+        private Dictionary<string, List<Action>> callbacks = new();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern void CallOnAppReady();
+
+        void Start()
         {
-            callbacks = new Dictionary<string, List<Action>>();
+            //js callback when application is loaded
+            CallOnAppReady();
         }
-
-
+#endif
         public void SubscribeToEvent(string eventName, Action callback)
         {
             if(callbacks.TryGetValue(eventName, out List<Action> list))
@@ -38,12 +43,5 @@ namespace Realit.Core
                     action?.Invoke();
             }
         }
-#else
-        private void Awake()
-        {
-            Destroy(gameObject);
-        }
-#endif
-
     }
 }

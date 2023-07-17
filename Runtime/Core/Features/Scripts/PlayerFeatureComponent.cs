@@ -1,4 +1,4 @@
-using Aokoro.Entities.Player;
+using LTX.Entities.Player;
 
 using Realit.Core.Player;
 using Realit.Core.Player.Controls;

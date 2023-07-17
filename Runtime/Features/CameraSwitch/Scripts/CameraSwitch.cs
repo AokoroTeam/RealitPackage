@@ -77,8 +77,8 @@ namespace Realit.Core.Features.CameraSwitch
 
         internal void SelectCameraType(CameraControllerProfile profile)
         {
-            if (Realit_Player.LocalPlayer.GetLivingComponent(out CameraManager cameraManager))
-                cameraManager.SwitchToCameraProfile(profile);
+            if (_cameraManager != null)
+                _cameraManager.SwitchToCameraProfile(profile);
         }
     }
 }

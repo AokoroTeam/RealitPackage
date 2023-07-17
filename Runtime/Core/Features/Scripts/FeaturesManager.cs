@@ -169,7 +169,7 @@ namespace Realit.Core.Features
                 executeFeatures.Disable();
 
                 int i = 0;
-                int currentDigit = 1;
+
                 foreach (var kvp in Features)
                 {
                     string featureName = kvp.Key;
@@ -178,28 +178,30 @@ namespace Realit.Core.Features
 
                     if (data.hasInputOverride)
                     {
-                        InputAction from = data.inputOverride;
-                        InputAction generated = executeFeatures.AddAction(from.name, from.type);
+                        InputAction generated = executeFeatures.AddAction(featureName, InputActionType.Button);
 
-                        ReadOnlyArray<InputBinding> bindings = from.bindings;
+                        ReadOnlyArray<InputBinding> bindings = data.inputOverride.bindings;
 
                         for (int j = 0; j < bindings.Count; j++)
-                            generated.AddBinding(bindings[j]);
+                            generated.AddBinding(bindings[j].path, groups: "Keyboard&Mouse");
 
                     }
                     else
                     {
-                        ///Creates an action to start executing the feature binded to 1, then 2, then 3, etc....
-                        int digit = (i == 10 ? 0 : currentDigit);
-                        InputAction action = executeFeatures.AddAction(featureName, InputActionType.Button);
+                        if (i <= 9)
+                        {
+                            ///Creates an action to start executing the feature binded to 1, then 2, then 3, etc....
+                            int digit = (i == 9 ? 0 : i + 1);
+                            InputAction action = executeFeatures.AddAction(featureName, InputActionType.Button);
 
-                        ///TODO : other devices than keyboard should have bindings too
-                        action.AddBinding($"<Keyboard>/{digit}", groups: "Keyboard&Mouse");
-                        action.AddBinding($"<Keyboard>/numpad{digit}", groups: "Keyboard&Mouse");
-                        currentDigit++;
+                            ///TODO : other devices than keyboard should have bindings too
+                            action.AddBinding($"<Keyboard>/{digit}", groups: "Keyboard&Mouse");
+                            action.AddBinding($"<Keyboard>/numpad{digit}", groups: "Keyboard&Mouse");
+
+                            i++;
+                        }
                     }
 
-                    i++;
                 }
 
                 executeFeatures.Enable();
