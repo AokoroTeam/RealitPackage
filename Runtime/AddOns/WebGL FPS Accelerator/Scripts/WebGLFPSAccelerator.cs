@@ -32,28 +32,6 @@ namespace WFA
       }
     }
 
-    public static float textDPI
-    {
-      get
-      {
-        return mainData.textDPI;
-      }
-      set
-      {
-        float temp = mainData.textDPI;
-        mainData.textDPI = value;
-
-        if (mainData.textDPI == temp)
-          return;
-
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-          return;
-#endif
-
-        applyTextDPI();
-      }
-    }
     public static bool showUI
     {
       get
@@ -200,7 +178,6 @@ namespace WFA
       EditorApplication.playModeStateChanged += playModeStateChanged;
 #endif
 
-      applyTextDPI();
     }
 
     void Update()
@@ -208,7 +185,7 @@ namespace WFA
       counter(GetInstanceID(), "Update", out int counter0);
       if (counter0 < 15)
         return;
-      else if (counter0 == 16)
+      else if (counter0 == 15)
       {
         init();
         return;
@@ -226,17 +203,6 @@ namespace WFA
       }
     }
 #endif
-
-    public static void applyTextDPI()
-    {
-      Text[] list = FindObjectsOfType(typeof(Text)) as Text[];
-      foreach (Text obj in list)
-      {
-        obj.textDPI = textDPI;
-        obj.wfaDPI = DPI.value;
-            obj.SetAllDirty();
-      }
-    }
 
     public static void run()
     {

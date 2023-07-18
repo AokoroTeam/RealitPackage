@@ -85,11 +85,7 @@ namespace WFA
       if (directory != null && directory.Parent != null)
         directory = directory.Parent;
 
-      string string1 = "\\Scripts" + "\\" + CS_FILENAME;
-
-#if UNITY_EDITOR_OSX
-            string1 = string1.Replace("\\", "/");
-#endif
+      string string1 = "/Scripts" + "/" + CS_FILENAME;
 
       string path = directory.FullName + string1;
 

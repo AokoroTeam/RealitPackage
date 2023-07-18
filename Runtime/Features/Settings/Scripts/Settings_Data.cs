@@ -12,9 +12,7 @@ namespace Realit.Core.Features.Settings
     public class Settings_Data : FeatureData<Settings>
     {
         [BoxGroup("UI")]
-        public GameObject window;
-        [BoxGroup("UI")]
-        public string windowName;
+        public GameObject panel;
         [BoxGroup("UI")]
         public Sprite tabIcon;
 

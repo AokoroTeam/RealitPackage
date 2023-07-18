@@ -252,7 +252,7 @@ parameter of the browser.
   public static void help()
   {
     System.IO.DirectoryInfo directory = System.IO.Directory.GetParent(Application.dataPath);
-    var folder = directory.ToString() + "\\Assets";
+    var folder = directory.ToString() + "/Assets";
     var filePath = wfaEditor.findFilePath(folder, "wfaDocumentation.pdf");
 
     System.Diagnostics.Process.Start(filePath);

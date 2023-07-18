@@ -198,22 +198,6 @@ namespace WFA
       }
 
       /// <summary>
-      /// Use this parameter if you want to adjust Text Resolution. (it does not work with
-      /// Text Mesh Pro)
-      /// </summary>
-      public static float textDPI
-      {
-        get
-        {
-          return WebGLFPSAccelerator.textDPI;
-        }
-        set
-        {
-          WebGLFPSAccelerator.textDPI = value;
-        }
-      }
-
-      /// <summary>
       /// Make this “true” if you want to use in-game UI to adjust parameters of WFA.
       /// IF IT IS “FALSE”, THE UI WILL NEVER BE CREATED AND ANY CODE WILL WORK ABOUT THIS.
       /// So you don’t need to worry about performance issues.
