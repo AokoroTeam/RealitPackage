@@ -30,7 +30,7 @@ namespace Aokoro.UI
 
 
 
-        public ChanneledProperty<string> windowPriority;
+        public PrioritisedProperty<string> windowPriority;
 
 
         private void OnValidate()
@@ -41,7 +41,7 @@ namespace Aokoro.UI
         {
             if (Application.isPlaying)
             {
-                windowPriority = new ChanneledProperty<string>();
+                windowPriority = new PrioritisedProperty<string>();
                 windowPriority.AddChannel(this, 1, defaultWindow);
             }
 
@@ -56,12 +56,12 @@ namespace Aokoro.UI
 
         private void OnEnable()
         {
-            windowPriority.OnValueChanged += WindowPriority_OnValueChanged;
+            windowPriority.AddOnValueChangeCallback(WindowPriority_OnValueChanged);
         }
 
         private void OnDisable()
         {
-            windowPriority.OnValueChanged -= WindowPriority_OnValueChanged;
+            windowPriority.RemoveOnValueChangeCallback(WindowPriority_OnValueChanged);
         }
 
         private void WindowPriority_OnValueChanged(string windowName)

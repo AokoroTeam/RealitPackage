@@ -16,7 +16,7 @@ namespace Aokoro.Entities
         Dictionary<string, IEntityComponent> components;
         Dictionary<Type, IEntityComponent> getEntityComponentCache;
 
-        public ChanneledProperty<bool> Freezed;
+        public PrioritisedProperty<bool> Freezed;
 
         private bool isReady = false;
 
@@ -29,7 +29,7 @@ namespace Aokoro.Entities
 
         protected void SetupVariables()
         {
-            Freezed = new ChanneledProperty<bool>(false);
+            Freezed = new PrioritisedProperty<bool>(false);
             getEntityComponentCache = new Dictionary<Type, IEntityComponent>();
         }
 
