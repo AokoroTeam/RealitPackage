@@ -158,13 +158,14 @@ namespace LTX.Settings.UI
             }
         }
 
-        public virtual void WriteAllDirtySettings()
+        public virtual void ApplyDirtySettings()
         {
             foreach (var category in categoryUIManagers)
-                category.Value.ApplyDirtySettings();
+                category.Value.SetDirtyCategory();
 
-            SettingsHandler?.WriteAllDirtySettings();
         }
+
+        public virtual void WriteDirtySettings() => SettingsHandler?.WriteDirtySettings();
 
     }
 }

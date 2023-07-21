@@ -14,7 +14,7 @@ namespace Realit.Core.Features.Settings.UI
         {
             ui = GetComponent<SettingsUI>();
         }
-        
+
         public override void BuildUI()
         {
             base.BuildUI();

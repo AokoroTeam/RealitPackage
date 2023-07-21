@@ -50,13 +50,13 @@ namespace LTX.Settings
         {
 
         }
-
+        #region Category Management
         public void SetCategories(SettingsCategory[] categories)
         {
             this.categories = new List<SettingsCategory>(categories);
 
             GeneratePaths();
-            ReadSettings();
+            ReadAllSettings();
 
             OnCategoryContentChanges?.Invoke();
         }
@@ -111,57 +111,8 @@ namespace LTX.Settings
                 OnCategoryContentChanges?.Invoke();
             }
         }
-        public bool TryGetSetting<T>(string internalName, out T setting) where T : ISetting
-        {
-            var isetting = GetSetting(internalName);
-            if(isetting is T tSetting)
-            {
-                setting = tSetting;
-                return true;
-            }
 
-            setting = default;
-            return false;
-        }
-
-        public bool TryGetSettingInternal(string internalName, out ISetting setting)
-        {
-            setting = GetSetting(internalName);
-            return setting != null;
-        }
-
-        public ISetting GetSetting(string internalName)
-        {
-            if(settingsPath.TryGetValue(internalName, out List<SettingPath> paths))
-            {
-                SettingPath p = paths[0];
-                return GetSetting(p);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        protected ISetting GetSetting(SettingPath p) => categories[p.category].Sections[p.section].Settings[p.setting];
-        public bool ApplySetting(ISetting setting, bool addToDirtyCollection = true)
-        {
-            if (setting == null)
-                return false;
-
-            if (settingsPath.TryGetValue(setting.InternalName, out List<SettingPath> paths))
-            {
-                foreach (SettingPath p in paths)
-                    categories[p.category].Sections[p.section].Settings[p.setting] = setting;
-
-                if(addToDirtyCollection)
-                    dirtySettings.Add(setting.InternalName);
-
-                return true;
-            }
-
-            return false;
-        }
+        #endregion
         protected void GeneratePaths()
         {
             //Clears the old one or creates one on startup
@@ -190,75 +141,122 @@ namespace LTX.Settings
                 }
             }
         }
-        public bool TryGetSettingValue<T>(string settingInternalName, out T value)
+
+
+        public bool TryGetSetting<T>(string internalName, out T setting) where T : ISetting
         {
-            var setting = GetSetting(settingInternalName);
-            if(setting is ISetting<T> s)
+            var isetting = GetSetting(internalName);
+            if(isetting is T tSetting)
+            {
+                setting = tSetting;
+                return true;
+            }
+
+            setting = default;
+            return false;
+        }
+
+        public bool TrySetSetting<T>(string internalName, T setting) where T : ISetting
+        {
+            if (setting == null)
+                return false;
+
+            if (settingsPath.TryGetValue(setting.InternalName, out List<SettingPath> paths))
+            {
+                foreach (SettingPath p in paths)
+                    categories[p.category].Sections[p.section].Settings[p.setting] = setting;
+
+                dirtySettings.Add(setting.InternalName);
+
+                if(callbacks.TryGetValue(internalName, out var actions))
+                {
+                    foreach(var action in actions)
+                        action?.Invoke(setting);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        protected ISetting GetSetting(SettingPath p) => categories[p.category].Sections[p.section].Settings[p.setting];
+        public ISetting<T> GetSetting<T>(string internalName) => GetSetting(internalName) as ISetting<T>;
+        public ISetting GetSetting(string internalName)
+        {
+            if(settingsPath.TryGetValue(internalName, out List<SettingPath> paths))
+            {
+                SettingPath p = paths[0];
+                return GetSetting(p);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        
+        #region GET SET values
+        public bool TryGetSettingValue<T>(string internalName, out T value)
+        {
+            if(TryGetSetting(internalName, out ISetting<T> s))
             {
                 value = s.Value;
                 return true;
             }
-            
+
             value = default;
             return false;
         }
-        public bool TrySetSettingValue<T>(string settingInternalName, T value)
+
+        public bool TrySetSettingValue<T>(string internalName, T value)
         {
-            var setting = GetSetting(settingInternalName);
-            if (setting is ISetting<T> s)
+            if(TryGetSetting(internalName, out ISetting<T> s))
             {
                 s.SetValue(value);
-                WriteGenericSetting(settingInternalName, s);
-                return true;
+                return TrySetSetting(internalName, s);
             }
 
             return false;
         }
 
-        public void WriteAllDirtySettings() => WriteSettings(true);
+        #endregion
+        #region Writting and reading
 
-        internal virtual void WriteSettings(bool onlyDirty)
-        {
-            if (onlyDirty)
-            {
-                foreach (var settingInternalName in dirtySettings)
-                    WriteSetting(settingInternalName, GetSetting(settingInternalName));
-
-                dirtySettings.Clear();
-            }
-            else
-            {
-                foreach(var kvp in settingsPath) 
-                {
-                    var s = GetSetting(kvp.Key);
-                    if (!settingProvider.TryWriteSetting(ref s))
-                        Debug.LogError($"[Settings] Couldn't write setting {kvp.Key}");
-                    else
-                    {
-                        //In case setting was changed because of writting
-                        ApplySetting(s, false);
-                    }
-                }
-            }
-        }
-        private void WriteGenericSetting<T>(string settingInternalName, ISetting<T> s)
-        {
-            if (s is ISetting s2)
-                WriteSetting(settingInternalName, s2);
-
-        }
-        private void WriteSetting(string settingInternalName, ISetting s)
+        private void WriteSetting(ISetting s)
         {
             if (!settingProvider.TryWriteSetting(ref s))
-                Debug.LogError($"[Settings] Couldn't write setting {settingInternalName}");
-            else
+                Debug.LogError($"[Settings] Couldn't write setting {s.InternalName}");
+        }
+
+
+        internal virtual void WriteDirtySettings()
+        {
+            foreach (var settingInternalName in dirtySettings)
+                WriteSetting(GetSetting(settingInternalName));
+
+            dirtySettings.Clear();
+        }
+
+        internal virtual void WriteAllSettings()
+        {
+            foreach (var kvp in settingsPath)
             {
-                //In case setting was changed because of writting
-                ApplySetting(s, false);
+                var s = GetSetting(kvp.Key);
+                WriteSetting(s);
             }
         }
 
-        public virtual void ReadSettings()
+        private void ReadSetting(ISetting setting)
+        {
+            //If the setting doesn't exist yet then reset it
+            if (!settingProvider.TryReadSetting(ref setting))
+                setting.Reset();
+
+            TrySetSetting(setting.InternalName, setting);
+        }
+
+        public virtual void ReadAllSettings()
         {
             if (settingsPath == null || settingProvider == null)
                 return;
@@ -266,16 +264,11 @@ namespace LTX.Settings
             foreach(var kvp in settingsPath)
             {
                 string internalName = kvp.Key;
-
-                ISetting s = GetSetting(internalName);
-
-                //If the setting doesn't exist yet then reset it
-                if (!settingProvider.TryReadSetting(ref s))
-                    s.Reset();
-
-                ApplySetting(s, false);
+                ReadSetting(GetSetting(internalName));
             }
         }
+
+        #endregion
 
         public void SetSettingProvider(ISettingProvider settingProvider, bool refresh = true)
         {
@@ -283,7 +276,7 @@ namespace LTX.Settings
             {
                 this.settingProvider = settingProvider;
                 if(refresh)
-                    ReadSettings();
+                    ReadAllSettings();
             }
         }
 

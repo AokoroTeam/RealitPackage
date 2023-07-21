@@ -11,6 +11,8 @@ using NaughtyAttributes;
 using Screen = UnityEngine.Device.Screen;
 using Application = UnityEngine.Device.Application;
 using SystemInfo = UnityEngine.Device.SystemInfo;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 namespace Realit.Core.Player.Controls
     
@@ -38,6 +40,8 @@ namespace Realit.Core.Player.Controls
         public void Initiate(PlayerManager manager)
         {
             PlayerInput = manager.playerInput;
+
+            manager.Freezed.AddOnValueChangeCallback(OnFreezed);
         }
 
         private void Awake()
@@ -48,6 +52,16 @@ namespace Realit.Core.Player.Controls
             PlayerInput = GetComponent<PlayerInput>();
             if (PlayerInput.actions != null)
                 SetupInputDevices();
+
+            //PlayerInput.uiInputModule = EventSystem.current.currentInputModule as InputSystemUIInputModule;
+        }
+
+        private void OnFreezed(bool freezed)
+        {
+            if (freezed)
+                PlayerInput.DeactivateInput();
+            else
+                PlayerInput.ActivateInput();
         }
 
         private void Start()

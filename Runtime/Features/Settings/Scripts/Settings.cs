@@ -85,7 +85,7 @@ namespace Realit.Core.Features.Settings
             Settings_Data _Data = Data as Settings_Data;
 
             if(uiBuilder != null)
-                uiBuilder.WriteAllDirtySettings();
+                uiBuilder.WriteDirtySettings();
 
             
             RealitSceneManager.Player.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.None);

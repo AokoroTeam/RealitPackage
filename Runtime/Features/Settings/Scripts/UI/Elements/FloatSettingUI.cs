@@ -12,7 +12,7 @@ using Michsky.MUIP;
 
 namespace Realit.Core.Features.Settings.UI
 {
-    public class FloatSettingUI : BaseSettingUI
+    public class FloatSettingUI : BaseSettingUI<float>
     {
         protected override SettingType Type => SettingType.Float;
 
@@ -30,26 +30,13 @@ namespace Realit.Core.Features.Settings.UI
         {
             base.OnEnable();
         }
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-        }
-
+        
         protected override bool IsDirty() => firstValue != sliderManager.mainSlider.value;
 
-        protected override ISetting SyncSettingWithUI()
-        {
-            FloatSetting setting = (FloatSetting)Setting;
 
-            setting.SetValue(sliderManager.mainSlider.value);
-
-            return setting;
-        }
-
-        public override void SyncUIWithSetting(ISetting setting)
+        public override void SetUIFromValue(ISetting<float> setting)
         {
             FloatSetting floatSetting = (FloatSetting)setting;
-
             sliderManager.mainSlider.minValue = floatSetting.MinMax.x;
             sliderManager.mainSlider.maxValue = floatSetting.MinMax.y;
 
@@ -60,5 +47,7 @@ namespace Realit.Core.Features.Settings.UI
 
             sliderManager.UpdateUI();
         }
+
+        public override float GetValueFromUI() => sliderManager.mainSlider.value;
     }
 }

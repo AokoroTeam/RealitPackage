@@ -20,7 +20,7 @@ namespace LTX.Settings.UI
 
             public abstract void Populate(SettingsCategory category);
 
-            internal abstract void ApplyDirtySettings();
+            internal abstract void SetDirtyCategory();
         }
     }
 
@@ -76,12 +76,12 @@ namespace LTX.Settings.UI
             Destroy(go);
             return null;
         }
-        internal override void ApplyDirtySettings()
+        internal override void SetDirtyCategory()
         {
             for (int i = 0; i < SectionsUI.Length; i++)
             {
                 if (SectionsUI[i] != null)
-                    SectionsUI[i].ApplyDirtySettings();
+                    SectionsUI[i].SetDirtySettings();
             }
         }
         protected virtual void Clear() 

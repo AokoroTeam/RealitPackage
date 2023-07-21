@@ -49,6 +49,7 @@ namespace Realit.Core.Player.Controls
 
             var childrenSchemes = GetComponentsInChildren<MobileControlScheme>();
 
+            MainSettingsManager.SettingsHandler.AddCallback(SchemeSettingName, SyncWithPlayerSetting);
             if (MainSettingsManager.SettingsHandler.TryGetSetting(SchemeSettingName, out ChoiceSetting choiceSetting))
             {
                 string[] choices = choiceSetting.Choices;
@@ -92,7 +93,9 @@ namespace Realit.Core.Player.Controls
             //EnhancedTouchSupport.Disable();
             if (playerControls != null)
                 playerControls.OnControlChanges -= SyncWithPlayerControlScheme;
-            
+
+
+            MainSettingsManager.SettingsHandler.RemoveCallback(SchemeSettingName, SyncWithPlayerSetting);
             RealitSceneManager.OnPlayerIsSetup -= SubscribeAndRefresh;
         }
 
@@ -166,7 +169,6 @@ namespace Realit.Core.Player.Controls
             string playerControlScheme = controls.PlayerInput.currentControlScheme;
             bool isMobile = playerControlScheme == "Mobile";
 
-
             //No sync necessary
             if (isMobile == this.isMobile)
                 return;
@@ -177,6 +179,11 @@ namespace Realit.Core.Player.Controls
                 DeactiveMobileControls();
         }
 
+        private void SyncWithPlayerSetting(ISetting setting)
+        {
+            if(setting is ChoiceSetting choiceSetting)
+                ActivateMobileControls(choiceSetting.GetChoice(choiceSetting.Value), false);
+        }
 
         public interface IMobileControl
         {

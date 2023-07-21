@@ -9,10 +9,11 @@ using LTX.Settings.Types;
 
 using TMPro;
 using Michsky.MUIP;
+using UnityEngine.TextCore.Text;
 
 namespace Realit.Core.Features.Settings.UI
 {
-    public class TextSettingUI : BaseSettingUI
+    public class TextSettingUI : BaseSettingUI<string>
     {
         protected override SettingType Type => SettingType.Text;
 
@@ -26,32 +27,15 @@ namespace Realit.Core.Features.Settings.UI
         private string firstValue;
 
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-        }
 
         protected override bool IsDirty() => firstValue != inputField.inputText.text;
 
-        protected override ISetting SyncSettingWithUI()
+        public override string GetValueFromUI() => inputField.inputText.text;
+
+        public override void SetUIFromValue(ISetting<string> setting)
         {
-            TextSetting setting = (TextSetting)Setting;
-
-            setting.SetValue(inputField.inputText.text);
-
-            return setting;
-        }
-
-        public override void SyncUIWithSetting(ISetting setting)
-        {
-            TextSetting textSetting = (TextSetting)setting;
-
-            inputField.inputText.SetTextWithoutNotify(textSetting.Value);
-            firstValue = textSetting.Value;
+            inputField.inputText.SetTextWithoutNotify(setting.Value);
+            firstValue = setting.Value;
 
             label.text = setting.Label;
 

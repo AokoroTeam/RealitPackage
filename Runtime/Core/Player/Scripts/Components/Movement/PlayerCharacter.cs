@@ -185,6 +185,13 @@ namespace Realit.Core.Player.Movement
             }
 
             manager.OnEntityInitiated += Manager_OnEntityInitiated;
+            Freezed.AddChannel(manager, PriorityTags.Smallest, manager.Freezed);
+            manager.Freezed.AddOnValueChangeCallback(OnManagerFreezed);
+        }
+
+        private void OnManagerFreezed(bool freezed)
+        {
+            Freezed.Write(Manager, freezed);
         }
 
         private void Manager_OnEntityInitiated(Entity entity)

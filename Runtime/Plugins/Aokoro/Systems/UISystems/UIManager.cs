@@ -23,6 +23,9 @@ namespace Aokoro.UI
 
         [SerializeField, ReadOnly]
         private WindowManager baseWindowManager;
+        [SerializeField]
+        private RectTransform windowsTransform;
+
 
         private List<string> WindowsNames() => baseWindowManager != null ? 
             baseWindowManager.windows.Select(ctx => ctx.windowName).ToList() :
@@ -30,6 +33,7 @@ namespace Aokoro.UI
 
 
 
+        public PrioritisedProperty<Vector4> borderOffsets = new PrioritisedProperty<Vector4>(Vector4.zero);
         public PrioritisedProperty<string> windowPriority;
 
 
@@ -45,9 +49,13 @@ namespace Aokoro.UI
                 windowPriority.AddChannel(this, 1, defaultWindow);
             }
 
+            borderOffsets.AddOnValueChangeCallback(OnBorderChanges);
             OnValidate();
             base.Awake();
         }
+
+
+
         private void Start()
         {
             if (!string.IsNullOrWhiteSpace(DefaultWindow))
@@ -115,6 +123,19 @@ namespace Aokoro.UI
         {
             int index = baseWindowManager.windows.FindIndex(ctx => ctx.windowName == windowName);
             return index == -1 ? null : baseWindowManager.windows[index];
+        }
+
+        private void OnBorderChanges(Vector4 offset)
+        {
+            float left = offset.x;
+            float right = offset.y;
+            float up = offset.z;
+            float down = offset.w;
+
+
+            windowsTransform.offsetMax = new(right, up);
+            windowsTransform.offsetMin = new(left, down);
+
         }
     }
 }
