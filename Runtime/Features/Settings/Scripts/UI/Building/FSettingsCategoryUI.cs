@@ -8,11 +8,11 @@ namespace Realit.Core.Features.Settings.UI
 {
     public class FSettingsCategoryUI : CategoryUI<FSettingsSectionUI, FSettingsUIBuilder>
     {
-        SettingWindowActions swa;
+        SettingsUI swa;
 
         private void Awake()
         {
-            swa = GetComponentInParent<SettingWindowActions>();
+            swa = GetComponentInParent<SettingsUI>();
         }
 
         protected override bool CanCreateSectionUI(SettingsSection settingsSection)

@@ -37,17 +37,17 @@ namespace Realit.Core.Player.CameraManagement
 
 
         [BoxGroup("Axis")]
-        public ChanneledProperty<float> XInput = new(0);
+        public PrioritisedProperty<float> XInput = new(0);
         [BoxGroup("Axis")]
-        public ChanneledProperty<float> YInput = new(0);
+        public PrioritisedProperty<float> YInput = new(0);
         [BoxGroup("Axis")]
-        public ChanneledProperty<float> ZInput = new(0);
+        public PrioritisedProperty<float> ZInput = new(0);
         [BoxGroup("Axis"), HorizontalLine]
-        public ChanneledProperty<bool> XActive = new(true);
+        public PrioritisedProperty<bool> XActive = new(true);
         [BoxGroup("Axis")]
-        public ChanneledProperty<bool> YActive = new(true);
+        public PrioritisedProperty<bool> YActive = new(true);
         [BoxGroup("Axis")]
-        public ChanneledProperty<bool> ZActive = new(true);
+        public PrioritisedProperty<bool> ZActive = new(true);
 
 
         public float X => XInput * horizontalSpeed;

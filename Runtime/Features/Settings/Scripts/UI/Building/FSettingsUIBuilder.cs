@@ -7,28 +7,18 @@ namespace Realit.Core.Features.Settings.UI
 {
     public class FSettingsUIBuilder : SettingsUIBuilder<FSettingsCategoryUI, FSettingsUIBuilder>
     {
-        [SerializeField]
-        private GameObject tabPrefab;
-        [SerializeField]
-        private Transform tabsParent;
-        [SerializeField]
-        public Transform bottomArea;
-
-
-        private WindowManager windowManager;
+        SettingsUI ui;
 
 
         private void Awake()
         {
-            windowManager = GetComponent<WindowManager>();
+            ui = GetComponent<SettingsUI>();
         }
-
+        
         public override void BuildUI()
         {
             base.BuildUI();
-
-            windowManager.windows.Find(ctx => ctx.windowName == "Autre")?.buttonObject.transform.SetAsLastSibling();
-            windowManager.InitializeWindows();
+            ui.windowManager.InitializeWindows();
         }
 
         protected override bool CanCreateCategoryUI(SettingsCategory category)
@@ -40,24 +30,16 @@ namespace Realit.Core.Features.Settings.UI
         {
             FSettingsCategoryUI fSettingsCategoryUI = base.CreateCategoryUI(category);
 
-            var tabGO = Instantiate(tabPrefab, tabsParent);
-            
-            tabGO.transform.SetSiblingIndex(tabsParent.childCount - 1);
-            
-            ButtonManager buttonManager = tabGO.GetComponent<ButtonManager>();
-
-            tabGO.name = $"Tab_{category.categoryName}";
-            buttonManager.SetText(category.categoryName);
-            buttonManager.SetIcon(category.icon);
+            ui.tabs.CreateNewItem(category.categoryName, category.icon);
+            ui.tabs.UpdateUI();
 
             WindowManager.WindowItem window = new()
             {
-                buttonObject = tabGO,
                 windowObject = fSettingsCategoryUI.gameObject,
-                windowName = category.categoryName,
+                windowName = category.categoryName
             };
 
-            windowManager.windows.Add(window);
+            ui.windowManager.windows.Add(window);
             
             return fSettingsCategoryUI;
         }

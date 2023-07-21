@@ -23,7 +23,7 @@ namespace Realit.Core.Features
 
         public static bool AreFeaturesLoaded { get; private set; }
 
-        public ChanneledProperty<bool> canExecuteFeature = new ChanneledProperty<bool>(true);
+        public PrioritisedProperty<bool> canExecuteFeature = new PrioritisedProperty<bool>(true);
 
         public static FeaturesUIManager UI;
         public static List<Feature> FeaturesList => new(Features.Values);
@@ -55,13 +55,13 @@ namespace Realit.Core.Features
         protected override void Awake()
         {
             base.Awake();
-            canExecuteFeature.OnValueChanged += ctx =>
+            canExecuteFeature.AddOnValueChangeCallback(ctx =>
             {
                 if (ctx)
                     executeFeatures.Enable();
                 else
                     executeFeatures.Disable();
-            };
+            });
         }
         private void Update()
         {

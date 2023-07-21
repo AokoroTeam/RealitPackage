@@ -14,6 +14,7 @@ namespace Realit.Core.Features.Settings
     {
         public Settings(FeatureDataAsset asset) : base(asset) { }
 
+        public GameObject settingsPanel;
         public FSettingsUIBuilder uiBuilder;
         public SettingsHandler SettingsHandler => uiBuilder.SettingsHandler;
 
@@ -39,12 +40,12 @@ namespace Realit.Core.Features.Settings
             Settings_Data _Data = Data as Settings_Data;
             MainSettingsManager.SettingProvider = new PlayerPrefsProvider();
             
-            var windowItem = RealitSceneManager.UI.CreateWindow(_Data.windowName, _Data.window);
-            uiBuilder = windowItem.windowObject.GetComponent<FSettingsUIBuilder>();
+            settingsPanel = GameObject.Instantiate(_Data.panel, RealitSceneManager.UI.transform);
+
+            uiBuilder = settingsPanel.GetComponent<FSettingsUIBuilder>();
 
             //Channels
-            RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, _Data.windowName);
-
+            
             RealitSceneManager.Player.Freezed.AddChannel(MyChannelKey, PriorityTags.None, true);
 
             GameNotifications.Instance.canUpdate.AddChannel(MyChannelKey, PriorityTags.None, false);
@@ -56,11 +57,9 @@ namespace Realit.Core.Features.Settings
         {
             Settings_Data _Data = Data as Settings_Data;
 
-            RealitSceneManager.UI.DestroyWindow(_Data.windowName);
-            
-            //Channels
-            RealitSceneManager.UI.windowPriority.RemoveChannel(MyChannelKey);
+            GameObject.Destroy(settingsPanel);
 
+            //Channels
             RealitSceneManager.Player.Freezed.RemoveChannel(MyChannelKey);
 
             GameNotifications.Instance.canUpdate.RemoveChannel(MyChannelKey);
@@ -72,8 +71,6 @@ namespace Realit.Core.Features.Settings
         protected override void OnStart()
         {
             Settings_Data _Data = Data as Settings_Data;
-
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, 500);
 
             RealitSceneManager.Player.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
             
@@ -90,8 +87,7 @@ namespace Realit.Core.Features.Settings
             if(uiBuilder != null)
                 uiBuilder.WriteAllDirtySettings();
 
-            RealitSceneManager.UI.windowPriority.ChangeChannelPriority(MyChannelKey, 0);
-
+            
             RealitSceneManager.Player.Freezed.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
 
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.None);

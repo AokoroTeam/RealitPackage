@@ -28,13 +28,13 @@ namespace Realit.Core.Player.Movement
         
         //Serialized fields
         [BoxGroup("ChanneledProperties"), ReadOnly]
-        public ChanneledProperty<bool> Freezed;
+        public PrioritisedProperty<bool> Freezed;
         [BoxGroup("ChanneledProperties"), ReadOnly]
-        public ChanneledProperty<Vector2> movementInput;
+        public PrioritisedProperty<Vector2> movementInput;
         [BoxGroup("ChanneledProperties"), ReadOnly]
-        public ChanneledProperty<bool> autoSprint;
+        public PrioritisedProperty<bool> autoSprint;
         [BoxGroup("ChanneledProperties"), ReadOnly]
-        public ChanneledProperty<RotationMode> rotationMode;
+        public PrioritisedProperty<RotationMode> rotationMode;
         
         [Space]
 
@@ -68,7 +68,7 @@ namespace Realit.Core.Player.Movement
         
         //Components
         private NavMeshAgent agent;
-        private SkinnedMeshRenderer skinnedMeshRenderer;
+        private SkinnedMeshRenderer[] skinnedMeshRenderers;
         private CameraManager camManager;
 
         #region Unity Events
@@ -77,7 +77,7 @@ namespace Realit.Core.Player.Movement
             base.OnAwake();
             agent = GetComponent<NavMeshAgent>();
             camManager = GetComponentInChildren<CameraManager>();
-            skinnedMeshRenderer = animator.GetComponentInChildren<SkinnedMeshRenderer>();
+            skinnedMeshRenderers = animator.GetComponentsInChildren<SkinnedMeshRenderer>(true);
 
             isAgentMoving = false;
             agent.updatePosition = false;
@@ -87,7 +87,7 @@ namespace Realit.Core.Player.Movement
 
             movementInput = new(Vector2.zero);
             rotationMode = new(GetRotationMode());
-            rotationMode.OnValueChanged += SetRotationMode;
+            rotationMode.AddOnValueChangeCallback(SetRotationMode);
 
             autoSprint = new(false);
         }
@@ -428,7 +428,8 @@ namespace Realit.Core.Player.Movement
                     case "FC":
                         //SetRotationMode(RotationMode.OrientToCameraViewDirection);
                         SetRotationMode(RotationMode.OrientToMovement);
-                        skinnedMeshRenderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                            skinnedMeshRenderers[i].shadowCastingMode = ShadowCastingMode.ShadowsOnly;
                         break;
                     //Third person camera
                     case "TC":
@@ -437,13 +438,15 @@ namespace Realit.Core.Player.Movement
                         if(from != null)
                             RotateTowards(from.transform.forward, true);
 
-                        skinnedMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
+                        for(int i = 0; i < skinnedMeshRenderers.Length; i++)
+                            skinnedMeshRenderers[i].shadowCastingMode = ShadowCastingMode.On;
                         break;
                     //Shoulder camera
                     case "SC":
                         //SetRotationMode(RotationMode.OrientToCameraViewDirection);
                         SetRotationMode(RotationMode.OrientToMovement);
-                        skinnedMeshRenderer.shadowCastingMode = ShadowCastingMode.On;
+                        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+                            skinnedMeshRenderers[i].shadowCastingMode = ShadowCastingMode.On;
                         break;
                 }
             }

@@ -25,7 +25,7 @@ namespace Realit.Core.Player.Controls
         public event Action<PlayerControls> OnControlChanges;
 
         [ReadOnly, BoxGroup("Action maps")]
-        public ChanneledProperty<string> actionMapPriority;
+        public PrioritisedProperty<string> actionMapPriority;
         [BoxGroup("Action maps")]
         public string DefaultActionMap;
 
@@ -42,8 +42,8 @@ namespace Realit.Core.Player.Controls
 
         private void Awake()
         {
-            actionMapPriority = new ChanneledProperty<string>(DefaultActionMap);
-            actionMapPriority.OnValueChanged += ChangeActionMap;
+            actionMapPriority = new PrioritisedProperty<string>(DefaultActionMap);
+            actionMapPriority.AddOnValueChangeCallback(ChangeActionMap);
 
             PlayerInput = GetComponent<PlayerInput>();
             if (PlayerInput.actions != null)

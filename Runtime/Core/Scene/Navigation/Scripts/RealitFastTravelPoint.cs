@@ -18,9 +18,9 @@ namespace Realit.Core.Player.Navigation
         Transform canvasParent;
 
         [SerializeField, BoxGroup("Travel")]
-        private ChanneledProperty<bool> interactable;
+        private PrioritisedProperty<bool> interactable;
         [SerializeField, BoxGroup("Travel")]
-        private ChanneledProperty<float> alpha;
+        private PrioritisedProperty<float> alpha;
 
         [SerializeField, BoxGroup("Fade")]
         AnimationCurve alphaForDistance;
@@ -43,9 +43,9 @@ namespace Realit.Core.Player.Navigation
             canvasGroup = GetComponentInChildren<CanvasGroup>();
             canvasGroup.interactable = false;
 
-            interactable = new ChanneledProperty<bool>();
+            interactable = new PrioritisedProperty<bool>();
             interactable.AddChannel(this, PriorityTags.Smallest);
-            alpha = new ChanneledProperty<float>();
+            alpha = new PrioritisedProperty<float>();
             alpha.AddChannel(this, PriorityTags.Smallest);
             RealitSceneManager.OnPlayerIsSetup += OnPlayerIsSetup;
         }

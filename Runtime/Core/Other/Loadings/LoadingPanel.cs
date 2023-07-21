@@ -7,7 +7,7 @@ namespace Realit.Core.UI
 {
     public class LoadingPanel : MonoBehaviour
     {
-        ChanneledProperty<(float, string)> progresses;
+        PrioritisedProperty<(float, string)> progresses;
 
         [SerializeField]
         private ProgressBar bar;
@@ -19,7 +19,7 @@ namespace Realit.Core.UI
         
         private void Awake()
         {
-            progresses = new ChanneledProperty<(float, string)>((0, "..."));
+            progresses = new PrioritisedProperty<(float, string)>((0, "..."));
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 1;
             gameObject.SetActive(false);

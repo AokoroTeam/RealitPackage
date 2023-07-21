@@ -1,0 +1,4 @@
+namespace LTX.ChanneledProperties
+{
+    
+}

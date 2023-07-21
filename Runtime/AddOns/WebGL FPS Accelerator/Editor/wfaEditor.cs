@@ -10,7 +10,7 @@ public class wfaEditor : AssetPostprocessor
     bool devMode = false;
 
     DirectoryInfo directory = Directory.GetParent(Application.dataPath);
-    var folder = directory.ToString() + "\\Assets";
+    var folder = directory.ToString() + "/Assets";
     var filePath = findFilePath(folder, "developerMode.txt");
 
     if (File.Exists(filePath))
@@ -25,7 +25,7 @@ public class wfaEditor : AssetPostprocessor
   static void m1()
   {
     DirectoryInfo directory = Directory.GetParent(Application.dataPath);
-    var scriptsFolder = directory.ToString() + "\\Assets\\RealitPackage\\Runtime\\AddOns\\WebGL FPS Accelerator\\Scripts";
+    var scriptsFolder = directory.ToString() + "/Assets/RealitPackage/Runtime/AddOns/WebGL FPS Accelerator/Scripts";
     var filePath = findFilePath(scriptsFolder, "WebGLFPSAccelerator.cs");
 
     var fileRawText = File.ReadAllText(filePath);
@@ -57,7 +57,7 @@ public class wfaEditor : AssetPostprocessor
   static void m0()
   {
     DirectoryInfo directory = Directory.GetParent(Application.dataPath);
-    var PackageCache = directory.ToString() + "\\Library\\PackageCache";
+    var PackageCache = directory.ToString() + "/Library/PackageCache";
     var path = findFilePath(PackageCache, "Text.cs");
 
     var text = File.ReadAllText(path);
@@ -130,7 +130,7 @@ public class wfaEditor : AssetPostprocessor
   {
     string[] res = Directory.GetFiles(path, fileName, SearchOption.AllDirectories);
     string res2 = res.Length > 0 ? res[0] : "";
-    return res2.Replace("\\", "/");
+    return res2;
   }
 
   void OnPreprocessAsset()

@@ -62,7 +62,7 @@ namespace Realit.Core.Managers
         private List<Notification> corbeille = new List<Notification>();
 
 
-        public ChanneledProperty<bool> canUpdate = new ChanneledProperty<bool>(true);
+        public PrioritisedProperty<bool> canUpdate = new PrioritisedProperty<bool>(true);
 
         [SerializeField, ShowNativeProperty]
         bool CanUpdate => canUpdate.Value;

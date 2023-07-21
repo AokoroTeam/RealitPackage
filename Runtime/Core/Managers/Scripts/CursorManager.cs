@@ -7,46 +7,46 @@ namespace Realit.Core.Managers
 {
     public class CursorManager : Singleton<CursorManager>
     {
-        public static ChanneledProperty<CursorLockMode> CursorLockMode
+        public static PrioritisedProperty<CursorLockMode> CursorLockMode
         {
             get
             {
                 if (Instance.cursorLockMode == null)
-                    Instance.cursorLockMode = new ChanneledProperty<CursorLockMode>();
+                    Instance.cursorLockMode = new PrioritisedProperty<CursorLockMode>();
 
                 return Instance.cursorLockMode;
             }
         }
 
-        public static ChanneledProperty<bool> CursorVisibility
+        public static PrioritisedProperty<bool> CursorVisibility
         {
             get
             {
                 if(Instance.cursorVisibility == null)
-                    Instance.cursorVisibility = new ChanneledProperty<bool>();
+                    Instance.cursorVisibility = new PrioritisedProperty<bool>();
 
                 return Instance.cursorVisibility;
             }
         }
 
         [SerializeField, ReadOnly]
-        private ChanneledProperty<CursorLockMode> cursorLockMode;
+        private PrioritisedProperty<CursorLockMode> cursorLockMode;
         [SerializeField, ReadOnly]
-        private ChanneledProperty<bool> cursorVisibility;
+        private PrioritisedProperty<bool> cursorVisibility;
 
         private void CursorVisibility_OnValueChanged(bool value) => Cursor.visible = value;
         private void CursorLockMode_OnValueChanged(CursorLockMode value) => Cursor.lockState = value;
 
         private void OnEnable()
         {
-            CursorLockMode.OnValueChanged += CursorLockMode_OnValueChanged;
-            CursorVisibility.OnValueChanged += CursorVisibility_OnValueChanged;
+            CursorLockMode.AddOnValueChangeCallback(CursorLockMode_OnValueChanged);
+            CursorVisibility.AddOnValueChangeCallback(CursorVisibility_OnValueChanged);
         }
 
         private void OnDisable()
         {
-            CursorLockMode.OnValueChanged -= CursorLockMode_OnValueChanged;
-            CursorVisibility.OnValueChanged -= CursorVisibility_OnValueChanged;
+            CursorLockMode.RemoveOnValueChangeCallback(CursorLockMode_OnValueChanged);
+            CursorVisibility.RemoveOnValueChangeCallback(CursorVisibility_OnValueChanged);
         }
 
         protected override void OnExistingInstanceFound(CursorManager existingInstance)

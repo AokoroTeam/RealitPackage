@@ -167,23 +167,6 @@ public class wfaConfig : ScriptableObject
     }
   }
 
-  public float _textDPI = 1f;
-  public float textDPI
-  {
-    get
-    {
-      return _textDPI;
-    }
-    set
-    {
-      value = Mathf.Clamp(value, 0.1f, 4f);
-      value = LeaveDigit(value, 2);
-      _textDPI = value;
-
-      saveData();
-    }
-  }
-
   public WFA.WebGLFPSAccelerator.resolutionSystem._enum _resolutionSystem;
   public resolutionSystem._enum resolutionSystem
   {
