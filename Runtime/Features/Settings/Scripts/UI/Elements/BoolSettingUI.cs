@@ -9,7 +9,7 @@ using LTX.Settings.Types;
 
 namespace Realit.Core.Features.Settings.UI
 {
-    public class BoolSettingUI : BaseSettingUI
+    public class BoolSettingUI : BaseSettingUI<bool>
     {
         protected override SettingType Type => SettingType.Integer;
 
@@ -23,37 +23,19 @@ namespace Realit.Core.Features.Settings.UI
         private bool firstValue;
 
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-        }
-
         protected override bool IsDirty() => firstValue != switchManager.isOn;
 
-        protected override ISetting SyncSettingWithUI()
+
+        public override void SetUIFromValue(ISetting<bool> setting)
         {
-            BooleanSetting setting = (BooleanSetting)Setting;
-
-            setting.SetValue(switchManager.isOn);
-
-            return setting;
-        }
-
-        public override void SyncUIWithSetting(ISetting setting)
-        {
-            BooleanSetting boolSetting = (BooleanSetting)setting;
-
-            switchManager.isOn = boolSetting.Value;
-            firstValue = boolSetting.Value;
+            switchManager.isOn = setting.Value;
+            firstValue = setting.Value;
 
             label.text = setting.Label;
 
             switchManager.UpdateUI();
         }
+
+        public override bool GetValueFromUI() => switchManager.isOn;
     }
 }

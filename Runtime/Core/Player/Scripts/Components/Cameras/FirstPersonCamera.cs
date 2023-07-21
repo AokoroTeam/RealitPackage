@@ -155,7 +155,7 @@ namespace Realit.Core.Player.CameraManagement
                 float fov = res.y > res.x ? baseFOV * Mathf.Min(maxModifier, res.y / res.x) : baseFOV;
 
                 Vcam.m_Lens.FieldOfView = fov;
-                Debug.Log($"New resolution detected");
+                //Debug.Log($"New resolution detected");
             }
         }
     }

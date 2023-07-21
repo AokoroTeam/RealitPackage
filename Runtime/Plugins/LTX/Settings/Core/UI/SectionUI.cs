@@ -20,7 +20,7 @@ namespace LTX.Settings.UI
             public UI UIBuilder;
             public abstract void Populate(SettingsSection section);
 
-            public abstract void ApplyDirtySettings();
+            public abstract void SetDirtySettings();
         }
     }
     /// <summary>
@@ -55,7 +55,7 @@ namespace LTX.Settings.UI
                     {
                         settingUI.Builder = UIBuilder;
                         settingUI.SettingPointer = new SettingPointer(setting.InternalName, UIBuilder.SettingsHandler);
-                        settingUI.SyncUIWithSetting(setting);
+                        settingUI.Internal_SyncUIWithSetting();
                     }
                 }
             }
@@ -85,14 +85,14 @@ namespace LTX.Settings.UI
             Debug.LogWarning($"[Settings] No prefab found for type {setting.Type} in library");
             return null;
         }
-        public override void ApplyDirtySettings()
+        public override void SetDirtySettings()
         {
             if (settingsUI != null)
             {
                 for (int i = 0; i < settingsUI.Length; i++)
                 {
                     if (settingsUI[i] != null)
-                        settingsUI[i].ApplyIfDirty();
+                        settingsUI[i].Internal_SyncSettingWithUI();
                 }
             }
         }

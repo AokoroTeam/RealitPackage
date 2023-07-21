@@ -222,6 +222,9 @@ namespace LTX.ChanneledProperties
         {
             if (TryGetChannel(key, out C channel))
             {
+                if (channel.Value.Equals(value))
+                    return false;
+
                 channel.Value = value;
 
                 //Updating struct value inside dictionnary

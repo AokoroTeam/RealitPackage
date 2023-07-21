@@ -12,7 +12,7 @@ using Michsky.MUIP;
 
 namespace Realit.Core.Features.Settings.UI
 {
-    public class IntSettingUI : BaseSettingUI
+    public class IntSettingUI : BaseSettingUI<int>
     {
         protected override SettingType Type => SettingType.Integer;
 
@@ -25,29 +25,10 @@ namespace Realit.Core.Features.Settings.UI
         [SerializeField, ReadOnly]
         private int firstValue;
 
-
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-        }
-
         protected override bool IsDirty() => firstValue != sliderManager.mainSlider.value;
 
-        protected override ISetting SyncSettingWithUI()
-        {
-            IntegerSetting setting = (IntegerSetting)Setting;
-
-            setting.SetValue((int)sliderManager.mainSlider.value);
-
-            return setting;
-        }
-
-        public override void SyncUIWithSetting(ISetting setting)
+        public override int GetValueFromUI() => (int)sliderManager.mainSlider.value;
+        public override void SetUIFromValue(ISetting<int> setting)
         {
             IntegerSetting intSetting = (IntegerSetting)setting;
 

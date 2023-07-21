@@ -34,7 +34,8 @@ namespace Aokoro.Settings
                     case SettingType.Integer or SettingType.Choice:
                         if (setting is ISetting<int> i)
                         {
-                            i.SetValue(PlayerPrefs.GetInt(internalName));
+                            int value = PlayerPrefs.GetInt(internalName);
+                            i.SetValue(value);
                             success = true;
                         }
                         break;
@@ -96,7 +97,7 @@ namespace Aokoro.Settings
                     break;
                 case SettingType.Integer or SettingType.Choice:
                     if (setting is ISetting<int> i)
-                        PlayerPrefs.SetFloat(i.InternalName, i.Value);
+                        PlayerPrefs.SetInt(i.InternalName, i.Value);
                     break;
                 case SettingType.Text:
                     if (setting is ISetting<string> s)

@@ -1,12 +1,31 @@
 using LTX.Settings.UI.Internal;
 using NaughtyAttributes;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace LTX.Settings.UI
 {
+    public abstract class BaseSettingUI<T> : BaseSettingUI
+    {
+        [ShowNativeProperty]
+        protected abstract SettingType Type { get; }
+
+        protected virtual void OnEnable()
+        {
+            if (!string.IsNullOrEmpty(SettingPointer.internalName))
+                Internal_SyncUIWithSetting();
+        }
+
+        public ISetting<T> Setting => SettingPointer.handler.GetSetting<T>(SettingPointer.internalName);
+
+        protected abstract bool IsDirty();
+
+        public abstract T GetValueFromUI();
+        public abstract void SetUIFromValue(ISetting<T> setting);
+
+        internal override void Internal_SyncUIWithSetting() => SetUIFromValue(Setting);
+        internal override bool Internal_SyncSettingWithUI() => IsDirty() && SettingPointer.handler.TrySetSettingValue(SettingPointer.internalName, GetValueFromUI());
+    }
+
     public abstract class BaseSettingUI : MonoBehaviour
     {
         [ReadOnly, BoxGroup("Base")]
@@ -14,38 +33,14 @@ namespace LTX.Settings.UI
         [ReadOnly, BoxGroup("Base")]
         public SettingsUIBuilder Builder;
 
-        [ShowNativeProperty]
-        protected abstract SettingType Type { get; }
+        internal abstract void Internal_SyncUIWithSetting();
+        internal abstract bool Internal_SyncSettingWithUI();
 
-
-        protected ISetting Setting => SettingPointer.GetSetting();
-
-        
-        protected virtual void OnEnable()
-        {
-            if(!string.IsNullOrEmpty(SettingPointer.internalName))
-                SyncUIWithSetting(Setting);
-        }
-
-        protected virtual void OnDisable()
-        {
-
-        }
         public virtual void ResetSetting()
         {
-            var s = SyncSettingWithUI();
-            s.Reset();
+            Internal_SyncSettingWithUI();
 
-            SyncUIWithSetting(s);
-        }
-        public abstract void SyncUIWithSetting(ISetting setting);
-        protected abstract ISetting SyncSettingWithUI();
-        protected abstract bool IsDirty();
-
-        internal void ApplyIfDirty()
-        {
-            if(IsDirty())
-                SettingPointer.handler.ApplySetting(SyncSettingWithUI());
+            Internal_SyncUIWithSetting();
         }
     }
 }
