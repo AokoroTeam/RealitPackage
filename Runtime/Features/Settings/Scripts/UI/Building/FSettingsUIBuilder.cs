@@ -29,10 +29,16 @@ namespace Realit.Core.Features.Settings.UI
         protected override FSettingsCategoryUI CreateCategoryUI(SettingsCategory category)
         {
             FSettingsCategoryUI fSettingsCategoryUI = base.CreateCategoryUI(category);
+            HorizontalSelector.Item item = new()
+            {
+                itemTitle = category.categoryName,
+                itemIcon = category.icon
+            };
 
-            ui.tabs.CreateNewItem(category.categoryName, category.icon);
+            int index = Mathf.Max(0, ui.tabs.items.Count - 1);
+            ui.tabs.items.Insert(index, item);
             ui.tabs.UpdateUI();
-
+            
             WindowManager.WindowItem window = new()
             {
                 windowObject = fSettingsCategoryUI.gameObject,

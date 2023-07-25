@@ -101,7 +101,7 @@ namespace Realit.Core.Features
                 {
                     Feature feature = featureData.GenerateFeature();
                     Features.Add(feature.Data.FeatureName, feature);
-                    ChannelKeys.Add(feature, ChannelKey.GetUniqueChannelKey());
+                    ChannelKeys.Add(feature, ChannelKey.GetUniqueChannelKey(feature));
 
                     feature.Load();
 

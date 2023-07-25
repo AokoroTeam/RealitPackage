@@ -71,7 +71,7 @@ namespace LTX.Settings
                 SettingsCategory existingCategory = this.categories[i];
                 for (int j = 0; j < newCategories.Length; j++)
                 {
-                    var category = newCategories[i];
+                    var category = newCategories[j];
                     if (existingCategory.categoryName == category.categoryName)
                     {
                         changeCount++;
@@ -220,6 +220,7 @@ namespace LTX.Settings
             return false;
         }
 
+        public bool HasSetting(string internalName) => settingsPath.ContainsKey(internalName);
         #endregion
         #region Writting and reading
 

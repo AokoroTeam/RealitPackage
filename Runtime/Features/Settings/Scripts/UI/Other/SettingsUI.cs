@@ -105,6 +105,7 @@ namespace Realit.Core.Features.Settings.UI
         protected override void OnFeatureStarts() 
         {
             animator.SetTrigger("In");
+            //windowManager.OpenWindowByIndex(0);
             RealitSceneManager.UI.borderOffsets.ChangeChannelPriority(this, LTX.ChanneledProperties.PriorityTags.Highest);
 
             InputSystemUIInputModule inputModule = (EventSystem.current.currentInputModule as InputSystemUIInputModule);
@@ -112,6 +113,11 @@ namespace Realit.Core.Features.Settings.UI
             inputModule.rightClick.action.performed += Action_performed;
             inputModule.middleClick.action.performed += Action_performed;
             inputModule.leftClick.action.performed += Action_performed;
+
+            windowManager.OpenWindow("Général");
+            int idx = tabs.items.FindIndex(ctx => "Général" == ctx.itemTitle);
+            tabs.index = idx;
+            tabs.UpdateUI();
         }
 
         protected override void OnFeatureEnds() 
@@ -129,9 +135,24 @@ namespace Realit.Core.Features.Settings.UI
 
         private void Action_performed(InputAction.CallbackContext ctx)
         {
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.9f)
+                return;
+            //Debug.Log(ctx.phase);
+            if (!ctx.performed)
+                return;
+            
             Vector2 pos = Pointer.current.position.ReadValue();
-            if (!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, pos))
-                Feature.EndFeature();
+            if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, pos))
+                return;
+
+            if (FeaturesManager.UI.TryGetUIForFeature(Feature, out var indicator))
+            {
+                RectTransform rt = indicator.transform as RectTransform;
+                if (RectTransformUtility.RectangleContainsScreenPoint(rt, pos))
+                    return;
+            }
+
+            Feature.EndFeature();
         }
 
     }

@@ -69,6 +69,7 @@ namespace LTX.Settings
             CreateSettingHandler();
         }
 
+        public static bool HasSetting(string internalName) => IsValid && SettingsHandler.HasSetting(internalName);
 
         public static bool TryGetSettingValue<T>(string internalName, out T value)
         {

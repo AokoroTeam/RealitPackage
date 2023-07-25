@@ -11,7 +11,7 @@ namespace LTX.ChanneledProperties
         internal static ChannelKey None => _None;
         private static ChannelKey _None = new ChannelKey(0);
 
-        private static Dictionary<Object, ChannelKey> _createdKeys;
+        private static Dictionary<object, ChannelKey> _createdKeys;
 
         private static ulong _internalChannelKeyCount = 1;
 
@@ -20,7 +20,7 @@ namespace LTX.ChanneledProperties
         public static void InitializeOnLoad()
         {
             Debug.Log($"[Channeled properties] Initializing channelkeys...");
-            _createdKeys = new Dictionary<Object, ChannelKey>();
+            _createdKeys = new();
 
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             SceneManager.sceneUnloaded += SceneManager_sceneUnloaded; ;
@@ -39,7 +39,7 @@ namespace LTX.ChanneledProperties
         {
 
             Debug.Log($"[Channeled properties] Clearing missing channelkeys...");
-            Dictionary<Object, ChannelKey> _createdKeys = new();
+            Dictionary<object, ChannelKey> _createdKeys = new();
 
             foreach (var item in ChannelKey._createdKeys)
             {
@@ -65,7 +65,7 @@ namespace LTX.ChanneledProperties
             return channelKey;
         }
 
-        public static ChannelKey GetUniqueChannelKey(Object pointer)
+        public static ChannelKey GetUniqueChannelKey(object pointer)
         {
             if (_createdKeys.TryGetValue(pointer, out var key))
                 return key;
@@ -73,7 +73,9 @@ namespace LTX.ChanneledProperties
             key = GetUniqueChannelKey();
 
 #if UNITY_EDITOR
-            key.pointer = pointer;
+            if(pointer is Object unityObject)
+                key.pointer = unityObject;
+
             key.ObjectType = pointer.GetType().Name;
 #endif
 

@@ -20,7 +20,8 @@ namespace Realit.Core.Features.GuidedVisite
         public event Action<GV_Point> OnPointChanged;
 
         public GV_Point[] points;
-        
+        public Dictionary<InfoType, InfoRepresentation> infoRepresentations;
+
 
         private GV_Point _currentPoint;
         public GV_Point CurrentPoint
@@ -53,7 +54,8 @@ namespace Realit.Core.Features.GuidedVisite
             GuidedVisite_Data _Data = Data as GuidedVisite_Data;
 
             //Points
-            var ps = GameObject.FindGameObjectsWithTag("GV_Point");
+            var ps = GameObject.FindObjectsByType<GV_Point>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
             List<GV_Point> pointsList = new();
             for (int i = 0; i < ps.Length; i++)
             {
@@ -75,6 +77,14 @@ namespace Realit.Core.Features.GuidedVisite
             //UI
             RealitSceneManager.UI.CreateWindow(_Data.FeatureName, _Data.window);
             RealitSceneManager.UI.windowPriority.AddChannel(MyChannelKey, PriorityTags.None, Data.FeatureName);
+
+            infoRepresentations = new();
+            for (int i = 0; i < _Data.reprensentations.Length; i++)
+            {
+                var rep = _Data.reprensentations[i];
+                if (!infoRepresentations.ContainsKey(rep.infoType))
+                    infoRepresentations.Add(rep.infoType, rep);
+            }
 
             //Cursor
             CursorManager.CursorLockMode.AddChannel(MyChannelKey, PriorityTags.None, CursorLockMode.Confined);
@@ -183,7 +193,7 @@ namespace Realit.Core.Features.GuidedVisite
             else
                 LogWarning("CameraManager is missing");
 
-            
+
             GoToPoint(points[0], true);
         }
 

@@ -33,7 +33,7 @@ namespace Realit.Core.Features.Settings
                     sections.AddRange(feature.Data.settings);
             }
 
-            return new SettingsCategory("Features", _Data.tabIcon, sections.ToArray());
+            return new SettingsCategory("Features", _Data.featuresTabIcon, sections.ToArray());
         }
         protected override void OnLoad()
         {
@@ -77,7 +77,7 @@ namespace Realit.Core.Features.Settings
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
             
             CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
-            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
+            CursorManager.CursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.Highest);
         }
 
         protected override void OnEnd()
@@ -93,7 +93,7 @@ namespace Realit.Core.Features.Settings
             GameNotifications.Instance.canUpdate.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
             
             CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
-            CursorManager.CursorLockMode.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
+            CursorManager.CursorVisibility.ChangeChannelPriority(MyChannelKey, PriorityTags.None);
         }
 
         

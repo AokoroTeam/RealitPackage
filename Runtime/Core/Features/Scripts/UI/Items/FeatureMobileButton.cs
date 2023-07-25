@@ -18,7 +18,10 @@ namespace Realit.Core.Features.UI
         public GameObject other;
 
 
-        public void OnClicked() => FeaturesManager.ToggleFeature(featureName);
+        public void OnClicked()
+        {
+            FeaturesManager.ToggleFeature(featureName);
+        }
 
         public override void SetIcon(Sprite sprite)
         {

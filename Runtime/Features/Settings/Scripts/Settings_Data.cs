@@ -14,7 +14,7 @@ namespace Realit.Core.Features.Settings
         [BoxGroup("UI")]
         public GameObject panel;
         [BoxGroup("UI")]
-        public Sprite tabIcon;
+        public Sprite featuresTabIcon;
 
         [EnumFlags, SerializeField, BoxGroup("Global")]
         RuntimePlatform supportedPlateforms;

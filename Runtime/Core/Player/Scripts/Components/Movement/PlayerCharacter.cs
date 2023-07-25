@@ -285,7 +285,7 @@ namespace Realit.Core.Player.Movement
             {
                 if (NavMesh.SamplePosition(rh.point, out NavMeshHit nh, 1, NavMesh.AllAreas))
                 {
-                    characterMovement.SetPosition(nh.position);
+                    SetPosition(nh.position, false);
                     agent.Warp(nh.position);
                 }
             }
@@ -320,7 +320,7 @@ namespace Realit.Core.Player.Movement
                     RealitSceneManager.UI.windowPriority.ChangeChannelPriority(this, PriorityTags.Default);
                     OnAgentStartsMoving?.Invoke();
                     
-                    Debug.Log($"[Realit Player] Agent going to {destination}");
+                    //Debug.Log($"[Realit Player] Agent going to {destination}");
                 }
             }
             else
