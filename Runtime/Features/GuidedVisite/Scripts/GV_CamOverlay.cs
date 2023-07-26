@@ -19,12 +19,13 @@ namespace Realit.Core.Features.GuidedVisite
             cam = GetComponent<Camera>();
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             transform.position = mainCam.transform.position;
             transform.rotation = mainCam.transform.rotation;
             cam.fieldOfView = mainCam.fieldOfView;
         }
+
         protected override void OnFeatureInitiate()
         {
             mainCam = Camera.main;

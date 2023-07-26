@@ -85,6 +85,8 @@ namespace Realit.Core.Features.UI
 
         }
 
+        public FeaturesUI GetCurrentFeaturesUIPlateform() => uis[CurrentPlateforme];
+
         public bool TryGetUIForFeature(Feature feature, out FeatureIndicator indicator)
         {
             indicator = null;

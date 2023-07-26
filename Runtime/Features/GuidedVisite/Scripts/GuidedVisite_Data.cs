@@ -16,7 +16,9 @@ namespace Realit.Core.Features.GuidedVisite
 
         [BoxGroup("UI")]
         public GameObject window;
-
+        [BoxGroup("UI")]
+        public InfoRepresentation[] reprensentations;
+        
         public override GuidedVisite GenerateFeatureFromData()
         {
             return new GuidedVisite(this);

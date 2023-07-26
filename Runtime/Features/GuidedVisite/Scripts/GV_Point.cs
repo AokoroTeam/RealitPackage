@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,24 +10,34 @@ namespace Realit.Core.Features.GuidedVisite
 {
     public class GV_Point : FeatureComponent<GuidedVisite>
     {
+        [SerializeField, BoxGroup("Base")]
         public string PointName;
-
-        [SerializeField]
+        [SerializeField, BoxGroup("Base")]
         private TextMeshProUGUI label;
-        [SerializeField]
+        [SerializeField, BoxGroup("Base")]
         private Canvas canvas;
-        [SerializeField]
+        [SerializeField, BoxGroup("Base")]
         private LayerMask groundLayer;
-
-        private Camera cam;
+        [SerializeField, BoxGroup("Base")]
         public List<GV_Point> nearbyPoints;
 
+        [SerializeField, BoxGroup("Data")]
+        public List<Info> infos = new List<Info>();
+
+        private Camera cam;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            gameObject.SetActive(false);
+        }
 
         
+
         private void Start()
         {
             label.text = PointName;
-            if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 100, groundLayer))
+            if(Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hitInfo, 100, groundLayer))
                 transform.position = hitInfo.point + Vector3.up * 0.001f;
         }
 
@@ -44,6 +55,8 @@ namespace Realit.Core.Features.GuidedVisite
             {
                 gameObject.name = $"GV_{PointName}";
             }
+
+            infos.Sort((first, second) => first.type.CompareTo(second.type));
         }
         private void OnDrawGizmosSelected()
         {
@@ -80,6 +93,8 @@ namespace Realit.Core.Features.GuidedVisite
         }
         protected override void OnFeatureInitiate()
         {
+            gameObject.SetActive(true);
+            HidePoint();
             cam = Feature.overlayCamera.cam;
             canvas.worldCamera = cam;
         }

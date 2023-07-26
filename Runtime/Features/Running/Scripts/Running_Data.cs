@@ -15,6 +15,6 @@ namespace Realit.Core.Features.Running
 
         public override Running GenerateFeatureFromData() => new Running(this);
 
-        public override bool CanGenerateFeature() => Application.isMobilePlatform;
+        public override bool CanGenerateFeature() => true;
     }
 }
