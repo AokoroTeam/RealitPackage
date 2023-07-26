@@ -32,6 +32,7 @@ namespace Realit.Core.Features
             if (IsActive)
                 InternalEndFeature();
             else
+
                 InternalStartFeature();
         }
         //Shortcut
@@ -42,10 +43,13 @@ namespace Realit.Core.Features
 
         internal void InternalStartFeature()
         {
-            IsActive = true;
-            //Inherited method for custom behaviors
-            OnStart();
-            OnStartCallbacks?.Invoke();
+            if (FeaturesManager.Instance.canExecuteFeature)
+            {
+                IsActive = true;
+                //Inherited method for custom behaviors
+                OnStart();
+                OnStartCallbacks?.Invoke();
+            }
         }
 
         internal void InternalEndFeature()

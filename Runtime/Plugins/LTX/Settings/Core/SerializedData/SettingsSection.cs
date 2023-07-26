@@ -7,10 +7,27 @@ using UnityEngine;
 
 namespace LTX.Settings
 {
+    
     [System.Serializable]
-    public struct SettingsSection
+    public struct SettingsSection 
+#if UNITY_EDITOR
+        : ISerializationCallbackReceiver
+#endif
     {
 #if UNITY_EDITOR
+        private static bool ApplicationIsRunning = false;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void OnApplicationLoads()
+        {
+            ApplicationIsRunning = true;
+        }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
+        private static void OnApplicationStarts()
+        {
+            ApplicationIsRunning = false;
+        }
+
         public const string SettingsName = nameof(settingsList);
 #endif
         public string Label;
@@ -41,5 +58,21 @@ namespace LTX.Settings
         public void AddVector3() => Settings.Add(new Vector3Setting());
         public void AddVector2() => Settings.Add(new Vector2Setting());
         public void AddChoice() => Settings.Add(new ChoiceSetting());
+
+#if UNITY_EDITOR
+        public void OnBeforeSerialize()
+        {
+
+        }
+
+        public void OnAfterDeserialize()
+        {
+            if (ApplicationIsRunning)
+                return;
+
+            foreach (var setting in settingsList)
+                setting.Reset();
+        }
     }
+#endif
 }
