@@ -278,12 +278,18 @@ namespace LTX.Settings
                 this.settingProvider = settingProvider;
                 if(refresh)
                     ReadAllSettings();
+
+                foreach(var (internalName, actions) in callbacks)
+                {
+                    foreach (var action in actions)
+                        action?.Invoke(GetSetting(internalName));
+                }
             }
         }
 
         public void ManuallyTriggerContentChange() => OnCategoryContentChanges?.Invoke();
 
-        public void AddCallback(string internalName, Action<ISetting> callback)
+        public void AddSettingChangeCallback(string internalName, Action<ISetting> callback)
         {
             if(!callbacks.TryGetValue(internalName, out List<Action<ISetting>> list))
             {
@@ -295,7 +301,7 @@ namespace LTX.Settings
                 list.Add(callback);
         }
 
-        public void RemoveCallback(string internalName, Action<ISetting> callback)
+        public void RemoveSettingChangeCallback(string internalName, Action<ISetting> callback)
         {
             if (!callbacks.TryGetValue(internalName, out List<Action<ISetting>> list))
                 return;

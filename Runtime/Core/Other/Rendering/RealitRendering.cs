@@ -20,8 +20,8 @@ namespace Realit.Core
 
         private void Awake()
         {
-            MainSettingsManager.SettingsHandler.AddCallback(QualityLevelSetting, OnQualityLevelChanges);
-            MainSettingsManager.SettingsHandler.AddCallback(TargetFrameRateSetting, OnTargetFrameRateChanges);
+            MainSettingsManager.SettingsHandler.AddSettingChangeCallback(QualityLevelSetting, OnQualityLevelChanges);
+            MainSettingsManager.SettingsHandler.AddSettingChangeCallback(TargetFrameRateSetting, OnTargetFrameRateChanges);
 
             if(MainSettingsManager.TryGetSettingValue(QualityLevelSetting, out int qualityLevel))
             {
@@ -50,8 +50,8 @@ namespace Realit.Core
 
         private void OnDestroy()
         {
-            MainSettingsManager.SettingsHandler.RemoveCallback(QualityLevelSetting, OnQualityLevelChanges);
-            MainSettingsManager.SettingsHandler.RemoveCallback(TargetFrameRateSetting, OnTargetFrameRateChanges);
+            MainSettingsManager.SettingsHandler.RemoveSettingChangeCallback(QualityLevelSetting, OnQualityLevelChanges);
+            MainSettingsManager.SettingsHandler.RemoveSettingChangeCallback(TargetFrameRateSetting, OnTargetFrameRateChanges);
         }
 
         private void OnQualityLevelChanges(ISetting setting)

@@ -10,6 +10,7 @@ using static Michsky.MUIP.WindowManager;
 
 using LTX.UI;
 using LTX.ChanneledProperties;
+using UnityEngine.UI;
 
 namespace Aokoro.UI
 {
@@ -37,7 +38,7 @@ namespace Aokoro.UI
         public PrioritisedProperty<string> windowPriority;
 
 
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             baseWindowManager = GetComponent<WindowManager>();
         }
@@ -62,12 +63,12 @@ namespace Aokoro.UI
                 OpenWindow(defaultWindow);
         }
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             windowPriority.AddOnValueChangeCallback(WindowPriority_OnValueChanged);
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             windowPriority.RemoveOnValueChangeCallback(WindowPriority_OnValueChanged);
         }

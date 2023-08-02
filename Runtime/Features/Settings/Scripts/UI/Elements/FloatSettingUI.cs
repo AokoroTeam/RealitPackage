@@ -9,6 +9,7 @@ using LTX.Settings.Types;
 
 using TMPro;
 using Michsky.MUIP;
+using System.Linq;
 
 namespace Realit.Core.Features.Settings.UI
 {
@@ -23,31 +24,52 @@ namespace Realit.Core.Features.Settings.UI
 
         [Space]
         [SerializeField, ReadOnly]
-        private float firstValue;
+        private float currentValue;
 
+        [SerializeField]
+        private FloatSetting.LimitedValueRange limitedValueRange;
+        private bool hasInfiniteValue = false;
 
-        protected override void OnEnable()
+        public void AjustValue(float newValue)
         {
-            base.OnEnable();
+            if (!hasInfiniteValue)
+                currentValue = limitedValueRange.GetClosestValue(newValue);
+            else
+                currentValue = newValue;
+
+            sliderManager.mainSlider.SetValueWithoutNotify(currentValue);
         }
-        
-        protected override bool IsDirty() => firstValue != sliderManager.mainSlider.value;
+        protected override bool IsDirty() => Setting.Value != currentValue;
 
 
         public override void SetUIFromValue(ISetting<float> setting)
         {
             FloatSetting floatSetting = (FloatSetting)setting;
-            sliderManager.mainSlider.minValue = floatSetting.MinMax.x;
-            sliderManager.mainSlider.maxValue = floatSetting.MinMax.y;
+            hasInfiniteValue = floatSetting.hasInfiniteValue;
+            limitedValueRange = floatSetting.limitedValues;
 
-            sliderManager.mainSlider.value = floatSetting.Value;
-            firstValue = floatSetting.Value;
+            if(hasInfiniteValue)
+            {
+                sliderManager.mainSlider.minValue = floatSetting.minMax.x;
+                sliderManager.mainSlider.maxValue = floatSetting.minMax.y;
+            }
+            else
+            {
+                sliderManager.mainSlider.minValue = limitedValueRange.values.Min();
+                sliderManager.mainSlider.maxValue = limitedValueRange.values.Max();
+            }
+
+            currentValue = floatSetting.Value;
+            sliderManager.mainSlider.SetValueWithoutNotify(currentValue);
 
             label.text = setting.Label;
 
             sliderManager.UpdateUI();
         }
 
-        public override float GetValueFromUI() => sliderManager.mainSlider.value;
+        public override float GetValueFromUI()
+        {
+            return currentValue;
+        }
     }
 }

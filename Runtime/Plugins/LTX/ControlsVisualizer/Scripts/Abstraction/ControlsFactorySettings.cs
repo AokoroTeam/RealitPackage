@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace LTX.ControlsVisualizer
 {
+    [System.Serializable]
     public struct ControlsFactorySettings
     {
         public const int DefaultMaxCommand = 8;
@@ -24,7 +25,7 @@ namespace LTX.ControlsVisualizer
 
         public string[] SupportedLayout
         { 
-            get => supportedLayouts; 
+            get => HasSupportedLayouts ? supportedLayouts : new string[0]; 
             set => supportedLayouts = value; 
         }
 

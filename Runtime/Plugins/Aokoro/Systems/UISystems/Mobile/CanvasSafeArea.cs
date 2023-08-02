@@ -1,20 +1,36 @@
 using LTX.UI;
 using UnityEngine;
 
+using Screen = UnityEngine.Device.Screen;
+using Application = UnityEngine.Device.Application;
+using SystemInfo = UnityEngine.Device.SystemInfo;
+
 namespace Aokoro.UI
 {
-    [RequireComponent(typeof(Canvas))]
-    public class CanvasSafeArea : UIItem
+    [RequireComponent(typeof(Canvas)), ExecuteInEditMode]
+    public class CanvasSafeArea : MonoBehaviour
     {
         public RectTransform[] SafeAreaRects;
 
         private Rect lastSafeArea = Rect.zero;
-        
+
+        private Canvas canvas;
+        public Canvas C
+        {
+            get
+            {
+                if(canvas == null)
+                    canvas = GetComponent<Canvas>();
+
+                return canvas;
+            }
+        }
         void Start()
         {
             lastSafeArea = Screen.safeArea;
             ApplySafeArea();
         }
+
 
         void ApplySafeArea()
         {
@@ -28,17 +44,17 @@ namespace Aokoro.UI
 
                 Vector2 anchorMin = safeArea.position;
                 Vector2 anchorMax = safeArea.position + safeArea.size;
-                anchorMin.x /= canvas.pixelRect.width;
-                anchorMin.y /= canvas.pixelRect.height;
-                anchorMax.x /= canvas.pixelRect.width;
-                anchorMax.y /= canvas.pixelRect.height;
+                anchorMin.x /= C.pixelRect.width;
+                anchorMin.y /= C.pixelRect.height;
+                anchorMax.x /= C.pixelRect.width;
+                anchorMax.y /= C.pixelRect.height;
 
                 area.anchorMin = anchorMin;
                 area.anchorMax = anchorMax;
             }
         }
 
-        protected override void OnUpdate()
+        private void LateUpdate()
         {
             if (lastSafeArea != Screen.safeArea)
             {

@@ -87,6 +87,8 @@ namespace LTX.Settings
             return false;
         }
 
+        public static void AddSettingChangeCallback(string internalName, Action<ISetting> callback) => SettingsHandler.AddSettingChangeCallback(internalName, callback);
+        public static void RemoveSettingChangeCallback(string internalName, Action<ISetting> callback) => SettingsHandler.RemoveSettingChangeCallback(internalName, callback);
         private void CreateSettingHandler()
         {
             _settingsHandler = new SettingsHandler(_settingProvider, Instance._settingsCatalog == null? new SettingsCategory[0] : Instance._settingsCatalog);

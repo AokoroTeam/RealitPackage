@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LTX.ControlsVisualizer.Abstraction;
-using Input = LTX.ControlsVisualizer.Abstraction.Input;
 
-
-namespace LTX.ControlsVisualizer
+namespace LTX.ControlsVisualizer.UI
 {
     [System.Serializable]
     internal struct DeviceUILibrary
@@ -14,26 +12,32 @@ namespace LTX.ControlsVisualizer
         private string deviceLayout;
 
         [SerializeField]
-        private InputUIContent[] visuals;
+        private InputVisual[] visuals;
 
         internal bool MatchesDevice(string deviceLayout)
         {
             return deviceLayout == this.deviceLayout;
         }
 
-        internal bool HasMatchingVisual(Input input, out InputUIData inputVisualData)
+        internal bool FillUIDataWithDeviceUI(Command command, ref CommandUIData visual)
         {
-            for (int i = 0; i < visuals.Length; i++)
+            visual.inputVisuals.Clear();
+
+            var inputs = command.Inputs;
+
+            for (int i = 0; i < inputs.Length; i++)
             {
-                if (visuals[i].Matches(input.Path))
+                var input = inputs[i];
+                for (int j = 0; j < visuals.Length; j++)
                 {
-                    inputVisualData = visuals[i].GetVisual(input.Path, input.AdditionnalData);
-                    return true;
+                    InputVisual inputVisual = visuals[j];
+
+                    if (inputVisual.Matches(input.Path))
+                        visual.inputVisuals.Add(i, inputVisual.prefab);
                 }
             }
 
-            inputVisualData = default;
-            return false;
+            return visual.inputVisuals.Count != 0;
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace LTX.Settings
 {
+
     public interface ISettingProvider
     {
         public bool TryReadSetting(ref ISetting setting);

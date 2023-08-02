@@ -6,10 +6,10 @@ namespace LTX.ControlsVisualizer.Abstraction
 {
     public struct Control
     {
-        private string name;
-        private Command[] commands;
+        internal string name;
+        internal Command[] commands;
 
-        public Control(string name, Command[] commands)
+        public Control(string name, params Command[] commands)
         {
             this.name = name;
             this.commands = commands;

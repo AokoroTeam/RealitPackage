@@ -1,21 +1,29 @@
+using LTX.ControlsVisualizer.Abstraction;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace LTX.ControlsVisualizer.UI
 {
-    public class CommandUI : MonoBehaviour
+    public abstract class CommandUI : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        [SerializeField]
+        Transform commandRepParent;
+
+        List<InputUI> inputs = new List<InputUI>();
+
+        public ControlsVisualizerUI Visualizer
         {
-        
+            get;
+            internal set;
         }
 
-        // Update is called once per frame
-        void Update()
+        internal void Internal_ApplyCommandData(Command command, CommandUIData data)
         {
-        
+            
         }
+
+        protected abstract void ApplyCommandData(CommandUIData data);
     }
 }
