@@ -73,6 +73,6 @@ namespace LTX.Settings
             foreach (var setting in settingsList)
                 setting.Reset();
         }
-    }
 #endif
+    }
 }
