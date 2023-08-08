@@ -1,5 +1,6 @@
 using LTX;
 using LTX.ControlsVisualizer;
+using LTX.ControlsVisualizer.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;

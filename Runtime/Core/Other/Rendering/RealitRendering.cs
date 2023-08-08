@@ -44,7 +44,10 @@ namespace Realit.Core
         private void Update()
         {
             int maxFPS = Application.targetFrameRate == -1 ? 60 : Application.targetFrameRate;
-            accelerator._mainData.fpsMax = maxFPS;
+            if (accelerator != null)
+            {
+                accelerator._mainData.fpsMax = maxFPS;
+            }
         }
 #endif
 

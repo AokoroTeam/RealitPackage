@@ -4,13 +4,14 @@ using UnityEngine;
 using Screen = UnityEngine.Device.Screen;
 using Application = UnityEngine.Device.Application;
 using SystemInfo = UnityEngine.Device.SystemInfo;
+using System.Collections.Generic;
 
 namespace Aokoro.UI
 {
     [RequireComponent(typeof(Canvas)), ExecuteInEditMode]
     public class CanvasSafeArea : MonoBehaviour
     {
-        public RectTransform[] SafeAreaRects;
+        public List<RectTransform> SafeAreaRects;
 
         private Rect lastSafeArea = Rect.zero;
 
@@ -28,22 +29,20 @@ namespace Aokoro.UI
         void Start()
         {
             lastSafeArea = Screen.safeArea;
-            ApplySafeArea();
+            ApplySafeArea(lastSafeArea);
         }
 
 
-        void ApplySafeArea()
+        void ApplySafeArea(Rect safeArea)
         {
-            for (int i = 0; i < SafeAreaRects.Length; i++)
+            Vector2 anchorMin = safeArea.position;
+            Vector2 anchorMax = safeArea.position + safeArea.size;
+
+            foreach (RectTransform area in SafeAreaRects)
             {
-                RectTransform area = SafeAreaRects[i];
                 if (area == null)
                     return;
 
-                Rect safeArea = Screen.safeArea;
-
-                Vector2 anchorMin = safeArea.position;
-                Vector2 anchorMax = safeArea.position + safeArea.size;
                 anchorMin.x /= C.pixelRect.width;
                 anchorMin.y /= C.pixelRect.height;
                 anchorMax.x /= C.pixelRect.width;
@@ -60,7 +59,7 @@ namespace Aokoro.UI
             {
                 Debug.Log("[Canvas] Changing safe area");
                 lastSafeArea = Screen.safeArea;
-                ApplySafeArea();
+                ApplySafeArea(lastSafeArea);
             }
         }
     }

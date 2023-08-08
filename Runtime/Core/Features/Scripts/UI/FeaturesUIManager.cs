@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using Screen = UnityEngine.Device.Screen;
 using Application = UnityEngine.Device.Application;
 using SystemInfo = UnityEngine.Device.SystemInfo;
+using Aokoro.UI;
 
 namespace Realit.Core.Features.UI
 {
@@ -15,17 +16,23 @@ namespace Realit.Core.Features.UI
         private static PlayerInput PlayerInput => RealitSceneManager.Player.playerInput;
         public Plateform CurrentPlateforme { get; private set; }
 
-
+        private CanvasSafeArea safeArea;
         private Dictionary<Plateform, FeaturesUI> uis = new Dictionary<Plateform, FeaturesUI>();
+        private void Awake()
+        {
+            safeArea = GetComponentInParent<CanvasSafeArea>();
+        }
 
         private void OnEnable()
         {
             PlayerInput.onControlsChanged += PlayerInput_onControlsChanged;
+            safeArea.SafeAreaRects.Add(transform as RectTransform);
         }
 
         private void OnDisable()
         {
             PlayerInput.onControlsChanged -= PlayerInput_onControlsChanged;
+            safeArea.SafeAreaRects.Remove(transform as RectTransform);
         }
 
         private void PlayerInput_onControlsChanged(PlayerInput inputs)

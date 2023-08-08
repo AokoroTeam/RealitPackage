@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace LTX.ControlsVisualizer.UI
 {
-    public class InputUI : MonoBehaviour
+    public abstract class InputUI : MonoBehaviour
     {
-        void ApplyData(Command command);
+        public abstract void ApplyData(CommandInput input);
     }
 }

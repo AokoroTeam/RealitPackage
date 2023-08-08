@@ -1,25 +1,59 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+using LTX.ControlsVisualizer;
+using LTX.ChanneledProperties;
 using LTX.Entities.Player;
 using LTX.Entities;
-using System;
-using LTX.ChanneledProperties;
+
 using NaughtyAttributes;
 
 using Screen = UnityEngine.Device.Screen;
 using Application = UnityEngine.Device.Application;
 using SystemInfo = UnityEngine.Device.SystemInfo;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.UI;
+
 
 namespace Realit.Core.Player.Controls
     
 {
+    [System.Serializable]
+    public class PlayerControlsProvider : ControlProvider
+    {
+        public PlayerInput playerInput;
+        
+        public PlayerControlsProvider(PlayerInput playerInput)
+        {
+            this.playerInput = playerInput;
+            
+            ClearControlFactory();
+            
+            FillControlFactory(ControlsFactory);
+
+            OnControlsChange();
+        }
+
+        protected override void FillControlFactory(ControlsFactory controlsFactory)
+        {
+            var actionMaps = playerInput.actions.actionMaps;
+            var devices = playerInput.devices.ToArray();
+            foreach (var actionMap in actionMaps)
+            {
+                var actions = actionMap.actions;
+                foreach (var action in actions)
+                    controlsFactory.AddControl(action, devices);
+            }
+        }
+    }
+
     [AddComponentMenu("Realit/Player/PlayerControls")]
     public class PlayerControls : MonoBehaviour, ILateUpdateEntityComponent<PlayerManager>
     {
+        public PlayerControlsProvider controlsProvider;
+
         string IEntityComponent.ComponentName => "PlayerControls";
         int IEntityComponent.InitialisationPriority => 10;
 
@@ -28,6 +62,7 @@ namespace Realit.Core.Player.Controls
 
         [ReadOnly, BoxGroup("Action maps")]
         public PrioritisedProperty<string> actionMapPriority;
+
         [BoxGroup("Action maps")]
         public string DefaultActionMap;
 
@@ -40,7 +75,8 @@ namespace Realit.Core.Player.Controls
         public void Initiate(PlayerManager manager)
         {
             PlayerInput = manager.playerInput;
-
+            controlsProvider = new PlayerControlsProvider(PlayerInput);
+            
             manager.Freezed.AddOnValueChangeCallback(OnFreezed);
         }
 
@@ -52,8 +88,6 @@ namespace Realit.Core.Player.Controls
             PlayerInput = GetComponent<PlayerInput>();
             if (PlayerInput.actions != null)
                 SetupInputDevices();
-
-            //PlayerInput.uiInputModule = EventSystem.current.currentInputModule as InputSystemUIInputModule;
         }
 
         private void OnFreezed(bool freezed)
@@ -70,21 +104,6 @@ namespace Realit.Core.Player.Controls
             PlayerInput.currentActionMap?.Enable();
         }
 
-        public void SetupInputDevices()
-        {
-            InputDevice[] devices = InputSystem.devices.ToArray();
-            string controlScheme = Application.isMobilePlatform ? "Mobile" : "Keyboard&Mouse";
-            PlayerInput.SwitchCurrentControlScheme(controlScheme, devices);
-        }
-        protected void SetupInputs()
-        {
-            PlayerInput.ActivateInput();
-
-            var actionMaps = PlayerInput.actions.actionMaps;
-            foreach (var actionMap in actionMaps)
-                actionMap.Disable();
-        }
-
         private void OnEnable()
         {
             PlayerInput.onControlsChanged += OnControlsChanges;
@@ -99,6 +118,30 @@ namespace Realit.Core.Player.Controls
             PlayerInput.onDeviceLost -= OnControlsChanges;
             PlayerInput.onDeviceRegained -= OnControlsChanges;
             controlsHaveChanged = false; 
+        }
+
+        public void OnLateUpdate()
+        {
+            if (controlsHaveChanged)
+            {
+                controlsHaveChanged = false;
+                OnControlChanges?.Invoke(this);
+                Debug.Log("[Realit Player] Controls have changed");
+            }
+        }
+        public void SetupInputDevices()
+        {
+            InputDevice[] devices = InputSystem.devices.ToArray();
+            string controlScheme = Application.isMobilePlatform ? "Mobile" : "Keyboard&Mouse";
+            PlayerInput.SwitchCurrentControlScheme(controlScheme, devices);
+        }
+        protected void SetupInputs()
+        {
+            PlayerInput.ActivateInput();
+
+            var actionMaps = PlayerInput.actions.actionMaps;
+            foreach (var actionMap in actionMaps)
+                actionMap.Disable();
         }
 
         public void ChangeActionMap(string targetMap)
@@ -126,16 +169,5 @@ namespace Realit.Core.Player.Controls
         }
 
         private void OnControlsChanges(PlayerInput obj) => controlsHaveChanged = true;
-
-
-        public void OnLateUpdate()
-        {
-            if (controlsHaveChanged)
-            {
-                controlsHaveChanged = false;
-                OnControlChanges?.Invoke(this);
-                Debug.Log("[Realit Player] Controls have changed");
-            }
-        }
     }
 }

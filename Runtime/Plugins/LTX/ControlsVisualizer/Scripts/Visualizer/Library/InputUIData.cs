@@ -12,14 +12,13 @@ namespace LTX.ControlsVisualizer.UI
 {
 
     [System.Serializable]
-    public struct InputVisual
+    public struct InputUIData
     {
         [SerializeField] private string[] paths;
-        []
-        [SerializeField] private bool IsAdditive;
         [SerializeField] private GameObject prefab;
 
-        public GameObject prefab => prefab;
+        public bool HasInputUI => prefab != null;
+        public GameObject Prefab => prefab;
         
         internal bool Matches(string path)
         {

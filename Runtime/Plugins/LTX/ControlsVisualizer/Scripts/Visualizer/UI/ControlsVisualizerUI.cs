@@ -10,7 +10,7 @@ namespace LTX.ControlsVisualizer.UI
     public class ControlsVisualizerUI : MonoBehaviour
     {
         [SerializeField]
-        private ControlUILibrary library;
+        private ControlUILibrary data;
         [SerializeField]
         private ControlProvider controlProvider;
         [SerializeField]
@@ -42,38 +42,48 @@ namespace LTX.ControlsVisualizer.UI
         private void OnProviderControlChanges(ControlsFactory controlFactory)
         {
             ClearUI();
-            FillUI(controlFactory);
+            FillUI(controlFactory, controlProvider.CurrentLayouts);
         }
 
-        private void FillUI(ControlsFactory controlFactory)
+        private void FillUI(ControlsFactory controlFactory, string[] layouts)
         {
-            //Buffer
-            List<CommandUIData> datas = new();
 
-            foreach (var (_, control) in controlFactory.controls)
+            if (TryGetMatchingLibrary(layouts, out DeviceUILibrary[] librairies))
             {
-                var commands = control.commands;
-                datas.Clear();
-                for (int i = 0; i < commands.Length; i++)
+                foreach (var control in controlFactory.controls)
                 {
-                    Command command = commands[i];
-                    if (library.TryGetVisualForCommand(command, out CommandUIData data))
-                        datas.Add(data);
-                }
-                if (datas.Count > 0)
-                {
-                    ControlUI controlUI = CreateControlUI(controlParent);
+                    ControlUIContent controlUIContent = new ControlUIContent(control);
+                    controlUIContent.CollectCommandsContent(data.commandUI, librairies);
 
-                    uis.Add(control, controlUI);
-                    controlUI.Visualizer = this;
-
-                    controlUI.FillWithCommands(datas);
+                    var controlUI = Instantiate(data.controlUI, controlParent).GetComponent<ControlUI>();
+                    controlUI.FillWithControls(controlUIContent);
                 }
+
+                //ControlUIContent controlUIContent = new ControlUIContent(control);
             }
         }
 
-        public CommandUI CreateCommandUI(Transform parent) => Instantiate(library.commandUI, parent).GetComponent<CommandUI>();
-        public ControlUI CreateControlUI(Transform parent) => Instantiate(library.commandUI, parent).GetComponent<ControlUI>();
+
+        public bool TryGetMatchingLibrary(string[] layouts, out DeviceUILibrary[] deviceLibrary)
+        {
+            List<DeviceUILibrary> deviceLibrariesList = new();
+
+            var librairies = data.libraries;
+
+            for (int i = 0; i < librairies.Length; i++)
+            {
+                DeviceUILibrary lib = librairies[i];
+                for (int j = 0; j < layouts.Length; j++)
+                {
+                    if (lib.MatchesLayout(layouts[j]))
+                        deviceLibrariesList.Add(lib);
+                }
+            }
+
+            deviceLibrary = deviceLibrariesList.ToArray();
+            return deviceLibrariesList.Count > 0;
+        }
+
         private void ClearUI()
         {
             foreach (var (_, ui) in uis)

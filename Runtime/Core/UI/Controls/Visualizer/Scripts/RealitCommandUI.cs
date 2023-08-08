@@ -14,7 +14,7 @@ namespace Realit.Core.Player.Controls
         [SerializeField]
         TextMeshProUGUI label;
 
-        protected override void ApplyCommandData(CommandUIData data)
+        protected override void ApplyCommandData(CommandUIContent data)
         {
 
         }

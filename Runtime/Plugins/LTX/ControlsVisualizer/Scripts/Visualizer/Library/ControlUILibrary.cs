@@ -10,24 +10,11 @@ namespace LTX.ControlsVisualizer.UI
     public class ControlUILibrary : ScriptableObject
     {
         [SerializeField]
-        DeviceUILibrary[] libraries;
+        internal CommandUIData[] commandUI;
         [SerializeField]
-        public GameObject commandUI;
+        public DeviceUILibrary[] libraries;
+
         [SerializeField]
         public GameObject controlUI;
-
-        internal bool TryGetVisualForCommand(Command command, out CommandUIData commandUiData)
-        {
-            commandUiData = new CommandUIData(command, commandUI);
-
-            for (int i = 0; i < libraries.Length; i++)
-            {
-                DeviceUILibrary lib = libraries[i];
-                if (lib.MatchesDevice(command.DeviceLayout))
-                    return lib.FillUIDataWithDeviceUI(command, ref commandUiData);
-            }
-
-            return false;
-        }
     }
 }
