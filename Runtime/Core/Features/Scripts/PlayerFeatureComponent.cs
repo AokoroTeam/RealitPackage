@@ -18,7 +18,7 @@ namespace Realit.Core.Features
         private InputActionAsset actions;
 
         public string MapName => mapName;
-        public Realit_Player Player { get; set; }
+        public RealitPlayer Player { get; set; }
         public InputActionAsset ActionAsset { get => actions; set => actions = value; }
 
     }

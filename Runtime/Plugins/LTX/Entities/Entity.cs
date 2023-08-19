@@ -35,8 +35,7 @@ namespace LTX.Entities
 
         protected virtual void Initiate<T>() where T : Entity
         {
-
-            var componentsArray = InitializeComponents<T>(GetComponentsInChildren<IEntityComponent>(true));
+            var componentsArray = InitializeComponents<T>();
             components = new Dictionary<string, IEntityComponent>(componentsArray.Length);
 
             List<IUpdateEntityComponent> updatesList = new();
@@ -64,57 +63,23 @@ namespace LTX.Entities
             OnEntityInitiated?.Invoke(this);
         }
 
-        private IEntityComponent[] InitializeComponents<T>(IEntityComponent[] ChildComponents) where T : Entity
+        private IEntityComponent[] InitializeComponents<T>() where T : Entity
         {
-            List<IEntityComponent> componentsList = new(ChildComponents);
-            int count = ChildComponents.Length;
-
-            for (int i = 0; i < count; i++)
+            if(this is not T typedManager)
             {
-                IEntityComponent component = ChildComponents[i];
-                Type componentType = component.GetType();
-                Type[] implementedInterfaces = componentType.GetInterfaces();
-
-                for (int j = 0; j < implementedInterfaces.Length; j++)
-                {
-                    Type interfaceType = implementedInterfaces[j];
-                    if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(IEntityComponent<>))
-                    {
-                        var ga = interfaceType.GetGenericArguments()[0];
-                        if (ga == typeof(T) || ga.IsSubclassOf(typeof(T)))
-                        {
-                            if (component is IUpdateEntityComponent<T> u)
-                            {
-                                u.Manager = this as T;
-                                u.Initiate(this as T);
-                            }
-                            else if (component is IFixedUpdateEntityComponent<T> fu)
-                            {
-                                fu.Manager = this as T;
-                                fu.Initiate(this as T);
-                            }
-                            else if (component is ILateUpdateEntityComponent<T> Lu)
-                            {
-                                Lu.Manager = this as T;
-                                Lu.Initiate(this as T);
-                            }
-                            else if(component is IEntityComponent<T> c)
-                            {
-                                c.Manager = this as T;
-                                c.Initiate(this as T);
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            Debug.LogError("Wrong manager for this living component");
-                        }
-                    }
-
-                }
+                Debug.LogError($"{this.GetType().Name} is not of type {typeof(T).Name}");
+                return new IEntityComponent[0];
             }
 
-            return componentsList.ToArray();
+            var global = GetComponentsInChildren<IEntityComponent<T>>();
+
+            for (int i = 0; i < global.Length; i++)
+            {
+                global[i].Manager = typedManager;
+                global[i].Initiate(this as T);
+            }
+
+            return global;
         }
 
         protected virtual void Update()

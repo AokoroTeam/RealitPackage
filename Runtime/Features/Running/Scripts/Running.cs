@@ -37,7 +37,7 @@ namespace Realit.Core.Features.Running
         protected override void OnLoad()
         {
 
-            playerCharacter = Realit_Player.LocalPlayer.GetLivingComponent<PlayerCharacter>();
+            playerCharacter = RealitPlayer.LocalPlayer.GetLivingComponent<PlayerCharacter>();
             playerCharacter.autoSprint.AddChannel(channelKey, PriorityTags.Small);
         }
 

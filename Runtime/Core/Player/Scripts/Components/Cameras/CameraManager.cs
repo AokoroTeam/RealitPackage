@@ -12,7 +12,7 @@ using UnityEngine.InputSystem.XR;
 
 namespace Realit.Core.Player.CameraManagement
 {
-    public class CameraManager : MonoBehaviour, IEntityComponent<PlayerManager>, ILateUpdateEntityComponent<PlayerManager>
+    public class CameraManager : MonoBehaviour, IEntityComponent<RealitPlayer>, ILateUpdateEntityComponent
     {
         /// <summary>
         /// First BaseCameraController : From
@@ -54,7 +54,7 @@ namespace Realit.Core.Player.CameraManagement
         public float Y => YInput * verticalSpeed;
         public float Z => ZInput * zoomSpeed;
 
-        public PlayerManager Manager { get; set; }
+        public RealitPlayer Manager { get; set; }
 
         string IEntityComponent.ComponentName => "CameraManager";
         int IEntityComponent.InitialisationPriority => 0;
@@ -91,7 +91,7 @@ namespace Realit.Core.Player.CameraManagement
         }
 
 
-        public void Initiate(PlayerManager manager)
+        public void Initiate(RealitPlayer manager)
         {
             BaseCameraController[] controllers = GetComponentsInChildren<BaseCameraController>(true);
 

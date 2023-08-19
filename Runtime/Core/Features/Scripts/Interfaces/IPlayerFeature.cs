@@ -8,6 +8,6 @@ namespace Realit.Core.Features
 
     public interface IPlayerFeatureComponent
     {
-        public Realit_Player Player { get; set; }
+        public RealitPlayer Player { get; set; }
     }
 }

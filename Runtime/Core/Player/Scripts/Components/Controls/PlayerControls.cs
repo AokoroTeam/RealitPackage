@@ -50,7 +50,7 @@ namespace Realit.Core.Player.Controls
     }
 
     [AddComponentMenu("Realit/Player/PlayerControls")]
-    public class PlayerControls : MonoBehaviour, ILateUpdateEntityComponent<PlayerManager>
+    public class PlayerControls : MonoBehaviour, IEntityComponent<RealitPlayer>, ILateUpdateEntityComponent
     {
         public PlayerControlsProvider controlsProvider;
 
@@ -70,9 +70,9 @@ namespace Realit.Core.Player.Controls
         private bool controlsHaveChanged = false;
 
         public PlayerInput PlayerInput { get; private set; }
-        public PlayerManager Manager { get; set; }
+        public RealitPlayer Manager { get; set; }
 
-        public void Initiate(PlayerManager manager)
+        public void Initiate(RealitPlayer manager)
         {
             PlayerInput = manager.playerInput;
             controlsProvider = new PlayerControlsProvider(PlayerInput);

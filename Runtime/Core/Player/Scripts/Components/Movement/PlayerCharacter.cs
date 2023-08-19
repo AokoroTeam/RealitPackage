@@ -22,7 +22,7 @@ using RotationMode = EasyCharacterMovement.RotationMode;
 namespace Realit.Core.Player.Movement
 {
     [AddComponentMenu("Realit/Player/PlayerCharacter")]
-    public class PlayerCharacter : Character, IEntityComponent<PlayerManager>
+    public class PlayerCharacter : Character, IEntityComponent<RealitPlayer>
     {
         private const string AutoMovementWindow = "automovement";
         
@@ -62,7 +62,7 @@ namespace Realit.Core.Player.Movement
         public event System.Action OnAgentStopsMoving;
         
         //Entity
-        public PlayerManager Manager { get; set; }
+        public RealitPlayer Manager { get; set; }
         string IEntityComponent.ComponentName => "PlayerCharacter";
         int IEntityComponent.InitialisationPriority => 0;
         
@@ -168,7 +168,7 @@ namespace Realit.Core.Player.Movement
         }
         #endregion
 
-        public void Initiate(PlayerManager manager)
+        public void Initiate(RealitPlayer manager)
         {
             inputActions = manager.playerInput.actions;
             camera = Camera.main;
