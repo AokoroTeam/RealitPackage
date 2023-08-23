@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
+
 namespace Realit.Core.Player.Controls.Modules
 {
     public class Arrow : MobileBaseLookSurface
@@ -22,7 +24,14 @@ namespace Realit.Core.Player.Controls.Modules
         [SerializeField]
         AnimationCurve curve;
 
+        Canvas canvas;
+
         Dictionary<MonoBehaviour, Action<Vector2>> observers = new();
+        
+        private void Awake()
+        {
+            canvas = GetComponentInParent<Canvas>();
+        }
 
         private void Start()
         {
@@ -56,58 +65,60 @@ namespace Realit.Core.Player.Controls.Modules
             //Slowing down if there is no matching touch (either no touch or just one that is used too move)
             if (touchCount != touchIndex + 1)
             {
-                wasPressedLastFrame = false;
+                wasStartTouchValid = false;
                 currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
             }
             else
             {
-
                 Touch touch = touches[touchIndex];
                 
-                //Only use hold that is not pointing on anything (to prevent moving when using UI)
-                if (!touch.isTap && touch.isInProgress && !MobileControls.IsPointerOverUi(touch.startScreenPosition))
+                Vector2 pos = RectTransformUtility.PixelAdjustPoint(touch.screenPosition, transform, canvas);
+                Vector2 startPos = RectTransformUtility.PixelAdjustPoint(touch.startScreenPosition, transform, canvas);
+
+                //Debug.Log(touch.phase);
+                switch (touch.phase)
                 {
-                    Vector2 pos = touch.screenPosition;
-                    Vector2 startPos = touch.startScreenPosition;
-
-                    //Sometimes in editor, delta can be NaN.
-                    if (!float.IsNaN(pos.x) || !float.IsNaN(pos.y))
-                    {
-                        wasPressedLastFrame = true;
-                        Vector2 delta = Vector2.ClampMagnitude(pos - startPos, minMaxSize.y);
-                        canvasGroup.alpha = 1;
-
-                        float magnitude = delta.magnitude;
-                        bool bigEnough = magnitude > minMaxSize.x;
-
-                        arrow.transform.gameObject.SetActive(bigEnough);
-                        round.transform.gameObject.SetActive(!bigEnough);
-                        dot.transform.position = startPos;
-                        round.transform.position = startPos;
-                        
-                        if (bigEnough)
+                    case TouchPhase.Began:
+                        wasStartTouchValid = !MobileControls.IsPointerOverUi(touch.startScreenPosition);
+                        break;
+                    case TouchPhase.Moved or TouchPhase.Stationary:
+                        if (!float.IsNaN(pos.x) && !float.IsNaN(pos.y) && wasStartTouchValid)
                         {
-                            currentSpeed = delta * multiplier * curve.Evaluate(Mathf.InverseLerp(minMaxSize.x, minMaxSize.y, magnitude));
+                            Vector2 delta = Vector2.ClampMagnitude(pos - startPos, minMaxSize.y); canvasGroup.alpha = 1;
 
-                            arrow.transform.position = startPos;
-                            arrow.transform.right = delta;
-                            arrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, magnitude);
+                            float magnitude = delta.magnitude;
+                            bool bigEnough = magnitude > minMaxSize.x;
 
-                            return;
+                            arrow.transform.gameObject.SetActive(bigEnough);
+                            round.transform.gameObject.SetActive(!bigEnough);
+                            dot.transform.position = startPos;
+                            round.transform.position = startPos;
+                            if (bigEnough)
+                            {
+                                currentSpeed = curve.Evaluate(Mathf.InverseLerp(minMaxSize.x, minMaxSize.y, magnitude)) * multiplier * delta;
+
+                                arrow.transform.position = startPos;
+                                arrow.transform.right = delta;
+
+                                //Debug.Log(magnitude);
+                                arrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, magnitude / canvas.transform.localScale.x);
+                                //arrow.sizeDelta = new Vector2(magnitude, arrow.sizeDelta.y);
+                                return;
+                            }
+                            else
+                            {
+                                currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
+                                return;
+                            }
                         }
-                        else
-                        {
-                            currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
-                            return;
-                        }
+                        break;
 
-                    }
+                    case TouchPhase.Ended or TouchPhase.Canceled:
+                        wasStartTouchValid = false;
+                        currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
+                        canvasGroup.alpha = 0;
+                        break;
                 }
-
-                //Else, slow down
-                wasPressedLastFrame = false;
-                currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
-                canvasGroup.alpha = 0;
             }
         }
 

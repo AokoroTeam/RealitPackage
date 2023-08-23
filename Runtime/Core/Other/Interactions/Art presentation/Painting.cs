@@ -21,9 +21,19 @@ namespace Realit.Core
         #endregion
 
         [BoxGroup("Painting")]
-        public Animator uiAnimator;
+        [SerializeField]
+        private Animator uiAnimator;
+        [BoxGroup("Painting")]
+        [SerializeField]
+        private CanvasGroup uiCanvasGroup;
 
         private bool isActive = false;
+
+        
+        private void Start()
+        {
+            Close();
+        }
 
         protected override void Update()
         {
@@ -32,23 +42,35 @@ namespace Realit.Core
             //If too far and active
             if(isActive && !PlayerInteractions.interactable.HasChannel(this))
             {
-                //Deactivate
-                Interact();
+                Close();
             }
         }
 
         public override void Interact()
         {
-            isActive = !isActive;
-
-            if(isActive)
+            if(!isActive)
             {
-                uiAnimator.SetTrigger(openHashTrigger);
+                Open();
             }
             else
             {
-                uiAnimator.SetTrigger(closeHashTrigger);
+                Close();
             }
         }
+
+        public void Close()
+        {
+            isActive = false;
+            uiAnimator.SetTrigger(closeHashTrigger);
+            uiCanvasGroup.interactable = false;
+        }
+
+        public void Open()
+        {
+            isActive = true;
+            uiAnimator.SetTrigger(openHashTrigger);
+            uiCanvasGroup.interactable = true;
+        }
+
     }
 }

@@ -112,11 +112,11 @@ namespace Realit.Core.Player.Controls
         {
             PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
             pointerEventData.position = point;
-
+            
             raycastResultsList.Clear();
 
             EventSystem.current.RaycastAll(pointerEventData, raycastResultsList);
-            
+
             return raycastResultsList.Count > 0;
         }
 

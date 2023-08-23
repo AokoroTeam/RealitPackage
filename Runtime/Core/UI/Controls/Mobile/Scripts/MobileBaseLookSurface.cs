@@ -21,7 +21,7 @@ namespace Realit.Core.Player.Controls
         protected Vector2 currentSpeed;
 
         [ShowNonSerializedField]
-        protected bool wasPressedLastFrame;
+        protected bool wasStartTouchValid;
         [ShowNonSerializedField]
         protected int touchIndex = 0;
 
@@ -88,7 +88,7 @@ namespace Realit.Core.Player.Controls
             //Slowing down if there is no matching touch (either no touch or just one that is used too move)
             if (touchCount != touchIndex + 1)
             {
-                wasPressedLastFrame = false;
+                wasStartTouchValid = false;
                 currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
             }
             else
@@ -104,14 +104,14 @@ namespace Realit.Core.Player.Controls
                     //Sometimes in editor, delta can be NaN.
                     if (!float.IsNaN(delta.x) || !float.IsNaN(delta.y))
                     {
-                        wasPressedLastFrame = true;
+                        wasStartTouchValid = true;
                         currentSpeed = delta * multiplier;
                         return;
                     }
                 }
 
                 //Else, slow down
-                wasPressedLastFrame = false;
+                wasStartTouchValid = false;
                 currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
             }
         }
@@ -126,14 +126,14 @@ namespace Realit.Core.Player.Controls
                 //Sometimes in editor, delta can be NaN.
                 if (!float.IsNaN(delta.x) || !float.IsNaN(delta.y))
                 {
-                    wasPressedLastFrame = true;
+                    wasStartTouchValid = true;
                     currentSpeed = delta * multiplier;
                     return;
                 }
             }
 
             //Else, slow down
-            wasPressedLastFrame = false;
+            wasStartTouchValid = false;
             currentSpeed = Vector2.Lerp(currentSpeed, Vector2.zero, deceleration * Time.deltaTime);
         }
 

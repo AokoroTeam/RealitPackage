@@ -45,6 +45,14 @@ namespace Realit.Core.Player.Interactions
             canInteract.AddChannel(manager, PriorityTags.Smallest, !manager.Freezed);
             manager.Freezed.AddOnValueChangeCallback(ctx => canInteract.Write(manager, !ctx), false);
 
+            interactable.AddOnValueChangeCallback(ctx =>
+            {
+                if(ctx == null)
+                    OnNoInteractable?.Invoke(ctx);
+                else
+                    OnNewInteractable?.Invoke(ctx);
+            });
+
             BindToInputAction();
         }
 
@@ -97,8 +105,14 @@ namespace Realit.Core.Player.Interactions
         {
             if (!interactable.HasMainChannel)
                 return;
+            
             switch (ctx.phase)
             {
+                case InputActionPhase.Started:
+                    //if (ctx.control.device is Pointer pointer && !interactable.Value.IsPointerOverObject(pointer.position.ReadValue()))
+                        //return;
+
+                    break;
                 case InputActionPhase.Performed:
                         interactable.Value.Interact();
                     break;
