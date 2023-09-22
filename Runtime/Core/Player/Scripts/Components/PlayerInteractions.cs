@@ -25,6 +25,14 @@ namespace Realit.Core.Player.Interactions
         private InputAction interactAction;
 
 
+
+        private static List<InteractableObject> interactableObjects;
+        internal static List<InteractableObject> InteractableObjects 
+        {
+            get => interactableObjects ??= new List<InteractableObject>(); 
+        }
+
+        internal static string PlayerTag { get; private set; }
         public void Initiate(RealitPlayer manager)
         {
             //Debug.Log('a');
@@ -54,6 +62,7 @@ namespace Realit.Core.Player.Interactions
             });
 
             BindToInputAction();
+            PlayerTag = gameObject.tag;
         }
 
         private void Awake()
@@ -98,27 +107,36 @@ namespace Realit.Core.Player.Interactions
 
         public void OnUpdate()
         {
+            foreach (var interactableObject in interactableObjects)
+            {
 
+            }
         }
 
+        /// <summary>
+        /// Manual interaction
+        /// </summary>
+        public void Interact()
+        {
+            if (!interactable.HasMainChannel)
+                return;
+
+            interactable.Value.Interact();
+        }
         protected void OnTryInteract(InputAction.CallbackContext ctx)
         {
             if (!interactable.HasMainChannel)
                 return;
-            
+
             switch (ctx.phase)
             {
-                case InputActionPhase.Started:
-                    //if (ctx.control.device is Pointer pointer && !interactable.Value.IsPointerOverObject(pointer.position.ReadValue()))
-                        //return;
-
-                    break;
                 case InputActionPhase.Performed:
-                        interactable.Value.Interact();
+                    interactable.Value.Interact();
+                    break;
+                default:
+                    OnTryToInteract?.Invoke(ctx);
                     break;
             }
-
-            OnTryToInteract?.Invoke(ctx);
         }
     }
 }

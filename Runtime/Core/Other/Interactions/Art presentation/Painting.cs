@@ -40,7 +40,7 @@ namespace Realit.Core
             base.Update();
 
             //If too far and active
-            if(isActive && !PlayerInteractions.interactable.HasChannel(this))
+            if(isActive && !IsPlayerInRange)
             {
                 Close();
             }

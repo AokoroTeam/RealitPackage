@@ -10,47 +10,34 @@ namespace Realit.Core.Player.Interactions
 {
     public abstract class InteractableObject : Outline
     {
-        [BoxGroup("Interactable")]
-        public float range = 2;
-        [BoxGroup("Interactable")]
-        public PriorityTags priority = PriorityTags.Default;
-        [BoxGroup("Interactable")]
-        public Transform UiPos;
+        [SerializeField, BoxGroup("Interactable")]
+        private float range = 2;
+        [SerializeField, BoxGroup("Interactable")]
+        private PriorityTags priority = PriorityTags.Default;
+        [SerializeField, BoxGroup("Interactable")]
+        private Transform uiPos;
+
+        public Transform UiPos => uiPos;
+
+        public bool IsPlayerInRange { get; internal set; }
+        public bool IsVisibleByCamera { get; internal set; }
+
+        public PrioritisedProperty<bool> canInteract;
 
         private new SphereCollider collider;
 
-
-        PlayerInteractions playerInteractions;
-
-        public PlayerInteractions PlayerInteractions
-        { 
-            get
-            {
-                if(playerInteractions == null)
-                {
-                    RealitPlayer.LocalPlayer.GetLivingComponent(out playerInteractions);
-                }
-
-                return playerInteractions;
-            }
-        }
         
         protected override void OnEnable()
         {
             base.OnEnable();
-            if (Managers.RealitSceneManager.Player != null)
-            {
-                PlayerInteractions.interactable?.AddOnValueChangeCallback(OnInteractableChanges);
-            }
+            PlayerInteractions.InteractableObjects.Add(this);
         }
 
 
         protected override void OnDisable()
         {
-            if (RealitSceneManager.Player != null)
-            {
-                PlayerInteractions.interactable?.RemoveOnValueChangeCallback(OnInteractableChanges);
-            }
+            base.OnDisable();
+            PlayerInteractions.InteractableObjects.Remove(this);
         }
 
         protected override void OnValidate()
@@ -68,43 +55,37 @@ namespace Realit.Core.Player.Interactions
         {
             base.Awake();
             OnValidate();
-            RealitSceneManager.OnPlayerIsSetup += RealitSceneManager_OnPlayerIsSetup;
+            canInteract = new PrioritisedProperty<bool>(false);
         }
 
+        public abstract void Interact();
+        
+
+        public virtual void SetStateAsTargetInteractable()
+        {
+            OutlineWidth = 5;
+        }
+
+        public virtual void SetStateAsIdle()
+        {
+            OutlineWidth = 0;
+        }
 
         private void OnTriggerEnter(Collider other)
         {
             //This is the player
-            if(other.CompareTag(PlayerInteractions.tag))
+            if (other.CompareTag(PlayerInteractions.PlayerTag))
             {
-                if(!PlayerInteractions.interactable.HasChannel(this))
-                    PlayerInteractions.interactable.AddChannel(this, priority, this);
+                IsPlayerInRange = true;
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag(playerInteractions.tag))
+            if (other.CompareTag(PlayerInteractions.PlayerTag))
             {
-                if (PlayerInteractions.interactable.HasChannel(this))
-                    PlayerInteractions.interactable.RemoveChannel(this);
+                IsPlayerInRange = false;
             }
         }
-
-        private void RealitSceneManager_OnPlayerIsSetup(RealitPlayer player)
-        {
-            PlayerInteractions.interactable?.AddOnValueChangeCallback(OnInteractableChanges);
-        }
-
-        private void OnInteractableChanges(InteractableObject interactableObject)
-        {
-            if(interactableObject == this)
-                OutlineWidth = 5;
-            else
-                OutlineWidth = 0;
-            
-        }
-
-        public abstract void Interact();
     }
 }

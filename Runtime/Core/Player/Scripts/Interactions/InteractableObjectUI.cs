@@ -10,13 +10,28 @@ namespace Realit.Core.Player.Interactions
     public class InteractableObjectUI : MonoBehaviour
     {
         [SerializeField]
+        float mobileHoldTime = .3f;
+        [SerializeField]
         private GameObject mobileUI;
         [SerializeField]
         private GameObject desktopUI;
         [SerializeField]
         private Image holdCircle;
 
+        private static PlayerInteractions playerInteractions;
 
+        private static PlayerInteractions PlayerInteractions 
+        {
+            get
+            {
+                if(playerInteractions == null && RealitPlayer.LocalPlayer != null)
+                {
+                    playerInteractions = RealitPlayer.LocalPlayer.GetLivingComponent<PlayerInteractions>();
+                }
+
+                return playerInteractions;
+            } 
+        }
 
         private void Awake()
         {
@@ -26,6 +41,27 @@ namespace Realit.Core.Player.Interactions
         internal void SetPosition(Transform uiPos)
         {
             transform.SetPositionAndRotation(uiPos.position, uiPos.rotation);
+        }
+
+        public void MobileHold()
+        {
+            //Debug.Log("bah?");
+            StopAllCoroutines();
+
+            holdCircle.enabled = true;
+            StartCoroutine(IMobileHold());
+        }
+
+        public void MobileStopHold() => StopHold();
+
+        private IEnumerator IMobileHold()
+        {
+            //Debug.Log("Start Hold");
+            yield return IHold(mobileHoldTime);
+            StopHold();
+
+            //Debug.Log("End Hold");
+            PlayerInteractions.Interact();
         }
 
         internal void Hold(float maxHoldTime)
@@ -42,6 +78,7 @@ namespace Realit.Core.Player.Interactions
             float holdTime = 0;
             while (holdTime <= maxHoldTime)
             {
+                //Debug.Log(holdTime);
                 holdTime = Time.time - startHoldTime;
                 holdCircle.fillAmount = holdTime / maxHoldTime;
                 yield return null;  
@@ -49,6 +86,7 @@ namespace Realit.Core.Player.Interactions
 
             holdCircle.fillAmount = 1;
         }
+
 
         internal void StopHold()
         {

@@ -31,6 +31,8 @@ namespace Realit.Core.Player.Interactions
         {
             base.Awake();
             uiItem = Instantiate(uiItemPrefab, transform).GetComponent<InteractableObjectUI>();
+            
+            GetComponent<Canvas>().worldCamera = Camera.main;
         }
 
         public static void OnPlayerDestroyed(PlayerInteractions playerInteractions)
@@ -71,19 +73,39 @@ namespace Realit.Core.Player.Interactions
                     {
                         case InputActionPhase.Started:
                             float holdTime = hold.duration <= 0 ? InputSystem.settings.defaultHoldTime : hold.duration;
-                            uiItem.Hold(holdTime);
+                            Hold(holdTime);
                             break;
 
                         case InputActionPhase.Canceled:
-                            uiItem.StopHold();
+                            StopHold();
                             break;
 
                         case InputActionPhase.Performed:
-                            uiItem.StopHold();
-                            uiItem.Sucess();
+                            SucessHold();
                             break;
                     }
                 }
+            }
+        }
+
+        public void Hold(float holdTime)
+        {
+            if (uiItem != null)
+                uiItem.Hold(holdTime);
+        }
+
+        public void StopHold()
+        {
+            if (uiItem != null)
+                uiItem.StopHold();
+        }
+
+        public void SucessHold()
+        {
+            if (uiItem != null)
+            {
+                uiItem.StopHold();
+                uiItem.Sucess();
             }
         }
 
