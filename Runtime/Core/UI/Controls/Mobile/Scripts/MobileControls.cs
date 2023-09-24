@@ -105,20 +105,7 @@ namespace Realit.Core.Player.Controls
                 currentScheme.PerformControls();
         }
 
-
-
-        static List<RaycastResult> raycastResultsList = new List<RaycastResult>();
-        public static bool IsPointerOverUi(Vector2 point)
-        {
-            PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-            pointerEventData.position = point;
-            
-            raycastResultsList.Clear();
-
-            EventSystem.current.RaycastAll(pointerEventData, raycastResultsList);
-
-            return raycastResultsList.Count > 0;
-        }
+        public static bool IsPointerOverUi(Vector2 point) => RealitUtilities.IsPointerOverUi(point);
 
         private void SubscribeAndRefresh(RealitPlayer playerManager)
         {
