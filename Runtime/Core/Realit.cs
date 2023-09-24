@@ -26,6 +26,8 @@ namespace Realit.Core
         [BoxGroup("Ressources")]
         [SerializeField] GameObject canvasManagerAsset;
         [BoxGroup("Ressources")]
+        [SerializeField] GameObject featuresManagerAsset;
+        [BoxGroup("Ressources")]
         [SerializeField] GameObject sceneManagerAsset;
         [BoxGroup("Ressources")]
         [SerializeField] GameObject playerAsset;
@@ -115,6 +117,9 @@ namespace Realit.Core
         {
             if(IsReadyForLoading)
             {
+                if(FeaturesManager.HasInstance)
+                    FeaturesManager.UnloadFeatures();
+
                 StartCoroutine(IInternalLoadScene(0));
             }
         }

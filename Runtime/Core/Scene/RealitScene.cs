@@ -9,6 +9,7 @@ namespace Realit.Core.Scenes
     public class RealitScene : ScriptableObject
     {
         public string SceneName;
+        public string SceneDisplayName;
         public Features.FeatureDataAsset[] features;
         public Texture2D ScenePreview;
     }

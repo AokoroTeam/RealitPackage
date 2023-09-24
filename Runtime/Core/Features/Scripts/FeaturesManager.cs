@@ -17,32 +17,32 @@ namespace Realit.Core.Features
         [SerializeField] private GameObject uiPrefab;
         
 
-        private static Dictionary<string, Feature> features;
-        private static Dictionary<Feature, ChannelKey> channelKeys;
-        private static Dictionary<Type, List<Action<Feature>>> featuresLoadedCallbacks;
+        private Dictionary<string, Feature> features;
+        private Dictionary<Feature, ChannelKey> channelKeys;
+        private Dictionary<Type, List<Action<Feature>>> featuresLoadedCallbacks;
+        public PrioritisedProperty<bool> canExecuteFeature = new PrioritisedProperty<bool>(true);
 
         public static bool AreFeaturesLoaded { get; private set; }
 
-        public PrioritisedProperty<bool> canExecuteFeature = new PrioritisedProperty<bool>(true);
 
         public static FeaturesUIManager UI;
         public static List<Feature> FeaturesList => new(Features.Values);
 
         private static Dictionary<Type, List<Action<Feature>>> FeaturesLoadedCallbacks 
         { 
-            get => featuresLoadedCallbacks??= new(); 
-            set => featuresLoadedCallbacks = value; 
+            get => Instance.featuresLoadedCallbacks??= new(); 
+            set => Instance.featuresLoadedCallbacks = value; 
         }
         public static Dictionary<string, Feature> Features 
         {
-            get => features ??= new(); 
-            set => features = value; 
+            get => Instance.features ??= new(); 
+            set => Instance.features = value; 
         }
 
         public static Dictionary<Feature, ChannelKey> ChannelKeys
         {
-            get => channelKeys ??= new();
-            set => channelKeys = value;
+            get => Instance.channelKeys ??= new();
+            set => Instance.channelKeys = value;
         }
 
         protected override void OnExistingInstanceFound(FeaturesManager existingInstance)
@@ -131,6 +131,18 @@ namespace Realit.Core.Features
             Instance.CreateUI();
         }
 
+        public static void UnloadFeatures()
+        {
+            foreach ((_, var feature) in Features)
+            {
+                feature.UnLoad();
+            }
+
+            Instance.channelKeys.Clear();
+            Instance.features.Clear();
+            Instance.canExecuteFeature.Clear();
+            ClearCallbacks();
+        }
         public static void AddFeatureLoadedCallbackListener<T>(Action<Feature> callback) where T : Feature
         {
             Type tType = typeof(T);
