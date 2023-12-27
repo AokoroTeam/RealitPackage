@@ -248,6 +248,7 @@ namespace LTX.Settings
             }
         }
 
+
         private void ReadSetting(ISetting setting)
         {
             //If the setting doesn't exist yet then reset it

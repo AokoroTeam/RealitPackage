@@ -58,7 +58,7 @@ namespace Realit.Core.Player.Controls
         protected override int GetTouchIndex()
         {
             //Uses the secondary touche if the first one was already used to move
-            if (!wasPressedLastFrame)
+            if (!wasStartTouchValid)
                 return movingJoystick.IsHolding ? 1 : 0;
 
             return base.GetTouchIndex();

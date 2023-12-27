@@ -62,7 +62,14 @@ namespace LTX.Settings
 #if UNITY_EDITOR
         public void OnBeforeSerialize()
         {
+            if (ApplicationIsRunning)
+                return;
 
+            foreach (var setting in settingsList)
+            {
+                setting.Reset();
+                //Debug.Log($"Setting {setting.InternalName} has now value {setting.ToString()}");
+            }
         }
 
         public void OnAfterDeserialize()

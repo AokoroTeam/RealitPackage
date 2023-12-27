@@ -67,7 +67,7 @@ namespace Realit.Core.Features.CameraSwitch
 
         protected override void OnLoad()
         {
-            _cameraManager = Realit_Player.LocalPlayer.GetLivingComponent<CameraManager>();
+            _cameraManager = RealitPlayer.LocalPlayer.GetLivingComponent<CameraManager>();
         }
 
 

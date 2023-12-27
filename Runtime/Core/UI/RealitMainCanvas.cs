@@ -73,15 +73,13 @@ namespace Realit.Core
 
         private void OnScalingChanges(float scaleFactor)
         {
-            Debug.Log(scaleFactor);
+            //Debug.Log(scaleFactor);
             canvasScaler.scaleFactor = scaleFactor;
         }
         private void OnSettingChanges(ISetting setting)
         {
-            Debug.Log("a");
             if (setting is ISetting<float> fs)
             {
-                Debug.Log("aaa");
                 UIScaling.Write(MainSettingsManager.Instance, fs.Value);
             }
         }

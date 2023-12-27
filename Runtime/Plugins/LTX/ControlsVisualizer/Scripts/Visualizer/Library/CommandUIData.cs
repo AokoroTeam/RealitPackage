@@ -5,18 +5,16 @@ using UnityEngine;
 
 namespace LTX.ControlsVisualizer.UI
 {
-    public readonly struct CommandUIData
+    [System.Serializable]
+    public struct CommandUIData
     {
-        public readonly Command command;
-        public readonly GameObject commandVisual;
-        public readonly Dictionary<int, InputVisual> inputVisuals;
+        [SerializeField]
+        internal CommandType commandType;
+        [SerializeField]
+        internal string[] layoutCompatibility;
+        [SerializeField]
+        internal GameObject commandUIPrefab;
 
-        public CommandUIData(Command command, GameObject commandVisual) : this()
-        {
-            this.command = command;
-            this.commandVisual = commandVisual;
-
-            inputVisuals = new();
-        }
+        internal bool MatchesCommand(Command command) => command.Type == commandType;
     }
 }

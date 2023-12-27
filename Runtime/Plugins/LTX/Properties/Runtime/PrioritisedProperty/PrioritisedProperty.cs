@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace LTX.ChanneledProperties
 {
@@ -252,7 +253,6 @@ namespace LTX.ChanneledProperties
                 NotifyValueChange();
             
         }
-
     }
 }
 

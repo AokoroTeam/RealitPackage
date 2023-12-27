@@ -37,10 +37,10 @@ namespace Realit.Core.Managers
         public InitialisationPhase LevelInitiationPhase { get; private set; } = InitialisationPhase.None;
 
 
-        public static event Action<Realit_Player> OnPlayerIsSetup;
+        public static event Action<RealitPlayer> OnPlayerIsSetup;
 
         
-        public static Realit_Player Player { get; private set; }
+        public static RealitPlayer Player { get; private set; }
 
 
         public void InitializeScene(FeatureDataAsset[] features)
@@ -68,7 +68,7 @@ namespace Realit.Core.Managers
         protected void InitializePlayer()
         {
             LevelInitiationPhase = InitialisationPhase.Player;
-            Player = Realit_Player.LocalPlayer as Realit_Player;
+            Player = RealitPlayer.LocalPlayer as RealitPlayer;
             
             Player.OnAwake();
 

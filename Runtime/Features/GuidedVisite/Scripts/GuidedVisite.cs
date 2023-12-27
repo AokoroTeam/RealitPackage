@@ -91,7 +91,7 @@ namespace Realit.Core.Features.GuidedVisite
             CursorManager.CursorVisibility.AddChannel(MyChannelKey, PriorityTags.None, true);
 
             //Player
-            Player.Realit_Player player = RealitSceneManager.Player;
+            Player.RealitPlayer player = RealitSceneManager.Player;
 
             if (player.GetLivingComponent(out playerCharacter))
             {

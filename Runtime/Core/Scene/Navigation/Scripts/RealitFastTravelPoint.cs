@@ -50,7 +50,7 @@ namespace Realit.Core.Player.Navigation
             RealitSceneManager.OnPlayerIsSetup += OnPlayerIsSetup;
         }
 
-        private void OnPlayerIsSetup(Realit_Player player) => OnEnable();
+        private void OnPlayerIsSetup(RealitPlayer player) => OnEnable();
 
         private void OnEnable()
         {

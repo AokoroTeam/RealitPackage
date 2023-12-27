@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Realit.Core
 {
@@ -26,7 +27,7 @@ namespace Realit.Core
         [BoxGroup("Ressources")]
         [SerializeField] GameObject canvasManagerAsset;
         [BoxGroup("Ressources")]
-        [SerializeField] GameObject sceneManagerAsset;
+        [SerializeField] GameObject featureManagerAsset;
         [BoxGroup("Ressources")]
         [SerializeField] GameObject playerAsset;
 
@@ -82,8 +83,9 @@ namespace Realit.Core
                 .Do(() =>
                 {
                     OnStartsLoading?.Invoke();
+                    Debug.Log("Creation");
                     Instantiate(canvasManagerAsset, transform.parent);
-                    Instantiate(sceneManagerAsset, transform.parent);
+                    Instantiate(featureManagerAsset, transform.parent);
                 });
 
             builder.Clear();
@@ -115,6 +117,9 @@ namespace Realit.Core
         {
             if(IsReadyForLoading)
             {
+                if(FeaturesManager.HasInstance)
+                    FeaturesManager.UnloadFeatures();
+
                 StartCoroutine(IInternalLoadScene(0));
             }
         }
