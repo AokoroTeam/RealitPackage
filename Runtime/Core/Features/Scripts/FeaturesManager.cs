@@ -48,7 +48,9 @@ namespace Realit.Core.Features
         protected override void OnExistingInstanceFound(FeaturesManager existingInstance)
         {
             if (existingInstance != this)
+            {
                 Destroy(gameObject);
+            }
         }
 
 
@@ -223,6 +225,7 @@ namespace Realit.Core.Features
         public void CreateUI()
         {
             var windowItem = RealitSceneManager.UI.GetWindow();
+            Debug.Log("setup");
             UI = Instantiate(uiPrefab, windowItem.windowObject.transform).GetComponent<FeaturesUIManager>();
 
             UI.Refresh(true);
